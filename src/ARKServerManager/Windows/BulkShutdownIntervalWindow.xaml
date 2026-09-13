@@ -1,0 +1,36 @@
+<Window x:Class="ServerManagerTool.Windows.BulkShutdownIntervalWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:cctl="clr-namespace:ServerManagerTool.Common.Controls;assembly=ServerManager.Common"
+        mc:Ignorable="d"
+        Width="450" SizeToContent="Height" ShowInTaskbar="False" WindowStartupLocation="CenterOwner" HorizontalAlignment="Left" VerticalAlignment="Top" ResizeMode="NoResize" WindowStyle="ToolWindow"
+        Icon="../Art/favicon.ico" Title="{Binding WindowTitle}">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="..\Globalization\en-US\en-US.xaml"/>
+                <ResourceDictionary Source="..\Styles\Default.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid Background="{StaticResource BeigeGradient}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Margin="10,10,10,0" TextWrapping="Wrap" Text="{Binding TargetSummary}" FontWeight="Bold"/>
+
+        <!-- Same slider (same label/tooltip/range) as the single-server Shutdown
+             window, applied here to every selected server at once instead of one. -->
+        <cctl:AnnotatedSlider Grid.Row="1" Margin="10,10,10,0" Label="{DynamicResource ShutdownWindow_ShutdownIntervalLabel}" Value="{Binding ShutdownInterval}" Minimum="0" Maximum="60" SmallChange="1" LargeChange="5" TickFrequency="1" LabelRelativeWidth="Auto" SliderRelativeWidth="15*" SuffixRelativeWidth="Auto" Suffix="{DynamicResource SliderUnits_Minutes}" ToolTip="{DynamicResource ShutdownWindow_ShutdownIntervalTooltip}"/>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,10">
+            <Button Content="{Binding ConfirmButtonLabel}" MinWidth="75" Margin="5" Padding="5" IsDefault="True" Click="ConfirmButton_Click"/>
+            <Button Content="{DynamicResource ServerMonitor_SendRconCommand_CancelButtonLabel}" MinWidth="75" Margin="5" Padding="5" IsCancel="True"/>
+        </StackPanel>
+    </Grid>
+</Window>
