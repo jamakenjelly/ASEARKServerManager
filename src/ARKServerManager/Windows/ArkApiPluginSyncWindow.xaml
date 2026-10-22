@@ -45,16 +45,18 @@
                 <Button Content="{DynamicResource ArkApiPluginSyncWindow_AddPluginButtonLabel}" Padding="6,1" Margin="0,4,0,0" HorizontalAlignment="Left" Click="AddPlugin_Click" ToolTip="{DynamicResource ArkApiPluginSyncWindow_AddPluginButtonTooltip}"/>
             </StackPanel>
 
-            <StackPanel Grid.Row="2" Grid.Column="0" Margin="5,10,5,0">
+            <StackPanel Grid.Row="2" Grid.Column="0" Margin="5,10,5,0" Visibility="Collapsed">
                 <TextBlock Text="{DynamicResource ArkApiPluginSyncWindow_ConfigFileLabel}" FontWeight="Bold" Margin="0,0,0,2"/>
                 <DockPanel>
                     <Button DockPanel.Dock="Right" Content="{DynamicResource ArkApiPluginSyncWindow_BrowseButtonLabel}" Margin="5,0,0,0" Padding="6,1" Click="BrowseConfigFile_Click" ToolTip="{DynamicResource ArkApiPluginSyncWindow_BrowseButtonTooltip}"/>
-                    <ComboBox x:Name="ConfigFileComboBox" ItemsSource="{Binding AvailableConfigFiles}" IsEditable="False"/>
+                    <ComboBox x:Name="ConfigFileComboBox" ItemsSource="{Binding AvailableConfigFiles}" IsEditable="False" SelectionChanged="ConfigFileComboBox_SelectionChanged"/>
                 </DockPanel>
             </StackPanel>
 
-            <TextBlock Grid.Row="3" Grid.Column="0" Margin="5,10,5,0" Text="{DynamicResource ArkApiPluginSyncWindow_NoFilesFoundLabel}" TextWrapping="Wrap" Foreground="{DynamicResource WarningMessage}"
-                       Visibility="{Binding HasNoConfigFiles, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+            <TextBlock Grid.Row="3" Grid.Column="0" Margin="5,10,5,0" Text="{DynamicResource ArkApiPluginSyncWindow_NoFilesFoundLabel}" TextWrapping="Wrap" Visibility="Collapsed"/>
+
+            <TextBox x:Name="ConfigEditorTextBox" Grid.Row="4" Grid.Column="0" Margin="5,10,5,0" AcceptsReturn="True" AcceptsTab="True" IsEnabled="False" Visibility="Collapsed"
+                     FontFamily="Consolas" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" TextChanged="ConfigEditorTextBox_TextChanged"/>
 
             <ListView Grid.Row="1" Grid.RowSpan="4" Grid.Column="1" Margin="5,5,5,0" ItemsSource="{Binding SyncProfiles}" HorizontalContentAlignment="Stretch">
                 <ListView.View>
@@ -95,7 +97,7 @@
 
             <DockPanel Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2">
                 <Button x:Name="CloseButton" DockPanel.Dock="Right" Content="{DynamicResource ProfileSyncWindow_CloseButtonLabel}" Margin="5" MinWidth="75" HorizontalAlignment="Right" IsCancel="True"/>
-                <Button DockPanel.Dock="Right" Content="{DynamicResource ProfileSyncWindow_ProcessButtonLabel}" Margin="5" MinWidth="75" HorizontalAlignment="Right" Click="Process_Click"/>
+                
             </DockPanel>
         </Grid>
 

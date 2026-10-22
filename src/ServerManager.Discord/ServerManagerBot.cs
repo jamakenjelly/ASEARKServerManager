@@ -412,6 +412,26 @@ namespace ServerManagerTool.DiscordBot
             }
         }
 
+        public async Task<bool> SendDirectMessageAsync(ulong userId, string message)
+        {
+            if (!IsConnected || _client == null || userId == 0 || string.IsNullOrWhiteSpace(message))
+                return false;
+
+            try
+            {
+                var user = await _client.GetUserAsync(userId);
+                if (user == null)
+                    return false;
+
+                await user.SendMessageAsync(message);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         public async Task DeleteMessageAsync(ulong channelId, ulong messageId)
         {
             if (!Started || _client == null || channelId == 0 || messageId == 0)

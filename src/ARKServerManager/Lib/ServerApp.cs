@@ -434,6 +434,7 @@ namespace ServerManagerTool.Lib
                 LogProfileMessage("Starting server...");
 
                 CheckServerWorldFileExists(_profile);
+                ServerProfile.PurgeArkApiPendingDelete(_profile.InstallDirectory);
 
                 var startInfo = new ProcessStartInfo()
                 {

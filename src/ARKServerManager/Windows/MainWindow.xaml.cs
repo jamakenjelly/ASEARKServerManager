@@ -4,7 +4,6 @@ using ServerManagerTool.Common;
 using ServerManagerTool.Common.Enums;
 using ServerManagerTool.Common.Lib;
 using ServerManagerTool.Common.Utils;
-using ServerManagerTool.DiscordBot;
 using ServerManagerTool.Enums;
 using ServerManagerTool.Lib;
 using ServerManagerTool.Plugin.Common;
@@ -35,38 +34,12 @@ namespace ServerManagerTool
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        // Separate named logger for the Discord control panel (Start/Stop/
-        // Restart button) posting - see NLog.config. The general "*" rule
-        // only writes Error and above, which used to make every reason a
-        // panel silently didn't post (bot disabled, bad channel Id, bot not
-        // connected, etc) invisible in every log file. This one has its own
-        // dedicated Info-and-above file (ServerManager_DiscordControlPanel.log)
-        // so those reasons are actually diagnosable.
-        private static readonly Logger DiscordPanelLogger = LogManager.GetLogger("ServerManagerTool.DiscordControlPanel");
-
         private readonly GlobalizedApplication _globalizer = GlobalizedApplication.Instance;
         private readonly ActionQueue versionChecker;
         private readonly ActionQueue scheduledTaskChecker;
-        private readonly ActionQueue discordBotChecker;
-        private readonly ActionQueue discordPostUpdater;
+        private readonly ActionQueue webDashboardChecker;
         private readonly ActionQueue profileAutoSaver;
 
-        // Discord control panels used to be rewritten for every server every
-        // minute, even when status and player count had not changed. With a
-        // large cluster that creates avoidable network, JSON and logging work.
-        // Keep a short-lived signature cache; a ten-minute forced refresh still
-        // repairs messages after transient Discord failures or external edits.
-        private readonly object discordControlPanelCacheLock = new object();
-        private readonly Dictionary<string, string> discordControlPanelSignatures = new Dictionary<string, string>();
-        private readonly Dictionary<string, DateTime> discordControlPanelLastUpdates = new Dictionary<string, DateTime>();
-        private static readonly TimeSpan DiscordControlPanelForcedRefreshPeriod = TimeSpan.FromMinutes(5);
-
-        // See AutoUpdateDiscordPosts and CheckForScheduledTasks - lets a
-        // stalled self-rescheduling Discord-post loop be detected and
-        // revived automatically instead of silently never posting again.
-        private DateTime discordPostUpdaterLastTickUTC = DateTime.UtcNow;
-
-        private bool discordBotStateClicked = false;
 
         public static readonly DependencyProperty AppInstanceProperty = DependencyProperty.Register(nameof(AppInstance), typeof(App), typeof(MainWindow), new PropertyMetadata(null));
         public static readonly DependencyProperty ConfigProperty = DependencyProperty.Register(nameof(Config), typeof(Config), typeof(MainWindow), new PropertyMetadata(null));
@@ -84,8 +57,9 @@ namespace ServerManagerTool
         public static readonly DependencyProperty AutoUpdateStatePVPProperty = DependencyProperty.Register(nameof(AutoUpdateStatePVP), typeof(Microsoft.Win32.TaskScheduler.TaskState), typeof(MainWindow), new PropertyMetadata(Microsoft.Win32.TaskScheduler.TaskState.Unknown));
         public static readonly DependencyProperty AutoUpdateStateStringPVPProperty = DependencyProperty.Register(nameof(AutoUpdateStateStringPVP), typeof(string), typeof(MainWindow), new PropertyMetadata(string.Empty));
         public static readonly DependencyProperty AutoUpdateNextRunTimePVPProperty = DependencyProperty.Register(nameof(AutoUpdateNextRunTimePVP), typeof(string), typeof(MainWindow), new PropertyMetadata(string.Empty));
-        public static readonly DependencyProperty DiscordBotStateProperty = DependencyProperty.Register(nameof(DiscordBotState), typeof(DiscordBot.Enums.BotState), typeof(MainWindow), new PropertyMetadata(DiscordBot.Enums.BotState.Unknown));
-        public static readonly DependencyProperty DiscordBotStateStringProperty = DependencyProperty.Register(nameof(DiscordBotStateString), typeof(string), typeof(MainWindow), new PropertyMetadata(string.Empty));
+        public static readonly DependencyProperty WebDashboardStateProperty = DependencyProperty.Register(nameof(WebDashboardState), typeof(string), typeof(MainWindow), new PropertyMetadata("Disabled"));
+        public static readonly DependencyProperty WebDashboardStateStringProperty = DependencyProperty.Register(nameof(WebDashboardStateString), typeof(string), typeof(MainWindow), new PropertyMetadata(string.Empty));
+        public static readonly DependencyProperty WebDashboardButtonLabelProperty = DependencyProperty.Register(nameof(WebDashboardButtonLabel), typeof(string), typeof(MainWindow), new PropertyMetadata(string.Empty));
         public static readonly DependencyProperty IsIpValidProperty = DependencyProperty.Register(nameof(IsIpValid), typeof(bool), typeof(MainWindow), new PropertyMetadata(false));
         public static readonly DependencyProperty LatestServerManagerVersionProperty = DependencyProperty.Register(nameof(LatestServerManagerVersion), typeof(Version), typeof(MainWindow), new PropertyMetadata(new Version()));
         public static readonly DependencyProperty NewServerManagerAvailableProperty = DependencyProperty.Register(nameof(NewServerManagerAvailable), typeof(bool), typeof(MainWindow), new PropertyMetadata(false));
@@ -152,8 +126,7 @@ namespace ServerManagerTool
             this.DataContext = this;
             this.versionChecker = new ActionQueue();
             this.scheduledTaskChecker = new ActionQueue();
-            this.discordBotChecker = new ActionQueue();
-            this.discordPostUpdater = new ActionQueue();
+            this.webDashboardChecker = new ActionQueue();
             this.profileAutoSaver = new ActionQueue();
 
             IsAdministrator = SecurityUtils.IsAdministrator();
@@ -293,16 +266,23 @@ namespace ServerManagerTool
             set { SetValue(AutoUpdateNextRunTimePVPProperty, value); }
         }
 
-        public DiscordBot.Enums.BotState DiscordBotState
+        // "Disabled" (setting off), "Offline" (enabled but not listening), "Online".
+        public string WebDashboardState
         {
-            get { return (DiscordBot.Enums.BotState)GetValue(DiscordBotStateProperty); }
-            set { SetValue(DiscordBotStateProperty, value); }
+            get { return (string)GetValue(WebDashboardStateProperty); }
+            set { SetValue(WebDashboardStateProperty, value); }
         }
 
-        public string DiscordBotStateString
+        public string WebDashboardStateString
         {
-            get { return (string)GetValue(DiscordBotStateStringProperty); }
-            set { SetValue(DiscordBotStateStringProperty, value); }
+            get { return (string)GetValue(WebDashboardStateStringProperty); }
+            set { SetValue(WebDashboardStateStringProperty, value); }
+        }
+
+        public string WebDashboardButtonLabel
+        {
+            get { return (string)GetValue(WebDashboardButtonLabelProperty); }
+            set { SetValue(WebDashboardButtonLabelProperty, value); }
         }
 
         public bool IsAdministrator
@@ -455,8 +435,7 @@ namespace ServerManagerTool
 
             this.versionChecker.PostAction(CheckForUpdates).DoNotWait();
             this.scheduledTaskChecker.PostAction(CheckForScheduledTasks).DoNotWait();
-            this.discordBotChecker.PostAction(CheckForDiscordBot).DoNotWait();
-            this.discordPostUpdater.PostAction(AutoUpdateDiscordPosts).DoNotWait();
+            this.webDashboardChecker.PostAction(CheckForWebDashboard).DoNotWait();
             this.profileAutoSaver.PostAction(AutoSaveProfiles).DoNotWait();
         }
 
@@ -503,16 +482,6 @@ namespace ServerManagerTool
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
         {
-            if (DiscordBotHelper.HasRunningCommands)
-            {
-                var result = MessageBox.Show(_globalizer.GetResourceString("MainWindow_DiscordBot_RunningCommandsLabel"), _globalizer.GetResourceString("MainWindow_DiscordBot_RunningCommandsTitle"), MessageBoxButton.YesNo, MessageBoxImage.Question);
-                if (result == MessageBoxResult.No)
-                {
-                    e.Cancel = true;
-                    return;
-                }
-            }
-
             // Closing mid-backup can leave a truncated/partial archive behind,
             // or (for the scheduled Auto-Backup headless process specifically)
             // interrupt a save that's still in flight on a server. Same shared
@@ -554,8 +523,7 @@ namespace ServerManagerTool
             // twice, which was particularly noticeable with large clusters.
             this.versionChecker.DisposeAsync().DoNotWait();
             this.scheduledTaskChecker.DisposeAsync().DoNotWait();
-            this.discordBotChecker.DisposeAsync().DoNotWait();
-            this.discordPostUpdater.DisposeAsync().DoNotWait();
+            this.webDashboardChecker.DisposeAsync().DoNotWait();
             this.profileAutoSaver.DisposeAsync().DoNotWait();
         }
 
@@ -568,7 +536,7 @@ namespace ServerManagerTool
 
             this.versionChecker.PostAction(CheckForUpdates).DoNotWait();
             this.scheduledTaskChecker.PostAction(CheckForScheduledTasks).DoNotWait();
-            this.discordBotChecker.PostAction(CheckForDiscordBot).DoNotWait();
+            this.webDashboardChecker.PostAction(CheckForWebDashboard).DoNotWait();
         }
 
         private void PatchNotes_Click(object sender, RoutedEventArgs e)
@@ -1065,34 +1033,23 @@ namespace ServerManagerTool
             }
         }
 
-        private async void DiscordBotTaskState_Click(object sender, RoutedEventArgs e)
+        private void WebDashboardTaskState_Click(object sender, RoutedEventArgs e)
         {
-            if (discordBotStateClicked)
-                return;
-            discordBotStateClicked = true;
-
             try
             {
-                switch (DiscordBotState)
-                {
-                    case DiscordBot.Enums.BotState.Stopped:
-                        AppInstance.StartDiscordBot();
-                        break;
-                    case DiscordBot.Enums.BotState.Connecting:
-                    case DiscordBot.Enums.BotState.Running:
-                        AppInstance.StopDiscordBot();
-                        break;
-                }
+                if (ServerManagerTool.Utils.WebDashboard.IsRunning)
+                    ServerManagerTool.Utils.WebDashboard.Stop();
+                else
+                    ServerManagerTool.Utils.WebDashboard.Start();
 
-                await Task.Delay(5000);
+                var running = ServerManagerTool.Utils.WebDashboard.IsRunning;
+                this.WebDashboardState = running ? "Online" : "Offline";
+                this.WebDashboardStateString = _globalizer.GetResourceString(running ? "MainWindow_WebDashboardStateOnlineLabel" : "MainWindow_WebDashboardStateOfflineLabel");
+                this.WebDashboardButtonLabel = _globalizer.GetResourceString(running ? "MainWindow_WebDashboardTaskStopLabel" : "MainWindow_WebDashboardTaskStartLabel");
             }
             catch (Exception)
             {
                 // Ignore.
-            }
-            finally
-            {
-                discordBotStateClicked = false;
             }
         }
 
@@ -1232,19 +1189,6 @@ namespace ServerManagerTool
                     }
                 });
 
-                // Watchdog for the self-rescheduling Discord-post loop (see
-                // AutoUpdateDiscordPosts) - it's supposed to tick roughly
-                // every 5 minutes on its own. If it's gone quiet for well
-                // longer than that while the Discord bot is enabled, kick it
-                // again rather than leaving restart-timer embeds (and every
-                // other Discord post) silently frozen until the app restarts.
-                if (Config.Default.DiscordBotEnabled && DateTime.UtcNow - discordPostUpdaterLastTickUTC > TimeSpan.FromMinutes(12))
-                {
-                    Logger.Warn($"{nameof(CheckForScheduledTasks)} - Discord post loop hasn't ticked in over 12 minutes, restarting it.");
-                    discordPostUpdaterLastTickUTC = DateTime.UtcNow;
-                    this.discordPostUpdater.PostAction(AutoUpdateDiscordPosts).DoNotWait();
-                }
-
                 Logger.Debug($"{nameof(CheckForScheduledTasks)} performed");
             }
             catch (Exception ex)
@@ -1305,241 +1249,18 @@ namespace ServerManagerTool
             this.profileAutoSaver.PostAction(AutoSaveProfiles).DoNotWait();
         }
 
-        // Discord message refreshes run independently from other scheduled work.
-        // RCON timeouts or other slow operations can take long enough to
-        // delay the old shared loop, making the schedule appear to stop updating.
-        private async Task AutoUpdateDiscordPosts()
-        {
-            // Touched on every tick attempt, success or failure - lets
-            // CheckForScheduledTasks's watchdog below notice if this
-            // self-rescheduling chain ever goes quiet (e.g. an unobserved
-            // exception somewhere managed to fault the queue despite the
-            // try/catch below) and revive it, rather than silently never
-            // posting Discord updates again until the app restarts.
-            discordPostUpdaterLastTickUTC = DateTime.UtcNow;
-
-            try
-            {
-                await UpdateDiscordControlPanels();
-                DiscordPanelLogger.Info($"{nameof(AutoUpdateDiscordPosts)} performed");
-            }
-            catch (Exception ex)
-            {
-                DiscordPanelLogger.Error($"{nameof(AutoUpdateDiscordPosts)} performed with errors. {ex.Message}");
-            }
-
-            // This method is posted to the queue via the Action-based overload,
-            // which discards the Task this async method returns - nothing awaits
-            // it. If anything below throws unhandled, that becomes an unobserved
-            // task exception that silently kills this self-rescheduling chain
-            // forever, with no error logged anywhere - it would just quietly stop
-            // refreshing. Wrapping the delay + reschedule in their own try/catch
-            // guarantees the next cycle always gets queued regardless.
-            try
-            {
-                // Refresh on a low-frequency cadence to avoid unnecessary Discord
-                // API traffic. Discord renders the relative timestamps live on
-                // the client, so the embed does not need minute-by-minute edits.
-                await Task.Delay(5 * 60 * 1000);
-            }
-            catch (Exception ex)
-            {
-                DiscordPanelLogger.Error($"{nameof(AutoUpdateDiscordPosts)} delay failed. {ex.Message}");
-            }
-            finally
-            {
-                try
-                {
-                    this.discordPostUpdater.PostAction(AutoUpdateDiscordPosts).DoNotWait();
-                }
-                catch (Exception ex)
-                {
-                    DiscordPanelLogger.Error($"{nameof(AutoUpdateDiscordPosts)} failed to reschedule itself. {ex.Message}");
-                }
-            }
-        }
-
-        private async Task UpdateDiscordControlPanels(bool force = false)
-        {
-            // These two checks used to return silently - with no log entry at
-            // all, "nothing posts and there's no clue why" was the only
-            // symptom a user could ever see. Log once per call so a missing/
-            // wrong Channel 1 Id (the admin buttons channel, distinct from
-            // whatever channel chat relay or alerts use) shows up in the logs
-            // instead of looking identical to the bot silently doing nothing.
-            if (!Config.Default.DiscordBotEnabled)
-            {
-                DiscordPanelLogger.Info($"{nameof(UpdateDiscordControlPanels)} - skipped, Discord bot is not enabled.");
-                return;
-            }
-
-            if (string.IsNullOrWhiteSpace(Config.Default.DiscordChannel1Id))
-            {
-                DiscordPanelLogger.Warn($"{nameof(UpdateDiscordControlPanels)} - skipped, Channel 1 Id (Discord Bot Details - Channel 1 - Admin & Buttons) is not set.");
-                return;
-            }
-
-            if (!ulong.TryParse(Config.Default.DiscordChannel1Id.Trim(), out var channelId))
-            {
-                DiscordPanelLogger.Warn($"{nameof(UpdateDiscordControlPanels)} - skipped, Channel 1 Id '{Config.Default.DiscordChannel1Id}' is not a valid Discord channel Id.");
-                return;
-            }
-
-            // Server/ServerProfile/ServerRuntime are all WPF DependencyObjects,
-            // which throw "the calling thread cannot access this object
-            // because a different thread owns it" the moment any of their
-            // properties are read or written from a thread other than the one
-            // that created them. This method runs on the discordPostUpdater
-            // background ActionQueue, not the UI thread - it used to touch
-            // those objects directly and would throw on the very first
-            // property read (ServerManager.Instance.Servers itself), aborting
-            // the whole method every single time with nothing ever posted.
-            // Build a plain-data snapshot of what needs posting on the UI
-            // thread first, then do the actual (network) posting off it, then
-            // marshal only the resulting write-back onto the UI thread too.
-            var now = DateTime.UtcNow;
-            var workItems = await TaskUtils.RunOnUIThreadAsync(() =>
-            {
-                var items = new List<(Server Server, ServerProfile Profile, string Title, string Description, string Status, int PlayerCount, string CacheKey, string Signature, ulong? ExistingMessageId)>();
-
-                foreach (var server in ServerManager.Instance.Servers.ToList())
-                {
-                    var profile = server?.Profile;
-                    if (profile == null || !profile.EnableRemoteAdminButtons)
-                        continue;
-
-                    var mapName = GameData.FriendlyMapNameForClass(profile.ServerMap, true);
-                    var title = string.IsNullOrWhiteSpace(mapName) ? profile.ProfileName : mapName;
-
-                    var status = server.Runtime?.Status.ToString() ?? "Unknown";
-                    var playerCount = server.Runtime?.Players ?? 0;
-                    var description = string.Format(_globalizer.GetResourceString("MainWindow_ControlPanelDescriptionFormat"), status, playerCount);
-
-                    var cacheKey = string.IsNullOrWhiteSpace(profile.ProfileID) ? profile.ProfileName : profile.ProfileID;
-                    var signature = $"{channelId}|{profile.ProfileName}|{title}|{status}|{playerCount}|{profile.DiscordControlMessageId}";
-
-                    var skipUnchangedPanel = false;
-                    if (!force)
-                    {
-                        lock (discordControlPanelCacheLock)
-                        {
-                            skipUnchangedPanel = discordControlPanelSignatures.TryGetValue(cacheKey, out var previousSignature)
-                                && string.Equals(previousSignature, signature, StringComparison.Ordinal)
-                                && discordControlPanelLastUpdates.TryGetValue(cacheKey, out var previousUpdate)
-                                && now - previousUpdate < DiscordControlPanelForcedRefreshPeriod;
-                        }
-                    }
-
-                    if (skipUnchangedPanel)
-                        continue;
-
-                    ulong? existingMessageId = null;
-                    if (ulong.TryParse(profile.DiscordControlMessageId, out var parsedMessageId))
-                        existingMessageId = parsedMessageId;
-
-                    items.Add((server, profile, title, description, status, playerCount, cacheKey, signature, existingMessageId));
-                }
-
-                return items;
-            });
-
-            // Logged even on a totally uneventful run (nothing due to post) -
-            // an empty list here usually means either no profile has "Enable
-            // Remote Admin Discord Buttons" checked, or every panel already
-            // matches what was last posted (see DiscordControlPanelForcedRefreshPeriod)
-            // and is being skipped as unchanged.
-            DiscordPanelLogger.Info($"{nameof(UpdateDiscordControlPanels)} - {workItems.Count} server(s) due for a control panel post/update (force={force}).");
-
-            var bot = ServerManagerBotFactory.GetServerManagerBot();
-
-            foreach (var item in workItems)
-            {
-                var profileName = item.Profile.ProfileName;
-
-                try
-                {
-                    var resultMessageId = await bot.PostOrUpdateControlPanelAsync(channelId, item.ExistingMessageId, profileName, item.Title, item.Description);
-                    if (!resultMessageId.HasValue)
-                    {
-                        DiscordPanelLogger.Warn($"{nameof(UpdateDiscordControlPanels)} - '{profileName}' returned no message Id (bot may not be connected yet, or the post silently failed).");
-                        continue;
-                    }
-
-                    DiscordPanelLogger.Info($"{nameof(UpdateDiscordControlPanels)} - '{profileName}' control panel posted/updated in channel {channelId}, message Id {resultMessageId}.");
-
-                    var signature = item.Signature;
-
-                    await TaskUtils.RunOnUIThreadAsync(() =>
-                    {
-                        if (resultMessageId.ToString() != item.Profile.DiscordControlMessageId)
-                        {
-                            item.Profile.DiscordControlMessageId = resultMessageId.Value.ToString();
-                            item.Profile.Save(false, false, null);
-
-                            // The saved message id is part of the signature.
-                            signature = $"{channelId}|{profileName}|{item.Title}|{item.Status}|{item.PlayerCount}|{item.Profile.DiscordControlMessageId}";
-                        }
-                    });
-
-                    lock (discordControlPanelCacheLock)
-                    {
-                        discordControlPanelSignatures[item.CacheKey] = signature;
-                        discordControlPanelLastUpdates[item.CacheKey] = now;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    DiscordPanelLogger.Error($"{nameof(UpdateDiscordControlPanels)} - Unable to update control panel for '{profileName}'. {ex.Message}");
-                }
-
-                // A cold run against a large cluster can mean dozens of profiles each
-                // making 1-2 Discord REST calls back-to-back with zero pacing.
-                // Discord.Net's default RetryMode already absorbs an actual 429 by
-                // sleeping and resending rather than throwing, so this isn't required
-                // for correctness - but a small gap between profiles is a better
-                // citizen of Discord's rate limits and keeps one big cluster's refresh
-                // from bursting the channel's message-create bucket all at once.
-                await Task.Delay(250);
-            }
-        }
-
-        private async Task CheckForDiscordBot()
+        private async Task CheckForWebDashboard()
         {
             TaskUtils.RunOnUIThreadAsync(() =>
             {
                 try
                 {
-                    var botState = DiscordBot.Enums.BotState.Unknown;
-                    if (AppInstance.DiscordBotStarted)
-                    {
-                        // DiscordBotStarted only means "the background run-loop is
-                        // alive" (see App.xaml.cs) - it goes true the instant the loop
-                        // starts, well before the gateway handshake actually completes,
-                        // and stays true through any later reconnect. Check the bot's
-                        // own IsConnected too so this panel doesn't keep claiming
-                        // "Running" while the gateway is actually down and every
-                        // Discord post/button-panel update is failing.
-                        botState = ServerManagerBotFactory.GetServerManagerBot().IsConnected
-                            ? DiscordBot.Enums.BotState.Running
-                            : DiscordBot.Enums.BotState.Connecting;
-                    }
-                    else
-                    {
-                        if (Config.DiscordBotEnabled)
-                        {
-                            botState = DiscordBot.Enums.BotState.Stopped;
-                        }
-                        else
-                        {
-                            botState = DiscordBot.Enums.BotState.Disabled;
-                        }
-                    }
+                    var webState = !Config.Default.WebDashboardEnabled ? "Disabled" : (ServerManagerTool.Utils.WebDashboard.IsRunning ? "Online" : "Offline");
+                    this.WebDashboardState = webState;
+                    this.WebDashboardStateString = _globalizer.GetResourceString("MainWindow_WebDashboardState" + webState + "Label");
+                    this.WebDashboardButtonLabel = _globalizer.GetResourceString(webState == "Online" ? "MainWindow_WebDashboardTaskStopLabel" : "MainWindow_WebDashboardTaskStartLabel");
 
-                    this.DiscordBotState = botState;
-
-                    this.DiscordBotStateString = GetDiscordBotStateString(botState);
-
-                    Logger.Info($"{nameof(CheckForDiscordBot)} performed");
+                    Logger.Info($"{nameof(CheckForWebDashboard)} performed");
                 }
                 catch (Exception)
                 {
@@ -1547,8 +1268,8 @@ namespace ServerManagerTool
                 }
             }).DoNotWait();
 
-            await Task.Delay(Config.Default.DiscordBotStatusCheckTime * 1 * 1000);
-            this.discordBotChecker.PostAction(CheckForDiscordBot).DoNotWait();
+            await Task.Delay(5000);
+            this.webDashboardChecker.PostAction(CheckForWebDashboard).DoNotWait();
         }
 
         private string GetTaskSchedulerStateString(Microsoft.Win32.TaskScheduler.TaskState taskState)
@@ -1565,23 +1286,6 @@ namespace ServerManagerTool
                     return _globalizer.GetResourceString("MainWindow_TaskStateRunningLabel");
                 case Microsoft.Win32.TaskScheduler.TaskState.Unknown:
                     return _globalizer.GetResourceString("MainWindow_TaskStateUnknownLabel");
-                default:
-                    return _globalizer.GetResourceString("MainWindow_TaskStateUnknownLabel");
-            }
-        }
-
-        private string GetDiscordBotStateString(DiscordBot.Enums.BotState botState)
-        {
-            switch (botState)
-            {
-                case DiscordBot.Enums.BotState.Disabled:
-                    return _globalizer.GetResourceString("MainWindow_TaskStateDisabledLabel");
-                case DiscordBot.Enums.BotState.Running:
-                    return _globalizer.GetResourceString("MainWindow_TaskStateRunningLabel");
-                case DiscordBot.Enums.BotState.Connecting:
-                    return _globalizer.GetResourceString("MainWindow_DiscordBotStateConnectingLabel");
-                case DiscordBot.Enums.BotState.Stopped:
-                    return _globalizer.GetResourceString("MainWindow_TaskStateStoppedLabel");
                 default:
                     return _globalizer.GetResourceString("MainWindow_TaskStateUnknownLabel");
             }

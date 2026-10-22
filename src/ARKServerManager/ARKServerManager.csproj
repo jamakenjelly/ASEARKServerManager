@@ -214,7 +214,6 @@
     <Compile Include="Lib\ViewModel\EngramSettings.cs" />
     <Compile Include="Lib\ViewModel\GameDataFile.cs" />
     <Compile Include="Lib\ViewModel\GameDataFileList.cs" />
-    <Compile Include="Utils\DiscordBotHelper.cs" />
     <Compile Include="Utils\DiscordPluginHelper.cs" />
     <Compile Include="Utils\ModUtils.cs" />
     <Compile Include="Windows\AddUserWindow.xaml.cs">
@@ -238,6 +237,17 @@
     </Compile>
     <Compile Include="Windows\ProfileSyncWindow.xaml.cs">
       <DependentUpon>ProfileSyncWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\ArkApiConfigEditWindow.xaml.cs">
+      <DependentUpon>ArkApiConfigEditWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Utils\WebDashboard.cs" />
+    <Compile Include="Utils\WebDashboardUsers.cs" />
+    <Compile Include="Windows\WebDashboardUsersWindow.xaml.cs">
+      <DependentUpon>WebDashboardUsersWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\ArkApiConfigSyncWindow.xaml.cs">
+      <DependentUpon>ArkApiConfigSyncWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\ArkApiPluginSyncWindow.xaml.cs">
       <DependentUpon>ArkApiPluginSyncWindow.xaml</DependentUpon>
@@ -456,6 +466,18 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Windows\ProfileSyncWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\ArkApiConfigEditWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\WebDashboardUsersWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\ArkApiConfigSyncWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

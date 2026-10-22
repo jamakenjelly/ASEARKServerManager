@@ -137,13 +137,43 @@ namespace ServerManagerTool
         {
             AvailablePlugins.Clear();
 
-            var pluginsDir = ServerProfile?.GetArkApiPluginsDir();
-            if (string.IsNullOrWhiteSpace(pluginsDir) || !Directory.Exists(pluginsDir))
-                return;
+            // A plugin can be installed on some servers but not on the one this window
+            // was opened from (or have just been removed from it). Listing only this
+            // server's plugins meant those could never be picked, so Remove Plugin had
+            // nothing to select and couldn't clear the servers that still had it. List
+            // every plugin found on any server instead.
+            var pluginsDirs = new List<string>();
+            try { pluginsDirs.Add(ServerProfile?.GetArkApiPluginsDir()); } catch { }
 
-            foreach (var directory in Directory.GetDirectories(pluginsDir).OrderBy(d => d))
+            if (ServerManager?.Servers != null)
             {
-                AvailablePlugins.Add(Path.GetFileName(directory));
+                foreach (var server in ServerManager.Servers)
+                {
+                    try { pluginsDirs.Add(server?.Profile?.GetArkApiPluginsDir()); } catch { }
+                }
+            }
+
+            var names = new SortedSet<string>(StringComparer.OrdinalIgnoreCase);
+
+            foreach (var pluginsDir in pluginsDirs.Where(d => !string.IsNullOrWhiteSpace(d)).Distinct(StringComparer.OrdinalIgnoreCase))
+            {
+                if (!Directory.Exists(pluginsDir))
+                    continue;
+
+                try
+                {
+                    foreach (var directory in Directory.GetDirectories(pluginsDir))
+                        names.Add(Path.GetFileName(directory));
+                }
+                catch
+                {
+                    // An unreadable plugins folder on one server shouldn't hide the rest.
+                }
+            }
+
+            foreach (var name in names)
+            {
+                AvailablePlugins.Add(name);
             }
         }
 
@@ -173,18 +203,54 @@ namespace ServerManagerTool
             // file, list everything in the folder except the plugin binary
             // itself (that's a build output, not something to sync) and let
             // the person pick whichever one is actually the config.
-            var excludedExtensions = new[] { ".dll", ".pdb" };
-
-            foreach (var file in Directory.GetFiles(pluginDir).OrderBy(f => f))
-            {
-                if (!excludedExtensions.Contains(Path.GetExtension(file).ToLowerInvariant()))
-                    AvailableConfigFiles.Add(Path.GetFileName(file));
-            }
+            // List every file in the plugin folder, subfolders included.
+            var pluginDirPrefix = Path.GetFullPath(pluginDir).TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar;
+            foreach (var file in Directory.GetFiles(pluginDir, "*", SearchOption.AllDirectories).OrderBy(f => f))
+                AvailableConfigFiles.Add(Path.GetFullPath(file).Substring(pluginDirPrefix.Length));
 
             HasNoConfigFiles = AvailableConfigFiles.Count == 0;
 
             if (AvailableConfigFiles.Count > 0)
                 ConfigFileComboBox.SelectedIndex = 0;
+        }
+
+        private static readonly string[] BinaryExtensions = { ".dll", ".pdb", ".exe", ".lib", ".zip", ".png", ".jpg", ".bin", ".dat" };
+        private string _editorLoadedText;
+        private string _editorFile;
+
+        private void ConfigFileComboBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            _editorFile = null;
+            _editorLoadedText = null;
+            ConfigEditorTextBox.Text = string.Empty;
+            ConfigEditorTextBox.IsEnabled = false;
+
+            var pluginName = PluginComboBox.SelectedItem as string;
+            var fileName = ConfigFileComboBox.SelectedItem as string;
+            var pluginsDir = ServerProfile?.GetArkApiPluginsDir();
+            if (string.IsNullOrWhiteSpace(pluginName) || string.IsNullOrWhiteSpace(fileName) || string.IsNullOrWhiteSpace(pluginsDir))
+                return;
+
+            var path = Path.Combine(pluginsDir, pluginName, fileName);
+            if (BinaryExtensions.Contains(Path.GetExtension(path).ToLowerInvariant()) || !File.Exists(path))
+                return;
+
+            try
+            {
+                var text = File.ReadAllText(path);
+                _editorFile = path;
+                _editorLoadedText = text;
+                ConfigEditorTextBox.Text = text;
+                ConfigEditorTextBox.IsEnabled = true;
+            }
+            catch
+            {
+                // Unreadable (locked?) - file can still be synced as-is.
+            }
+        }
+
+        private void ConfigEditorTextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
         }
 
         private void BrowseConfigFile_Click(object sender, RoutedEventArgs e)
@@ -319,6 +385,14 @@ namespace ServerManagerTool
                 {
                     MessageBox.Show(string.Format(_globalizer.GetResourceString("ArkApiPluginSyncWindow_Process_SourceFileMissingFormat"), sourceFile), _globalizer.GetResourceString("ProfileSyncWindow_Process_Title"), MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
+                }
+
+                // Save any edits made in the editor to the source file first,
+                // so what gets synced is what's on screen.
+                if (ConfigEditorTextBox.IsEnabled && _editorFile == sourceFile && ConfigEditorTextBox.Text != _editorLoadedText)
+                {
+                    File.WriteAllText(sourceFile, ConfigEditorTextBox.Text);
+                    _editorLoadedText = ConfigEditorTextBox.Text;
                 }
 
                 var failures = await PerformPluginConfigSync(sourceFile, pluginName, configFileName);
@@ -500,18 +574,13 @@ namespace ServerManagerTool
                 OverlayGrid.Visibility = Visibility.Visible;
                 await Task.Delay(100);
 
-                var failures = await PerformRemovePlugin(pluginName);
+                var (failures, movedAside) = await PerformRemovePlugin(pluginName);
 
-                if (failures.Count == 0)
-                {
-                    MessageBox.Show(_globalizer.GetResourceString("ProfileSyncWindow_Process_SuccessLabel"), _globalizer.GetResourceString("ProfileSyncWindow_Process_Title"), MessageBoxButton.OK, MessageBoxImage.Information);
-                }
-                else
-                {
-                    var failureLines = string.Join(Environment.NewLine, failures.Select(f => $"{f.ProfileName}: {f.Error}"));
-                    var message = string.Format(_globalizer.GetResourceString("ProfileSyncWindow_Process_PartialFailureFormat"), failures.Count, failureLines);
-                    MessageBox.Show(message, _globalizer.GetResourceString("ProfileSyncWindow_Process_Title"), MessageBoxButton.OK, MessageBoxImage.Warning);
-                }
+                ShowActionResult(failures, movedAside, "ArkApiPluginSyncWindow_RemovePlugin_MovedAsideFormat");
+
+                // The plugin may no longer exist on this window's own source server -
+                // refresh the "already installed here" list so it isn't still offered.
+                CreateAvailablePluginsList();
             }
             catch (Exception ex)
             {
@@ -596,26 +665,20 @@ namespace ServerManagerTool
             return (failures, skipped);
         }
 
-        private async Task<List<(string ProfileName, string Error)>> PerformRemovePlugin(string pluginName)
+        private async Task<(List<(string ProfileName, string Error)> Failures, List<string> MovedAside)> PerformRemovePlugin(string pluginName)
         {
-            // Used to flatly refuse this unless the WHOLE server process was
-            // confirmed Stopped - but that's the wrong signal. What actually
-            // matters is whether THIS plugin's own files (its .dll in
-            // particular) are still locked, not whether the server itself is
-            // running. A plugin that's been unloaded in-game (ArkApi's own
-            // "plugin unload" admin command) releases its file lock while the
-            // server keeps running fine - refusing to remove it in that case
-            // just because the server process is still up meant clicking
-            // Remove Plugin right after unloading a plugin silently did
-            // nothing. Now it just attempts the delete and retries on a
-            // locked-file error (same bounded-retry approach already used by
-            // Sync Config/Add Plugin above) - if the plugin genuinely is
-            // still loaded, the retries will exhaust and report a clear
-            // "file in use" reason instead of refusing to even try.
-            const int maxRetries = 6;
-            const int retryDelaySeconds = 5;
-
+            // Removes the plugin whether the server is online or offline.
+            //
+            // A plugin that's still loaded in a running server has its .dll locked by
+            // Windows, so it can't be deleted - but it CAN be moved (a rename on the same
+            // volume is allowed even for a mapped DLL). So: delete everything that can be
+            // deleted, and for any file that's locked, move it out of the Plugins folder
+            // into ArkApi\PendingDelete instead. The plugin is then gone from Plugins
+            // right away (ArkApi won't load it next start), the running copy keeps
+            // running until it's unloaded/restarted, and the moved files are purged the
+            // next time this runs. Only a genuinely unmovable file counts as a failure.
             var failures = new List<(string ProfileName, string Error)>();
+            var movedAside = new List<string>();
 
             foreach (var syncProfile in SyncProfiles)
             {
@@ -625,36 +688,104 @@ namespace ServerManagerTool
                 OverlayProfile.Content = syncProfile.ProfileName ?? string.Empty;
                 await Task.Delay(50);
 
-                var targetPluginDir = Path.Combine(syncProfile.Profile.GetArkApiPluginsDir(), pluginName);
+                var pluginsDir = syncProfile.Profile.GetArkApiPluginsDir();
+                var targetPluginDir = Path.Combine(pluginsDir, pluginName);
                 if (!Directory.Exists(targetPluginDir))
                     continue;
 
                 try
                 {
-                    for (var attempt = 1; ; attempt++)
-                    {
-                        try
-                        {
-                            Directory.Delete(targetPluginDir, true);
-                            break;
-                        }
-                        catch (IOException) when (attempt < maxRetries)
-                        {
-                            await Task.Delay(retryDelaySeconds * 1000);
-                        }
-                    }
+                    var moved = await Task.Run(() => RemovePluginDirectory(pluginsDir, targetPluginDir));
+                    if (moved > 0)
+                        movedAside.Add($"{syncProfile.ProfileName} ({moved} file(s))");
                 }
                 catch (Exception ex)
                 {
-                    var reason = ex is IOException
-                        ? _globalizer.GetResourceString("ProfileSyncWindow_Process_FileInUseReason")
-                        : ex.Message;
-
-                    failures.Add((syncProfile.ProfileName ?? string.Empty, reason));
+                    failures.Add((syncProfile.ProfileName ?? string.Empty, ex.Message));
                 }
             }
 
-            return failures;
+            return (failures, movedAside);
+        }
+
+        // Returns how many locked files had to be moved aside rather than deleted.
+        private static int RemovePluginDirectory(string pluginsDir, string targetPluginDir)
+        {
+            // <install>\...\ArkApi\Plugins -> <install>\...\ArkApi\PendingDelete
+            var pendingRoot = Path.Combine(Path.GetDirectoryName(pluginsDir.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)), "PendingDelete");
+            PurgePendingDelete(pendingRoot);
+
+            var movedAside = 0;
+
+            foreach (var file in Directory.GetFiles(targetPluginDir, "*", SearchOption.AllDirectories))
+            {
+                if (TryDeleteFile(file))
+                    continue;
+
+                // Locked (still loaded) - move it out of the plugin folder instead.
+                Directory.CreateDirectory(pendingRoot);
+                File.Move(file, Path.Combine(pendingRoot, $"{Path.GetFileName(file)}.{Guid.NewGuid():N}"));
+                movedAside++;
+            }
+
+            // Everything left in the plugin folder is now just empty directories.
+            for (var attempt = 1; ; attempt++)
+            {
+                try
+                {
+                    Directory.Delete(targetPluginDir, true);
+                    break;
+                }
+                catch (IOException) when (attempt < 5)
+                {
+                    System.Threading.Thread.Sleep(300);
+                }
+            }
+
+            return movedAside;
+        }
+
+        private static bool TryDeleteFile(string file)
+        {
+            for (var attempt = 1; attempt <= 3; attempt++)
+            {
+                try
+                {
+                    File.SetAttributes(file, FileAttributes.Normal);
+                    File.Delete(file);
+                    return true;
+                }
+                catch (Exception ex) when (ex is IOException || ex is UnauthorizedAccessException)
+                {
+                    if (attempt < 3)
+                        System.Threading.Thread.Sleep(250);
+                }
+            }
+
+            return false;
+        }
+
+        // Best-effort cleanup of files moved aside by earlier removals - anything still
+        // locked (plugin not restarted/unloaded yet) is just left for next time.
+        private static void PurgePendingDelete(string pendingRoot)
+        {
+            try
+            {
+                if (!Directory.Exists(pendingRoot))
+                    return;
+
+                foreach (var file in Directory.GetFiles(pendingRoot, "*", SearchOption.AllDirectories))
+                {
+                    try { File.SetAttributes(file, FileAttributes.Normal); File.Delete(file); } catch { }
+                }
+
+                if (!Directory.EnumerateFileSystemEntries(pendingRoot).Any())
+                    Directory.Delete(pendingRoot);
+            }
+            catch
+            {
+                // Purely housekeeping - never let this block a removal.
+            }
         }
 
         private static void CopyDirectoryRecursive(string sourceDir, string targetDir)

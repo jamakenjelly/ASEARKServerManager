@@ -35,6 +35,16 @@ namespace ServerManagerTool.Lib
         private static readonly GlobalizedApplication _globalizer = GlobalizedApplication.Instance;
         private readonly List<PropertyChangeNotifier> profileNotifiers = new List<PropertyChangeNotifier>();
         private Process serverProcess;
+
+        // Read-only view of the running server's process, for resource usage display.
+        public int? ServerProcessId
+        {
+            get
+            {
+                try { return serverProcess != null && !serverProcess.HasExited ? serverProcess.Id : (int?)null; }
+                catch { return null; }
+            }
+        }
         private IAsyncDisposable updateRegistration;
         private DateTime lastModStatusQuery = DateTime.MinValue;
         private System.Timers.Timer motdIntervalTimer = new System.Timers.Timer(3600000);
@@ -554,6 +564,7 @@ namespace ServerManagerTool.Lib
             }
 
             CheckServerWorldFileExists();
+            ServerProfile.PurgeArkApiPendingDelete(this.ProfileSnapshot.InstallDirectory);
             UpdateServerStatus(ServerStatus.Initializing, false);
 
             try

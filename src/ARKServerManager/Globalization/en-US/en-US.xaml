@@ -101,12 +101,6 @@
     <!--#endregion-->
 
     <!--#region Discord Bot Log Levels -->
-    <sys:String x:Key="DiscordBotLogLevel_Critical">Critical</sys:String>
-    <sys:String x:Key="DiscordBotLogLevel_Error">Error</sys:String>
-    <sys:String x:Key="DiscordBotLogLevel_Warning">Warning</sys:String>
-    <sys:String x:Key="DiscordBotLogLevel_Info">Info</sys:String>
-    <sys:String x:Key="DiscordBotLogLevel_Verbose">Verbose</sys:String>
-    <sys:String x:Key="DiscordBotLogLevel_Debug">Debug</sys:String>
     <!--#endregion-->
 
     <!--#region Rcon Message Modes -->
@@ -345,9 +339,26 @@
 
     <!--#region Profile Sync Window -->
     <sys:String x:Key="ProfileSyncWindow_Title">Profile Sync</sys:String>
-    <sys:String x:Key="ArkApiPluginSyncWindow_Title">ArkApi Plugin Config Sync</sys:String>
-    <sys:String x:Key="ArkApiPluginSyncWindow_ProfileTitle">ArkApi Plugin Config Sync - {0}</sys:String>
-    <sys:String x:Key="ArkApiPluginSyncWindow_InformationLabel">Copy a plugin's config file from this server to one or more other selected servers. The target server's plugin folder is created automatically if needed, but the plugin itself (its .dll) is not copied - only install this on servers that already have the plugin.</sys:String>
+    <sys:String x:Key="ServerSettings_SyncArkApiConfigLabel">Sync Plugin Config...</sys:String>
+    <sys:String x:Key="ServerSettings_SyncArkApiConfigTooltip">Pick a plugin on this server, view or edit its files, and copy a file to selected PVE / PVP servers.</sys:String>
+    <sys:String x:Key="ArkApiConfigSyncWindow_PluginsLabel">Plugins:</sys:String>
+    <sys:String x:Key="ArkApiConfigSyncWindow_EditButtonLabel">Edit</sys:String>
+    <sys:String x:Key="ArkApiConfigSyncWindow_EditInformationLabel">Edit the file, tick the servers to send it to, then click Save and Sync.</sys:String>
+    <sys:String x:Key="ArkApiConfigSyncWindow_SkippedFormat">Skipped (plugin not installed on these servers): {0}</sys:String>
+    <sys:String x:Key="ArkApiConfigSyncWindow_Title">ArkApi Plugin Config Sync</sys:String>
+    <sys:String x:Key="ArkApiConfigSyncWindow_ProfileTitle">ArkApi Plugin Config Sync - {0}</sys:String>
+    <sys:String x:Key="ArkApiConfigSyncWindow_InformationLabel">Select a plugin from this server, select a file, then click Edit (or double-click the file).</sys:String>
+    <sys:String x:Key="ArkApiConfigSyncWindow_ModeColumnLabel">Mode</sys:String>
+    <sys:String x:Key="ArkApiConfigSyncWindow_FilesLabel">Files:</sys:String>
+    <sys:String x:Key="ArkApiConfigSyncWindow_SaveButtonLabel">Save File</sys:String>
+    <sys:String x:Key="ArkApiConfigSyncWindow_CopyButtonLabel">Save and Sync</sys:String>
+    <sys:String x:Key="ArkApiConfigSyncWindow_CopyButtonTooltip">Saves the edit to this server's plugin file, then copies it into the same plugin on every ticked server that has that plugin installed, overwriting the file.</sys:String>
+    <sys:String x:Key="ArkApiConfigSyncWindow_BinaryFileLabel">(Binary file - can't be shown or edited, but it can still be copied.)</sys:String>
+    <sys:String x:Key="ArkApiConfigSyncWindow_NoFileTickedLabel">Please select a plugin and a file first.</sys:String>
+    <sys:String x:Key="ArkApiConfigSyncWindow_SavedLabel">File saved.</sys:String>
+    <sys:String x:Key="ArkApiPluginSyncWindow_Title">ArkApi Add / Remove Plugin</sys:String>
+    <sys:String x:Key="ArkApiPluginSyncWindow_ProfileTitle">ArkApi Add / Remove Plugin - {0}</sys:String>
+    <sys:String x:Key="ArkApiPluginSyncWindow_InformationLabel">Add a plugin to, or remove a plugin from, one or more selected servers. To view, edit and copy plugin config files use Sync Plugin Config instead.</sys:String>
     <sys:String x:Key="ArkApiPluginSyncWindow_PluginLabel">Plugin:</sys:String>
     <sys:String x:Key="ArkApiPluginSyncWindow_ConfigFileLabel">Config File:</sys:String>
     <sys:String x:Key="ArkApiPluginSyncWindow_AddPluginButtonLabel">Add Plugin to Selected Servers</sys:String>
@@ -359,8 +370,9 @@
     <sys:String x:Key="ArkApiPluginSyncWindow_AddPlugin_ConfirmFormat">Copy the "{0}" plugin to every selected server, overwriting any existing copy of it?</sys:String>
     <sys:String x:Key="ArkApiPluginSyncWindow_AddPlugin_SkippedFormat">Already installed, left unchanged: {0}</sys:String>
     <sys:String x:Key="ArkApiPluginSyncWindow_RemovePluginButtonLabel">Remove Plugin from Selected Servers</sys:String>
-    <sys:String x:Key="ArkApiPluginSyncWindow_RemovePluginButtonTooltip">Deletes the whole selected plugin's folder from every selected server. The server doesn't need to be stopped, but the plugin does need to be unloaded first (ArkApi's own "plugin unload" command) - if its .dll is still loaded this will retry for a while and then report a "file in use" failure.</sys:String>
-    <sys:String x:Key="ArkApiPluginSyncWindow_RemovePlugin_ConfirmFormat">Permanently delete the "{0}" plugin folder from every selected server? Make sure the plugin has been unloaded first if the server is still running. This cannot be undone.</sys:String>
+    <sys:String x:Key="ArkApiPluginSyncWindow_RemovePluginButtonTooltip">Removes the selected plugin from every selected server, whether the server is online or offline. Whatever can be deleted is deleted. Any file that's locked because the plugin is still loaded is moved into that server's ArkApi\PendingDelete folder instead, so the plugin is gone from Plugins straight away - and those pending files are removed automatically the next time that server is started or restarted from the manager.</sys:String>
+    <sys:String x:Key="ArkApiPluginSyncWindow_RemovePlugin_ConfirmFormat">Permanently remove the "{0}" plugin from every selected server (online or offline)? This cannot be undone.</sys:String>
+    <sys:String x:Key="ArkApiPluginSyncWindow_RemovePlugin_MovedAsideFormat">Removed. These servers still had the plugin loaded, so its locked file(s) were moved into that server's ArkApi\PendingDelete folder - they'll be removed automatically the next time that server is started or restarted from the manager: {0}</sys:String>
     <sys:String x:Key="ArkApiPluginSyncWindow_RemovePlugin_ServerNotOfflineReason">Server must be stopped before removing a plugin from it - stop it first, then try again.</sys:String>
     <sys:String x:Key="ArkApiPluginSyncWindow_NoFilesFoundLabel">No files found in this plugin's folder - use Browse to pick one from a subfolder, or check the plugin is actually installed here.</sys:String>
     <sys:String x:Key="ArkApiPluginSyncWindow_BrowseButtonLabel">Browse...</sys:String>
@@ -816,19 +828,42 @@
     <sys:String x:Key="GlobalSettings_Alerts_ForceRespawnDinosLabel">Force Respawn Dinos Warning:</sys:String>
     <sys:String x:Key="GlobalSettings_Alerts_ForceRespawnDinosTooltip">This message will be displayed when the server is being started and a wild dino wipe is scheduled.</sys:String>
 
-    <sys:String x:Key="GlobalSettings_DiscordBotLabel">Enable Discord Bot</sys:String>
-    <sys:String x:Key="GlobalSettings_DiscordBotInformationLabel">You will need to restart the server manager if you change any settings for the Discord Bot.</sys:String>
-    <sys:String x:Key="GlobalSettings_DiscordBotTokenLabel">Token:</sys:String>
-    <sys:String x:Key="GlobalSettings_DiscordBotTokenTooltip">The token associated with the discord bot.</sys:String>
-    <sys:String x:Key="GlobalSettings_DiscordBotServerLabel">Server Id:</sys:String>
-    <sys:String x:Key="GlobalSettings_DiscordBotServerTooltip">The id of the discord server the bot will listen to.</sys:String>
+    <sys:String x:Key="GlobalSettings_WebDashboardLabel">Enable Web Dashboard</sys:String>
+    <sys:String x:Key="GlobalSettings_WebDashboardInformationLabel">Lets admins log in from a browser to see server status and player counts and Start / Stop / Restart / Update servers. Add a login for each admin with Manage Users. The connection is plain HTTP, so a password can be read by anyone on the path - for access over the internet put it behind a VPN (e.g. Tailscale) or an HTTPS reverse proxy. The port must also be allowed through Windows Firewall and forwarded on your router.</sys:String>
+    <sys:String x:Key="GlobalSettings_WebDashboardLinkLabel">Login link:</sys:String>
+    <sys:String x:Key="GlobalSettings_WebDashboardLinkTooltip">The address admins browse to. The first line uses this machine's public IP (set on the main window) and the port above; the second works on the server PC itself.</sys:String>
+    <sys:String x:Key="GlobalSettings_WebDashboardLocalLinkFormat">On this PC: {0}</sys:String>
+    <sys:String x:Key="GlobalSettings_WebDashboardCopyLinkButtonLabel">Copy Link</sys:String>
+    <sys:String x:Key="GlobalSettings_WebDashboardOpenLinkButtonLabel">Open</sys:String>
+    <sys:String x:Key="GlobalSettings_WebDashboardPortLabel">Port:</sys:String>
+    <sys:String x:Key="GlobalSettings_WebDashboardPortTooltip">TCP port the dashboard listens on. Browse to http://server-ip:port/</sys:String>
+    <sys:String x:Key="GlobalSettings_WebDashboardApplyButtonLabel">Apply / Restart Dashboard</sys:String>
+    <sys:String x:Key="GlobalSettings_WebDashboardApplyButtonTooltip">Saves the port and (re)starts the dashboard now.</sys:String>
+    <sys:String x:Key="GlobalSettings_WebDashboardUsersButtonLabel">Manage Users...</sys:String>
+    <sys:String x:Key="GlobalSettings_WebDashboardStartedFormat">Web dashboard is running on port {0}.</sys:String>
+    <sys:String x:Key="GlobalSettings_WebDashboardFailedLabel">The web dashboard could not start - the port may already be in use. See the manager log for details.</sys:String>
+    <sys:String x:Key="GlobalSettings_WebDashboardRequireDiscordLabel">Require Discord login (log in with Discord after the password)</sys:String>
+    <sys:String x:Key="GlobalSettings_WebDashboardRequireDiscordTooltip">After the password is accepted the admin is sent to Discord to sign in, and only gets in if their Discord account matches the Discord User ID saved for them in Manage Users. Needs a Discord application (https://discord.com/developers/applications): copy its Client ID and Client Secret here, and add the Redirect URL shown below under OAuth2 > Redirects.</sys:String>
+    <sys:String x:Key="GlobalSettings_WebDashboardClientIdLabel">Discord Client ID:</sys:String>
+    <sys:String x:Key="GlobalSettings_WebDashboardClientIdTooltip">The Application ID / Client ID of your Discord application.</sys:String>
+    <sys:String x:Key="GlobalSettings_WebDashboardClientSecretLabel">Discord Client Secret:</sys:String>
+    <sys:String x:Key="GlobalSettings_WebDashboardClientSecretTooltip">OAuth2 > Client Secret from your Discord application. Keep it private.</sys:String>
+    <sys:String x:Key="GlobalSettings_WebDashboardRedirectLabel">Redirect URL:</sys:String>
+    <sys:String x:Key="GlobalSettings_WebDashboardRedirectTooltip">Add exactly this address to your Discord application under OAuth2 > Redirects. If you use an HTTPS proxy, register the https:// version of it instead.</sys:String>
+    <sys:String x:Key="WebDashboard_DiscordUserIdLabel">Discord User ID:</sys:String>
+    <sys:String x:Key="WebDashboard_DiscordUserIdTooltip">The admin's numeric Discord user ID (Discord Settings > Advanced > Developer Mode, then right-click yourself > Copy User ID). Required when Discord login is on - only that Discord account can finish logging in as this user.</sys:String>
+    <sys:String x:Key="WebDashboard_UsersTitle">Web Dashboard Users</sys:String>
+    <sys:String x:Key="WebDashboard_UsersInformationLabel">Each admin gets their own login. To change a password, select the user, type the new password and click Save User. Passwords must be at least 8 characters.</sys:String>
+    <sys:String x:Key="WebDashboard_UsernameLabel">Username:</sys:String>
+    <sys:String x:Key="WebDashboard_PasswordLabel">Password:</sys:String>
+    <sys:String x:Key="WebDashboard_SaveUserButtonLabel">Save User</sys:String>
+    <sys:String x:Key="WebDashboard_SaveUserButtonTooltip">Adds the user, or changes their password if they already exist.</sys:String>
+    <sys:String x:Key="WebDashboard_RemoveUserButtonLabel">Remove Selected User</sys:String>
+    <sys:String x:Key="WebDashboard_RemoveUserConfirmFormat">Remove the login for "{0}"?</sys:String>
+    <sys:String x:Key="WebDashboard_UserSavedLabel">User saved.</sys:String>
     <sys:String x:Key="GlobalSettings_DiscordBotApplyButtonLabel">Get Token...</sys:String>
     <sys:String x:Key="GlobalSettings_DiscordBotHelpButtonLabel">Help...</sys:String>
-    <sys:String x:Key="GlobalSettings_DiscordChannel1IdLabel">Channel 1 - Admin &amp; Buttons:</sys:String>
-    <sys:String x:Key="GlobalSettings_DiscordChannel1IdTooltip">Prefix commands (e.g. !status) only work in this channel, and it's also where each server's Start/Stop/Restart/Update/Backup button panel gets posted. Requires restarting the Discord Bot to take effect. Leave blank to disable both.</sys:String>
 
-    <sys:String x:Key="GlobalSettings_DiscordAllowedAdminIdsLabel">Allowed Admin Discord IDs:</sys:String>
-    <sys:String x:Key="GlobalSettings_DiscordAllowedAdminIdsTooltip">Comma-separated Discord user IDs allowed to use the control panel buttons. Leave blank to allow anyone who can see Channel 1 to use them.</sys:String>
 
 
     <sys:String x:Key="GlobalSettings_EmailSettingsLabel">SMTP Email Settings</sys:String>
@@ -999,11 +1034,12 @@
     <sys:String x:Key="MainWindow_ProfileLoad_FailureEntryFormat">Profile: {0}&#x0a;Path: {1}&#x0a;Reason: {2}</sys:String>
     <sys:String x:Key="MainWindow_ProfileLoad_UnreadableReason">The profile could not be read. Its file may be empty, damaged or invalid.</sys:String>
     <sys:String x:Key="MainWindow_ControlPanelDescriptionFormat">Status: **{0}**  •  Players online: **{1}**</sys:String>
-    <sys:String x:Key="MainWindow_DiscordBotStatusLabel">Discord Bot:</sys:String>
-    <sys:String x:Key="MainWindow_DiscordBotTaskStartLabel">Start</sys:String>
-    <sys:String x:Key="MainWindow_DiscordBotTaskStartTooltip">Start the discord bot</sys:String>
-    <sys:String x:Key="MainWindow_DiscordBotTaskStopLabel">Stop</sys:String>
-    <sys:String x:Key="MainWindow_DiscordBotTaskStopTooltip">Stop the discord bot</sys:String>
+    <sys:String x:Key="MainWindow_WebDashboardStatusLabel">Web Dashboard:</sys:String>
+    <sys:String x:Key="MainWindow_WebDashboardStateOnlineLabel">Online</sys:String>
+    <sys:String x:Key="MainWindow_WebDashboardStateOfflineLabel">Offline</sys:String>
+    <sys:String x:Key="MainWindow_WebDashboardStateDisabledLabel">Disabled</sys:String>
+    <sys:String x:Key="MainWindow_WebDashboardTaskStartLabel">Start</sys:String>
+    <sys:String x:Key="MainWindow_WebDashboardTaskStopLabel">Stop</sys:String>
 
     <sys:String x:Key="MainWindow_TaskStateUnknownLabel">Unknown</sys:String>
     <sys:String x:Key="MainWindow_TaskStateDisabledLabel">Disabled</sys:String>
@@ -1011,7 +1047,6 @@
     <sys:String x:Key="MainWindow_TaskStateReadyLabel">Ready</sys:String>
     <sys:String x:Key="MainWindow_TaskStateRunningLabel">Running</sys:String>
     <sys:String x:Key="MainWindow_TaskStateStoppedLabel">Stopped</sys:String>
-    <sys:String x:Key="MainWindow_DiscordBotStateConnectingLabel">Connecting...</sys:String>
 
     <sys:String x:Key="MainWindow_ProfileLoad_FailedTitle">Profile failed to load</sys:String>
     <sys:String x:Key="MainWindow_ProfileLoad_FailedLabel">The profile at {0} failed to load. The error was: {1}\r\n{2}</sys:String>
@@ -1030,8 +1065,6 @@
     <sys:String x:Key="MainWindow_SteamCmd_FailedLabel">An error occured while trying to reinstall SteamCMD. This has left SteamCmd in an unstable state, try reinstalling again or please report this.\r\nException: {0}</sys:String>
 	<sys:String x:Key="MainWindow_SteamWebApiKeyMissingLabel">Steam WebAPI Key missing! Updates, downloads and installation of profiles could fail. Enter your Steam WebApiKey in the global settings</sys:String>
 
-    <sys:String x:Key="MainWindow_DiscordBot_RunningCommandsTitle">Discord Bot Running Commands</sys:String>
-    <sys:String x:Key="MainWindow_DiscordBot_RunningCommandsLabel">The discord bot has one or more running commands, do you want to continue shutting down the server manager?</sys:String>
 
     <sys:String x:Key="ClosingWaitWindow_Title">Waiting For Backups To Finish...</sys:String>
     <sys:String x:Key="ClosingWaitWindow_Message">The server(s) below are currently saving/backing up. Server Manager will close automatically once they finish.</sys:String>
@@ -1525,12 +1558,11 @@ Undocumented bye wildcard.</sys:String>
     <!--#endregion-->
 
     <!--#region Server Settings - Discord Bot Details -->
-    <sys:String x:Key="ServerSettings_DiscordBotLabel">Discord Bot Details</sys:String>
     <sys:String x:Key="ServerSettings_ArkApiPluginsLabel">ArkApi Plugins</sys:String>
     <sys:String x:Key="ServerSettings_OpenArkApiPluginsFolderLabel">Open Plugins Folder</sys:String>
     <sys:String x:Key="ServerSettings_OpenArkApiPluginsFolderTooltip">Opens this server's ArkApi\Plugins folder in Windows Explorer, so you can edit a plugin's config file or drop in a new plugin directly.</sys:String>
-    <sys:String x:Key="ServerSettings_SyncArkApiPluginConfigLabel">Sync Plugin Config...</sys:String>
-    <sys:String x:Key="ServerSettings_SyncArkApiPluginConfigTooltip">Copy a plugin's config file from this server to one or more other selected servers - the same idea as the profile Sync button, but for ArkApi plugin configs instead of profile settings.</sys:String>
+    <sys:String x:Key="ServerSettings_SyncArkApiPluginConfigLabel">Add / Remove Plugin...</sys:String>
+    <sys:String x:Key="ServerSettings_SyncArkApiPluginConfigTooltip">Add a plugin to, or remove a plugin from, one or more selected servers.</sys:String>
     <sys:String x:Key="ServerSettings_EnableRemoteAdminButtonsLabel">Enable Remote Admin Discord Buttons</sys:String>
     <sys:String x:Key="ServerSettings_EnableRemoteAdminButtonsTooltip">If enabled, this server gets a Start/Stop/Restart/Update/Backup button panel posted to the shared Discord admin channel (Channel 1). Turn off to keep this server out of that channel entirely.</sys:String>
     <sys:String x:Key="ServerSettings_AllowDiscordBackupLabel">Allow Backup</sys:String>

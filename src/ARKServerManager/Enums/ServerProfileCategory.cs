@@ -5,7 +5,6 @@
         Unknown,
         Administration,
         AutomaticManagement,
-        DiscordBot,
         ServerDetails,
         Rules,
         ChatAndNotifications,

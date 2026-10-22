@@ -1670,58 +1670,6 @@
                             </StackPanel>
                         </Expander>
 
-                        <Expander Name="SectionDiscordBot" IsExpanded="{Binding Config.SectionDiscordBotIsExpanded, ElementName=SettingsControl, FallbackValue=True, Mode=TwoWay}" Visibility="{Binding Config.DiscordBotEnabled, ElementName=SettingsControl, Converter={StaticResource BooleanToVisibilityConverter}}">
-                            <Expander.Header>
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="{DynamicResource ServerSettings_DiscordBotLabel}" Style="{StaticResource ExpanderHeaderTextStyle}"/>
-                                    <Button Margin="20,0,0,0" ToolTip="{DynamicResource ServerSettings_ResetSectionTooltip}" Style="{StaticResource ButtonStyle1}"
-                                            IsEnabled="{Binding ElementName=SectionDiscordBot, Path=IsExpanded}"
-                                            Command="{Binding ResetActionCommand, ElementName=SettingsControl}" CommandParameter="{x:Static enum:ServerSettingsResetAction.DiscordBotSection}">
-                                        <Image Source="{com:Icon Path=/Ark Server Manager;component/Art/Refresh.ico,Size=32}"/>
-                                    </Button>
-                                </StackPanel>
-                            </Expander.Header>
-
-                            <Expander.Style>
-                                <Style BasedOn="{StaticResource ExpanderStyle1}" TargetType="{x:Type Expander}">
-                                    <Setter Property="Template" Value="{StaticResource ExpanderTemplateSE}"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding ElementName=EnableSOTFCheckbox, Path=IsChecked}" Value="True">
-                                            <Setter Property="Template" Value="{StaticResource ExpanderTemplateSotF}"/>
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding ElementName=EnablePGMCheckbox, Path=IsChecked}" Value="True">
-                                            <Setter Property="Template" Value="{StaticResource ExpanderTemplatePGM}"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Expander.Style>
-
-                            <Grid Margin="-8,0,2,0">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                </Grid.RowDefinitions>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" MinWidth="100"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto" MinWidth="100"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto" MinWidth="100"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-
-                                <cctl:CheckBoxAndTextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Margin="5" IsChecked="{Binding EnableRemoteAdminButtons, Mode=TwoWay}" Text="{DynamicResource ServerSettings_EnableRemoteAdminButtonsLabel}" HorizontalAlignment="Left" ToolTip="{DynamicResource ServerSettings_EnableRemoteAdminButtonsTooltip}"/>
-
-                                <cctl:CheckBoxAndTextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="5" IsChecked="{Binding AllowDiscordBackup, Mode=TwoWay}" Text="{DynamicResource ServerSettings_AllowDiscordBackupLabel}" HorizontalAlignment="Left" ToolTip="{DynamicResource ServerSettings_AllowDiscordBackupTooltip}"/>
-                                <cctl:CheckBoxAndTextBlock Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2" Margin="5" IsChecked="{Binding AllowDiscordUpdate, Mode=TwoWay}" Text="{DynamicResource ServerSettings_AllowDiscordUpdateLabel}" HorizontalAlignment="Left" ToolTip="{DynamicResource ServerSettings_AllowDiscordUpdateTooltip}"/>
-                                <cctl:CheckBoxAndTextBlock Grid.Row="1" Grid.Column="4" Grid.ColumnSpan="2" Margin="5" IsChecked="{Binding AllowDiscordStart, Mode=TwoWay}" Text="{DynamicResource ServerSettings_AllowDiscordStartLabel}" HorizontalAlignment="Left" ToolTip="{DynamicResource ServerSettings_AllowDiscordStartTooltip}"/>
-
-                                <cctl:CheckBoxAndTextBlock Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Margin="5" IsChecked="{Binding AllowDiscordRestart, Mode=TwoWay}" Text="{DynamicResource ServerSettings_AllowDiscordRestartLabel}" HorizontalAlignment="Left" ToolTip="{DynamicResource ServerSettings_AllowDiscordRestartTooltip}"/>
-                                <cctl:CheckBoxAndTextBlock Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="2" Margin="5" IsChecked="{Binding AllowDiscordShutdown, Mode=TwoWay}" Text="{DynamicResource ServerSettings_AllowDiscordShutdownLabel}" HorizontalAlignment="Left" ToolTip="{DynamicResource ServerSettings_AllowDiscordShutdownTooltip}"/>
-                                <cctl:CheckBoxAndTextBlock Grid.Row="2" Grid.Column="4" Grid.ColumnSpan="2" Margin="5" IsChecked="{Binding AllowDiscordStop, Mode=TwoWay}" Text="{DynamicResource ServerSettings_AllowDiscordStopLabel}" HorizontalAlignment="Left" ToolTip="{DynamicResource ServerSettings_AllowDiscordStopTooltip}"/>
-                            </Grid>
-                        </Expander>
 
                         <Expander Name="SectionArkApiPlugins" IsExpanded="{Binding Config.SectionArkApiPluginsIsExpanded, ElementName=SettingsControl, FallbackValue=False, Mode=TwoWay}">
                             <Expander.Header>
@@ -1742,9 +1690,11 @@
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
 
+                                <Button Grid.Row="0" Grid.Column="2" Margin="5" Padding="8,4" Content="{DynamicResource ServerSettings_SyncArkApiConfigLabel}" Click="SyncArkApiConfig_Click" ToolTip="{DynamicResource ServerSettings_SyncArkApiConfigTooltip}" HorizontalAlignment="Left"/>
                                 <Button Grid.Row="0" Grid.Column="0" Margin="5" Padding="8,4" Content="{DynamicResource ServerSettings_OpenArkApiPluginsFolderLabel}" Click="OpenArkApiPluginsFolder_Click" ToolTip="{DynamicResource ServerSettings_OpenArkApiPluginsFolderTooltip}" HorizontalAlignment="Left"/>
                                 <Button Grid.Row="0" Grid.Column="1" Margin="5" Padding="8,4" Content="{DynamicResource ServerSettings_SyncArkApiPluginConfigLabel}" Click="SyncArkApiPluginConfig_Click" ToolTip="{DynamicResource ServerSettings_SyncArkApiPluginConfigTooltip}" HorizontalAlignment="Left"/>
                             </Grid>

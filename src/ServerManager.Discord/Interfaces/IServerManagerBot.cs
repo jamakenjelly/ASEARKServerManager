@@ -37,5 +37,9 @@ namespace ServerManagerTool.DiscordBot.Interfaces
         // no longer needed because the list it continued has shrunk. Safe to call
         // with an ID that's already gone - failures are swallowed.
         Task DeleteMessageAsync(ulong channelId, ulong messageId);
+
+        // Sends a direct message to a Discord user. Returns false (never throws) if the
+        // bot isn't connected, the user can't be found, or they don't accept DMs.
+        Task<bool> SendDirectMessageAsync(ulong userId, string message);
     }
 }

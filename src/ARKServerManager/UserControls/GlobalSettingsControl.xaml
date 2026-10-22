@@ -720,50 +720,46 @@
                     </Grid>
                 </GroupBox>
 
-                <GroupBox Grid.Row="25" Grid.Column="0" Grid.ColumnSpan="4" Style="{StaticResource GroupBoxStyle}">
+                <GroupBox Grid.Row="26" Grid.Column="0" Grid.ColumnSpan="4" Style="{StaticResource GroupBoxStyle}">
                     <GroupBox.Header>
-                        <CheckBox IsChecked="{Binding Config.DiscordBotEnabled}" Content="{DynamicResource GlobalSettings_DiscordBotLabel}" VerticalAlignment="Center"/>
+                        <CheckBox IsChecked="{Binding Config.WebDashboardEnabled}" Content="{DynamicResource GlobalSettings_WebDashboardLabel}" VerticalAlignment="Center"/>
                     </GroupBox.Header>
 
-                    <Grid IsEnabled="{Binding Config.DiscordBotEnabled}">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" MinHeight="25"/>
-                            <RowDefinition Height="Auto" MinHeight="20"/>
-                            <RowDefinition Height="Auto" MinHeight="20"/>
-                            <RowDefinition Height="Auto" MinHeight="20"/>
-                            <RowDefinition Height="Auto" MinHeight="40"/>
-                            <RowDefinition Height="Auto" MinHeight="30"/>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" MinWidth="200"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-
-                        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Margin="5" Text="{DynamicResource GlobalSettings_DiscordBotInformationLabel}" TextWrapping="Wrap" VerticalAlignment="Center" FontWeight="Bold" Foreground="{DynamicResource WarningMessage}"/>
-
-                        <Label Grid.Row="1" Grid.Column="0" Content="{DynamicResource GlobalSettings_DiscordBotTokenLabel}" VerticalAlignment="Center"/>
-                        <Grid Grid.Row="1" Grid.Column="1" Margin="1">
+                    <StackPanel IsEnabled="{Binding Config.WebDashboardEnabled}">
+                        <TextBlock Margin="5" Text="{DynamicResource GlobalSettings_WebDashboardInformationLabel}" TextWrapping="Wrap" FontWeight="Bold" Foreground="{DynamicResource WarningMessage}"/>
+                        <CheckBox Margin="5,2" IsChecked="{Binding Config.WebDashboardRequireDiscord}" Content="{DynamicResource GlobalSettings_WebDashboardRequireDiscordLabel}" ToolTip="{DynamicResource GlobalSettings_WebDashboardRequireDiscordTooltip}"/>
+                        <Grid Margin="5,0" IsEnabled="{Binding Config.WebDashboardRequireDiscord}">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <TextBox Grid.Column="0" Name="HideDiscordBotTokenTextBox" Text="{DynamicResource ServerSettings_HidePasswordText}" ToolTip="{DynamicResource ServerSettings_HidePasswordTooltip}" GotFocus="HiddenField_GotFocus" Style="{StaticResource HiddenTextBoxStyle}"/>
-                            <TextBox Grid.Column="0" Name="DiscordBotTokenTextBox" Text="{Binding Config.DiscordBotToken, UpdateSourceTrigger=PropertyChanged}" IsReadOnlyCaretVisible="True" VerticalContentAlignment="Center" ToolTip="{DynamicResource GlobalSettings_DiscordBotTokenTooltip}" LostFocus="HiddenField_LostFocus" Visibility="Collapsed"/>
-                            <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
-                                <Button Margin="5,1,1,1" Content="{DynamicResource DiscordBotApplyButtonContent}" Click="DiscordBotApply_Click"/>
-                                <Button Margin="1" Content="{DynamicResource DiscordBotHelpButtonContent}" Click="DiscordBotHelp_Click"/>
-                            </StackPanel>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Label Grid.Row="0" Grid.Column="0" Content="{DynamicResource GlobalSettings_WebDashboardClientIdLabel}" VerticalAlignment="Center"/>
+                            <TextBox Grid.Row="0" Grid.Column="1" Margin="1" Text="{Binding Config.WebDashboardDiscordClientId, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" ToolTip="{DynamicResource GlobalSettings_WebDashboardClientIdTooltip}"/>
+                            <Label Grid.Row="1" Grid.Column="0" Content="{DynamicResource GlobalSettings_WebDashboardClientSecretLabel}" VerticalAlignment="Center"/>
+                            <PasswordBox x:Name="WebDashboardClientSecretBox" Grid.Row="1" Grid.Column="1" Margin="1" VerticalContentAlignment="Center" PasswordChanged="WebDashboardClientSecret_PasswordChanged" ToolTip="{DynamicResource GlobalSettings_WebDashboardClientSecretTooltip}"/>
+                            <Label Grid.Row="2" Grid.Column="0" Content="{DynamicResource GlobalSettings_WebDashboardRedirectLabel}" VerticalAlignment="Center"/>
+                            <TextBox x:Name="WebDashboardRedirectTextBox" Grid.Row="2" Grid.Column="1" Margin="1" IsReadOnly="True" IsReadOnlyCaretVisible="True" VerticalContentAlignment="Center" ToolTip="{DynamicResource GlobalSettings_WebDashboardRedirectTooltip}"/>
                         </Grid>
-
-                        <Label Grid.Row="2" Grid.Column="0" Content="{DynamicResource GlobalSettings_DiscordBotServerLabel}" VerticalAlignment="Center"/>
-                        <TextBox Grid.Row="2" Grid.Column="1" Margin="1" Text="{Binding Config.DiscordBotServerId, UpdateSourceTrigger=PropertyChanged}" IsReadOnlyCaretVisible="True" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="200" ToolTip="{DynamicResource GlobalSettings_DiscordBotServerTooltip}"/>
-
-                        <Label Grid.Row="3" Grid.Column="0" Content="{DynamicResource GlobalSettings_DiscordChannel1IdLabel}" VerticalAlignment="Center"/>
-                        <TextBox Grid.Row="3" Grid.Column="1" Margin="1" Text="{Binding Config.DiscordChannel1Id, UpdateSourceTrigger=PropertyChanged}" IsReadOnlyCaretVisible="True" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="200" ToolTip="{DynamicResource GlobalSettings_DiscordChannel1IdTooltip}"/>
-
-                        <Label Grid.Row="4" Grid.Column="0" Content="{DynamicResource GlobalSettings_DiscordAllowedAdminIdsLabel}" VerticalAlignment="Top" Margin="0,4,0,0"/>
-                        <TextBox Grid.Row="4" Grid.Column="1" Margin="1" Text="{Binding Config.DiscordAllowedAdminIds, UpdateSourceTrigger=PropertyChanged}" IsReadOnlyCaretVisible="True" TextWrapping="Wrap" MinHeight="40" VerticalContentAlignment="Top" ToolTip="{DynamicResource GlobalSettings_DiscordAllowedAdminIdsTooltip}"/>
-                    </Grid>
+                        <StackPanel Orientation="Horizontal" Margin="5,0">
+                            <Label Content="{DynamicResource GlobalSettings_WebDashboardPortLabel}" VerticalAlignment="Center"/>
+                            <TextBox Margin="1" Width="70" Text="{Binding Config.WebDashboardPort, UpdateSourceTrigger=PropertyChanged}" TextChanged="WebDashboardPort_TextChanged" VerticalContentAlignment="Center" ToolTip="{DynamicResource GlobalSettings_WebDashboardPortTooltip}"/>
+                            <Button Margin="10,1,1,1" Padding="8,1" Content="{DynamicResource GlobalSettings_WebDashboardApplyButtonLabel}" Click="WebDashboardApply_Click" ToolTip="{DynamicResource GlobalSettings_WebDashboardApplyButtonTooltip}"/>
+                            <Button Margin="5,1,1,1" Padding="8,1" Content="{DynamicResource GlobalSettings_WebDashboardUsersButtonLabel}" Click="WebDashboardUsers_Click"/>
+                        </StackPanel>
+                        <DockPanel Margin="5,4,5,2">
+                            <Label DockPanel.Dock="Left" Content="{DynamicResource GlobalSettings_WebDashboardLinkLabel}" VerticalAlignment="Top"/>
+                            <StackPanel DockPanel.Dock="Right" Orientation="Vertical" Margin="5,0,0,0">
+                                <Button Margin="1" Padding="8,1" Content="{DynamicResource GlobalSettings_WebDashboardCopyLinkButtonLabel}" Click="WebDashboardCopyLink_Click"/>
+                                <Button Margin="1" Padding="8,1" Content="{DynamicResource GlobalSettings_WebDashboardOpenLinkButtonLabel}" Click="WebDashboardOpenLink_Click"/>
+                            </StackPanel>
+                            <TextBox x:Name="WebDashboardLinkTextBox" Margin="1" IsReadOnly="True" IsReadOnlyCaretVisible="True" TextWrapping="Wrap" VerticalContentAlignment="Center" ToolTip="{DynamicResource GlobalSettings_WebDashboardLinkTooltip}"/>
+                        </DockPanel>
+                    </StackPanel>
                 </GroupBox>
 
                 <GroupBox Grid.Row="28" Grid.Column="0" Grid.ColumnSpan="4" Style="{StaticResource GroupBoxStyle}">

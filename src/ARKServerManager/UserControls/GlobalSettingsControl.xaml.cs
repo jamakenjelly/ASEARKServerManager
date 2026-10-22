@@ -38,8 +38,6 @@ namespace ServerManagerTool
         public static readonly DependencyProperty CommonConfigProperty = DependencyProperty.Register(nameof(CommonConfig), typeof(CommonConfig), typeof(GlobalSettingsControl), new PropertyMetadata(null));
         public static readonly DependencyProperty WindowStatesMainWindowProperty = DependencyProperty.Register(nameof(WindowStatesMainWindow), typeof(ComboBoxItemList), typeof(GlobalSettingsControl), new PropertyMetadata(null));
         public static readonly DependencyProperty WindowStatesServerMonitorProperty = DependencyProperty.Register(nameof(WindowStatesServerMonitor), typeof(ComboBoxItemList), typeof(GlobalSettingsControl), new PropertyMetadata(null));
-        public static readonly DependencyProperty DiscordBotLogLevelsProperty = DependencyProperty.Register(nameof(DiscordBotLogLevels), typeof(ComboBoxItemList), typeof(GlobalSettingsControl), new PropertyMetadata(null));
-        public static readonly DependencyProperty DiscordBotWhitelistProperty = DependencyProperty.Register(nameof(DiscordBotWhitelist), typeof(List<DiscordBotWhitelistItem>), typeof(GlobalSettingsControl), new PropertyMetadata(null));
         public static readonly DependencyProperty RconMessageModesProperty = DependencyProperty.Register(nameof(RconMessageModes), typeof(ComboBoxItemList), typeof(GlobalSettingsControl), new PropertyMetadata(null));
         public static readonly DependencyProperty TaskPrioritiesProperty = DependencyProperty.Register(nameof(TaskPriorities), typeof(ComboBoxItemList), typeof(GlobalSettingsControl), new PropertyMetadata(null));
         public static readonly DependencyProperty TotalServerCountProperty = DependencyProperty.Register(nameof(TotalServerCount), typeof(int), typeof(GlobalSettingsControl), new PropertyMetadata(1));
@@ -61,19 +59,19 @@ namespace ServerManagerTool
 
             PopulateWindowsStatesMainWindowComboBox();
             PopulateWindowsStatesServerMonitorWindowComboBox();
-            PopulateDiscordBotLogLevelsComboBox();
             PopulateRconMessageModesComboBox();
             PopulateTaskPrioritiesComboBox();
-
-            DiscordBotWhitelist = new List<DiscordBotWhitelistItem>();
-            if (Config.DiscordBotWhitelist != null)
-            {
-                DiscordBotWhitelist.AddRange(Config.DiscordBotWhitelist.Select(i => new DiscordBotWhitelistItem() { BotId = i }));
-            }
 
             this.DataContext = this;
 
             GameData.GameDataLoaded += GameData_GameDataLoaded;
+            this.Loaded += (s, e) =>
+            {
+                _loadingClientSecret = true;
+                WebDashboardClientSecretBox.Password = Config.Default.WebDashboardDiscordClientSecret ?? string.Empty;
+                _loadingClientSecret = false;
+                UpdateWebDashboardLink();
+            };
         }
 
         public App AppInstance
@@ -124,18 +122,6 @@ namespace ServerManagerTool
             set { SetValue(WindowStatesServerMonitorProperty, value); }
         }
 
-        public ComboBoxItemList DiscordBotLogLevels
-        {
-            get { return (ComboBoxItemList)GetValue(DiscordBotLogLevelsProperty); }
-            set { SetValue(DiscordBotLogLevelsProperty, value); }
-        }
-
-        public List<DiscordBotWhitelistItem> DiscordBotWhitelist
-        {
-            get { return (List<DiscordBotWhitelistItem>)GetValue(DiscordBotWhitelistProperty); }
-            set { SetValue(DiscordBotWhitelistProperty, value); }
-        }
-
         public ComboBoxItemList RconMessageModes
         {
             get { return (ComboBoxItemList)GetValue(RconMessageModesProperty); }
@@ -150,14 +136,6 @@ namespace ServerManagerTool
 
         public void ApplyChangesToConfig()
         {
-            if (Config.DiscordBotWhitelist is null)
-            {
-                Config.DiscordBotWhitelist = new DiscordBot.Models.DiscordBotWhitelist();
-            }
-
-            Config.DiscordBotWhitelist.Clear();
-            Config.DiscordBotWhitelist.AddRange(DiscordBotWhitelist.Select(i => i.BotId));
-
             App.ReconfigureLogging();
         }
 
@@ -401,14 +379,58 @@ namespace ServerManagerTool
             }
         }
 
-        private void DiscordBotApply_Click(object sender, RoutedEventArgs e)
+        private string WebDashboardPublicLink()
         {
-            Process.Start(Config.Default.DiscordBotApplyUrl);
+            var host = string.IsNullOrWhiteSpace(Config.Default.MachinePublicIP) ? "your-public-ip" : Config.Default.MachinePublicIP.Trim();
+            return $"http://{host}:{Config.Default.WebDashboardPort}/";
         }
 
-        private void DiscordBotHelp_Click(object sender, RoutedEventArgs e)
+        private void UpdateWebDashboardLink()
         {
-            Process.Start(Config.Default.DiscordBotHelpUrl);
+            if (WebDashboardLinkTextBox == null)
+                return;
+
+            if (WebDashboardRedirectTextBox != null)
+                WebDashboardRedirectTextBox.Text = WebDashboardPublicLink() + "auth/discord/callback";
+
+            WebDashboardLinkTextBox.Text = WebDashboardPublicLink() + Environment.NewLine
+                + string.Format(_globalizer.GetResourceString("GlobalSettings_WebDashboardLocalLinkFormat"), $"http://localhost:{Config.Default.WebDashboardPort}/");
+        }
+
+        private bool _loadingClientSecret;
+
+        private void WebDashboardClientSecret_PasswordChanged(object sender, RoutedEventArgs e)
+        {
+            if (!_loadingClientSecret)
+                Config.Default.WebDashboardDiscordClientSecret = WebDashboardClientSecretBox.Password;
+        }
+
+        private void WebDashboardPort_TextChanged(object sender, TextChangedEventArgs e) => UpdateWebDashboardLink();
+
+        private void WebDashboardCopyLink_Click(object sender, RoutedEventArgs e)
+        {
+            try { Clipboard.SetText(WebDashboardPublicLink()); } catch { }
+        }
+
+        private void WebDashboardOpenLink_Click(object sender, RoutedEventArgs e)
+        {
+            try { Process.Start($"http://localhost:{Config.Default.WebDashboardPort}/"); } catch { }
+        }
+
+        private void WebDashboardApply_Click(object sender, RoutedEventArgs e)
+        {
+            Config.Default.Save();
+            ServerManagerTool.Utils.WebDashboard.Start();
+
+            var message = ServerManagerTool.Utils.WebDashboard.IsRunning
+                ? string.Format(_globalizer.GetResourceString("GlobalSettings_WebDashboardStartedFormat"), Config.Default.WebDashboardPort)
+                : _globalizer.GetResourceString("GlobalSettings_WebDashboardFailedLabel");
+            MessageBox.Show(message, _globalizer.GetResourceString("GlobalSettings_WebDashboardLabel"), MessageBoxButton.OK, ServerManagerTool.Utils.WebDashboard.IsRunning ? MessageBoxImage.Information : MessageBoxImage.Error);
+        }
+
+        private void WebDashboardUsers_Click(object sender, RoutedEventArgs e)
+        {
+            new WebDashboardUsersWindow { Owner = Window.GetWindow(this) }.ShowDialog();
         }
 
         private void ComboBox_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
@@ -455,8 +477,6 @@ namespace ServerManagerTool
                     textBox = SteamPasswordTextBox;
                 if (Equals(hideTextBox, HideSteamAPIKeyTextBox))
                     textBox = SteamAPIKeyTextBox;
-                if (Equals(hideTextBox, HideDiscordBotTokenTextBox))
-                    textBox = DiscordBotTokenTextBox;
 
                 if (textBox != null)
                 {
@@ -478,8 +498,6 @@ namespace ServerManagerTool
                     hideTextBox = HideSteamPasswordTextBox;
                 if (textBox == SteamAPIKeyTextBox)
                     hideTextBox = HideSteamAPIKeyTextBox;
-                if (textBox == DiscordBotTokenTextBox)
-                    hideTextBox = HideDiscordBotTokenTextBox;
 
                 if (hideTextBox != null)
                 {
@@ -581,19 +599,6 @@ namespace ServerManagerTool
             }
         }
 
-        private void PopulateDiscordBotLogLevelsComboBox()
-        {
-            var comboBoxList = new ComboBoxItemList();
-
-            foreach (DiscordBot.Enums.LogLevel logLevel in Enum.GetValues(typeof(DiscordBot.Enums.LogLevel)))
-            {
-                var displayMember = _globalizer.GetResourceString($"DiscordBotLogLevel_{logLevel}") ?? logLevel.ToString();
-                comboBoxList.Add(new Common.Model.ComboBoxItem(logLevel.ToString(), displayMember));
-            }
-
-            this.DiscordBotLogLevels = comboBoxList;
-        }
-
         private void PopulateRconMessageModesComboBox()
         {
             var selectedValueBackup = this.RconBackupMessageModesComboBox?.SelectedValue ?? Config.RCON_BackupMessageCommand;
@@ -650,28 +655,5 @@ namespace ServerManagerTool
             }
         }
 
-        #region Discord Bot Whitelist
-        private void AddDiscordBotWhitelist_Click(object sender, RoutedEventArgs e)
-        {
-            DiscordBotWhitelist.Add(new DiscordBotWhitelistItem());
-        }
-
-        private void ClearDiscordBotWhitelists_Click(object sender, RoutedEventArgs e)
-        {
-            if (MessageBox.Show(_globalizer.GetResourceString("ServerSettings_ClearLabel"), _globalizer.GetResourceString("ServerSettings_ClearTitle"), MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
-                return;
-
-            DiscordBotWhitelist.Clear();
-        }
-
-        private void RemoveDiscordBotWhitelist_Click(object sender, RoutedEventArgs e)
-        {
-            if (MessageBox.Show(_globalizer.GetResourceString("ServerSettings_DeleteLabel"), _globalizer.GetResourceString("ServerSettings_DeleteTitle"), MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
-                return;
-
-            var item = ((DiscordBotWhitelistItem)((Button)e.Source).DataContext);
-            DiscordBotWhitelist.Remove(item);
-        }
-        #endregion
     }
 }

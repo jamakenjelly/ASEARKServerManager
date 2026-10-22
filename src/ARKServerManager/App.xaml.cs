@@ -17,8 +17,6 @@ using NLog.Config;
 using NLog.Targets;
 using ServerManagerTool.Common;
 using ServerManagerTool.Common.Utils;
-using ServerManagerTool.DiscordBot;
-using ServerManagerTool.DiscordBot.Models;
 using ServerManagerTool.Enums;
 using ServerManagerTool.Lib;
 using ServerManagerTool.Plugin.Common;
@@ -41,7 +39,6 @@ namespace ServerManagerTool
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private CancellationTokenSource _tokenSourceDiscordBot;
         private GlobalizedApplication _globalizer;
         private bool _applicationStarted;
         private string _args;
@@ -104,18 +101,6 @@ namespace ServerManagerTool
                     _betaVersion = value;
                     OnPropertyChanged();
                 }
-            }
-        }
-
-        public bool DiscordBotStarted
-        {
-            get
-            {
-                return _tokenSourceDiscordBot != null;
-            }
-            set
-            {
-                OnPropertyChanged();
             }
         }
 
@@ -298,14 +283,6 @@ namespace ServerManagerTool
                 Config.Default.Upgrade();
                 SettingsUtils.MigrateSettings(Config.Default, settingsFile);
                 Config.Default.UpgradeConfig = false;
-                Config.Default.Save();
-                Config.Default.Reload();
-            }
-            if (!Config.Default.DiscordBotPrefixFixed)
-            {
-                if (!Config.Default.DiscordBotPrefix.EndsWith("!"))
-                    Config.Default.DiscordBotPrefix += "!";
-                Config.Default.DiscordBotPrefixFixed = true;
                 Config.Default.Save();
                 Config.Default.Reload();
             }
@@ -812,9 +789,10 @@ namespace ServerManagerTool
                 StartupUri = new Uri("Windows/AutoUpdateWindow.xaml", UriKind.RelativeOrAbsolute);
             }
 
-            if (Config.Default.DiscordBotEnabled)
+
+            if (Config.Default.WebDashboardEnabled)
             {
-                StartDiscordBot();
+                WebDashboard.Start();
             }
 
             if (Config.Default.ServerCallUrlLast.AddHours(Config.Default.ServerCallUrlDelay) < DateTime.Now)
@@ -832,8 +810,7 @@ namespace ServerManagerTool
 
             base.OnExit(e);
 
-            // ShutDownApplication() signals background work (Discord bot,
-            // scheduled-task loops, RCON connections) to stop, but several of
+            // ShutDownApplication() signals background work (scheduled-task loops, RCON connections) to stop, but several of
             // those signals aren't awaited before we get here, since waiting on
             // them here would delay the whole app closing. Any of them running
             // long (e.g. a slow RCON timeout) can keep the process alive in Task
@@ -901,7 +878,7 @@ namespace ServerManagerTool
 
         private void ShutDownApplication()
         {
-            StopDiscordBot();
+            WebDashboard.Stop();
 
             // Auto-Backup/Auto-Update run as their own separate headless
             // processes launched by their scheduled tasks. If either happens
@@ -945,72 +922,6 @@ namespace ServerManagerTool
             LogManager.Shutdown();
 
             ApplicationStarted = false;
-        }
-
-        public void StartDiscordBot()
-        {
-            if (_tokenSourceDiscordBot != null)
-            {
-                return;
-            }
-
-            _tokenSourceDiscordBot = new CancellationTokenSource();
-            DiscordBotStarted = true;
-
-            Task discordTask = Task.Run(async () =>
-            {
-                var config = new DiscordBotConfig
-                {
-                    LogLevel = Config.Default.DiscordBotLogLevel,
-                    MaxArchiveFiles = Config.Default.LoggingMaxArchiveFiles,
-                    MaxArchiveDays = Config.Default.LoggingMaxArchiveDays,
-                    DiscordToken = Config.Default.DiscordBotToken,
-                    CommandPrefix = Config.Default.DiscordBotPrefix,
-                    DataDirectory = Config.Default.DataDir,
-                    AllowAllBots = Config.Default.DiscordBotAllowAllBots,
-                    AdminChannelId = Config.Default.DiscordChannel1Id,
-                    AllowedAdminIds = Config.Default.DiscordAllowedAdminIds,
-                };
-                if (Config.Default.DiscordBotWhitelist != null)
-                {
-                    config.DiscordBotWhitelist.AddRange(Config.Default.DiscordBotWhitelist);
-                }
-
-                await ServerManagerBotFactory.GetServerManagerBot().RunAsync(config, DiscordBotHelper.HandleDiscordCommand, DiscordBotHelper.HandleTranslation, _tokenSourceDiscordBot.Token);
-
-                if (_tokenSourceDiscordBot != null)
-                {
-                    // cleanup the token
-                    _tokenSourceDiscordBot.Dispose();
-                    _tokenSourceDiscordBot = null;
-                }
-                DiscordBotStarted = false;
-            }, _tokenSourceDiscordBot.Token)
-                .ContinueWith(t => {
-                    var message = t.Exception.InnerException is null ? t.Exception.Message : t.Exception.InnerException.Message;
-                    if (message.StartsWith("#"))
-                    {
-                        message = _globalizer.GetResourceString(message.Substring(1)) ?? message.Substring(1);
-                    }
-
-                    MessageBox.Show(message, _globalizer.GetResourceString("DiscordBot_ErrorTitle"), MessageBoxButton.OK, MessageBoxImage.Error);
-
-                    if (_tokenSourceDiscordBot != null)
-                    {
-                        // cleanup the token
-                        _tokenSourceDiscordBot.Dispose();
-                        _tokenSourceDiscordBot = null;
-                    }
-                    DiscordBotStarted = false;
-                }, TaskContinuationOptions.OnlyOnFaulted);
-        }
-
-        public void StopDiscordBot()
-        {
-            if (!(_tokenSourceDiscordBot is null))
-            {
-                _tokenSourceDiscordBot.Cancel();
-            }
         }
 
         public static void UpdateLoggingStatus()

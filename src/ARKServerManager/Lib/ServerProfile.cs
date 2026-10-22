@@ -4272,6 +4272,47 @@ namespace ServerManagerTool.Lib
 
         public static string GetArkApiPluginsDir(ServerProfile profile) => Path.Combine(profile.InstallDirectory, Config.Default.ServerBinaryRelativePath, "ArkApi", "Plugins");
 
+        // Locked plugin files that Remove Plugin (ArkApiPluginSyncWindow) had to move
+        // aside instead of deleting - a plugin that's still loaded in a running server
+        // has its .dll locked, so it gets moved to ArkApi\PendingDelete (deliberately
+        // NOT inside Plugins, since ArkApi treats every folder there as a plugin to
+        // load). Called right before a server is (re)started, by which point the old
+        // process has exited and those files are no longer locked, so the pending
+        // removals actually get removed on restart. Best effort - anything still locked
+        // is left for next time and never blocks a start.
+        public static void PurgeArkApiPendingDelete(string installDirectory)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(installDirectory))
+                    return;
+
+                var pendingRoot = Path.Combine(installDirectory, Config.Default.ServerBinaryRelativePath, "ArkApi", "PendingDelete");
+                if (!Directory.Exists(pendingRoot))
+                    return;
+
+                foreach (var file in Directory.GetFiles(pendingRoot, "*", SearchOption.AllDirectories))
+                {
+                    try
+                    {
+                        File.SetAttributes(file, FileAttributes.Normal);
+                        File.Delete(file);
+                    }
+                    catch
+                    {
+                        // Still locked - try again next start.
+                    }
+                }
+
+                if (!Directory.EnumerateFileSystemEntries(pendingRoot).Any())
+                    Directory.Delete(pendingRoot);
+            }
+            catch
+            {
+                // Housekeeping only - never let this get in the way of starting a server.
+            }
+        }
+
         public string GetServerAppId()
         {
             try
@@ -6141,19 +6182,6 @@ namespace ServerManagerTool.Lib
             this.DinoSettings.RenderToView();
         }
 
-        public void ResetDiscordBotSection()
-        {
-            this.ClearValue(DiscordChannelIdProperty);
-            this.ClearValue(DiscordAliasProperty);
-
-            this.ClearValue(AllowDiscordBackupProperty);
-            this.ClearValue(AllowDiscordRestartProperty);
-            this.ClearValue(AllowDiscordShutdownProperty);
-            this.ClearValue(AllowDiscordStartProperty);
-            this.ClearValue(AllowDiscordStopProperty);
-            this.ClearValue(AllowDiscordUpdateProperty);
-        }
-
         public void ResetEngramsSection()
         {
             this.ClearValue(AutoUnlockAllEngramsProperty);
@@ -6535,9 +6563,6 @@ namespace ServerManagerTool.Lib
                 case ServerProfileCategory.AutomaticManagement:
                     SyncAutomaticManagement(sourceProfile);
                     break;
-                case ServerProfileCategory.DiscordBot:
-                    SyncDiscordBot(sourceProfile);
-                    break;
                 case ServerProfileCategory.ServerDetails:
                     SyncServerDetails(sourceProfile);
                     break;
@@ -6907,19 +6932,6 @@ namespace ServerManagerTool.Lib
 
             this.DinoSettings = new DinoSettingsList(this.DinoSpawnWeightMultipliers, this.PreventDinoTameClassNames, this.PreventBreedingForClassNames, this.NPCReplacements, this.TamedDinoClassDamageMultipliers, this.TamedDinoClassResistanceMultipliers, this.DinoClassDamageMultipliers, this.DinoClassResistanceMultipliers);
             this.DinoSettings.RenderToView();
-        }
-
-        private void SyncDiscordBot(ServerProfile sourceProfile)
-        {
-            this.SetValue(DiscordChannelIdProperty, sourceProfile.DiscordChannelId);
-            this.SetValue(DiscordAliasProperty, sourceProfile.DiscordAlias);
-
-            this.SetValue(AllowDiscordBackupProperty, sourceProfile.AllowDiscordBackup);
-            this.SetValue(AllowDiscordRestartProperty, sourceProfile.AllowDiscordRestart);
-            this.SetValue(AllowDiscordShutdownProperty, sourceProfile.AllowDiscordShutdown);
-            this.SetValue(AllowDiscordStartProperty, sourceProfile.AllowDiscordStart);
-            this.SetValue(AllowDiscordStopProperty, sourceProfile.AllowDiscordStop);
-            this.SetValue(AllowDiscordUpdateProperty, sourceProfile.AllowDiscordUpdate);
         }
 
         private void SyncEngramsSection(ServerProfile sourceProfile)

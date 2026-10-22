@@ -834,6 +834,15 @@ namespace ServerManagerTool
             window.ShowDialog();
         }
 
+        private void SyncArkApiConfig_Click(object sender, RoutedEventArgs e)
+        {
+            var window = new ArkApiConfigSyncWindow(ServerManager, Server.Profile)
+            {
+                Owner = Window.GetWindow(this)
+            };
+            window.ShowDialog();
+        }
+
         private async void CreateSupportZip_Click(object sender, RoutedEventArgs e)
         {
             const int MAX_DAYS = 2;
@@ -1131,20 +1140,6 @@ namespace ServerManagerTool
                 comment.AppendLine($"ServerShutdown_GracePeriod: {Config.Default.ServerShutdown_GracePeriod}");
                 comment.AppendLine($"ServerShutdown_AllMessagesShowReason: {Config.Default.ServerShutdown_AllMessagesShowReason}");
 
-                comment.AppendLine($"DiscordBotEnabled: {Config.Default.DiscordBotEnabled}");
-                comment.AppendLine($"HasDiscordBotToken: {!string.IsNullOrWhiteSpace(Config.Default.DiscordBotToken)}");
-                comment.AppendLine($"DiscordBotServerId: {Config.Default.DiscordBotServerId}");
-                comment.AppendLine($"DiscordBotPrefix: {Config.Default.DiscordBotPrefix}");
-                comment.AppendLine($"DiscordBotLogLevel: {Config.Default.DiscordBotLogLevel}");
-                comment.AppendLine($"DiscordBotAllServersKeyword: {Config.Default.DiscordBotAllServersKeyword}");
-                comment.AppendLine($"AllowDiscordBackup: {Config.Default.AllowDiscordBackup}");
-                comment.AppendLine($"AllowDiscordRestart: {Config.Default.AllowDiscordRestart}");
-                comment.AppendLine($"AllowDiscordShutdown: {Config.Default.AllowDiscordShutdown}");
-                comment.AppendLine($"AllowDiscordStart: {Config.Default.AllowDiscordStart}");
-                comment.AppendLine($"AllowDiscordStop: {Config.Default.AllowDiscordStop}");
-                comment.AppendLine($"AllowDiscordUpdate: {Config.Default.AllowDiscordUpdate}");
-                comment.AppendLine($"DiscordBotAllowAllBots: {Config.Default.DiscordBotAllowAllBots}");
-                comment.AppendLine($"DiscordBotWhitelist: {string.Join(";", Config.Default.DiscordBotWhitelist)}");
 
                 comment.AppendLine($"EmailNotify_AutoUpdate: {Config.Default.EmailNotify_AutoUpdate}");
                 comment.AppendLine($"EmailNotify_AutoRestart: {Config.Default.EmailNotify_AutoRestart}");
@@ -4514,9 +4509,6 @@ namespace ServerManagerTool
                                 RefreshProcessPrioritiesList();
                                 break;
 
-                            case ServerSettingsResetAction.DiscordBotSection:
-                                this.Settings.ResetDiscordBotSection();
-                                break;
 
                             case ServerSettingsResetAction.ChatAndNotificationsSection:
                                 this.Settings.ResetChatAndNotificationSection();

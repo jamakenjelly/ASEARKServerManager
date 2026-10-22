@@ -4,7 +4,6 @@
     {
         // Sections
         AdministrationSection,
-        DiscordBotSection,
         ServerDetailsSection,
         RulesSection,
         ChatAndNotificationsSection,

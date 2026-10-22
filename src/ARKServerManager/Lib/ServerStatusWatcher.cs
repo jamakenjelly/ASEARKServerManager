@@ -449,6 +449,49 @@ namespace ServerManagerTool.Lib
             }
         }
 
+        // On-demand RCON access for the web dashboard. Both return null on any failure
+        // (RCON off, wrong password, server not answering) rather than throwing.
+        public static IList<string> QueryRconPlayerNames(IPAddress address, int rconPort, string rconPassword)
+        {
+            var response = SendRconCommand(address, rconPort, rconPassword, "listplayers");
+            if (response == null)
+                return null;
+
+            var names = new List<string>();
+            foreach (var line in response.Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                var trimmed = line.Trim();
+                if (!ListPlayersLineRegex.IsMatch(trimmed))
+                    continue;
+
+                var start = trimmed.IndexOf(". ", StringComparison.Ordinal);
+                var end = trimmed.LastIndexOf(", ", StringComparison.Ordinal);
+                names.Add(start >= 0 && end > start ? trimmed.Substring(start + 2, end - start - 2) : trimmed);
+            }
+            return names;
+        }
+
+        public static string SendRconCommand(IPAddress address, int rconPort, string rconPassword, string command)
+        {
+            try
+            {
+                var endpoint = new IPEndPoint(address, rconPort);
+                using (var server = ServerQuery.GetServerInstance(EngineType.Source, endpoint, sendTimeOut: Config.Default.ServerStatusWatcher_QueryTimeout, receiveTimeOut: Config.Default.ServerStatusWatcher_QueryTimeout))
+                {
+                    var rcon = server?.GetControl(rconPassword ?? string.Empty);
+                    if (rcon == null)
+                        return null;
+
+                    return rcon.SendCommand(command) ?? string.Empty;
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Debug($"{nameof(SendRconCommand)} - Failed for {address}:{rconPort}. {ex.Message}");
+                return null;
+            }
+        }
+
         private static bool GetPublicNetworkStatusDirectly(IPEndPoint endpoint)
         {
             ServerInfo serverInfo;
