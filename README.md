@@ -5,6 +5,10 @@ Managers for different steam dedicated game servers.
 This is a personal fork/standalone build of the original open-source ARK Server Manager project:
 **https://github.com/Bletch1971/ServerManagers** — credit and thanks to the original authors and contributors.
 
+## Installer
+
+`make-installer.ps1` builds the manager (Release) and packs it into `dist\ASEARKServerManager-Setup-Release.exe`: a setup that asks for an install folder, makes the desktop / Start menu shortcuts (set to run as administrator) and an uninstall entry, and updates an older copy in place without touching the data folder or settings. The built setup is attached to the GitHub release.
+
 ## Changes in this fork
 
 - **Auto-Backup overhaul**: replaced the old per-server "backup shortly after this server's own save" cadence with a single fleet-wide timer (Global Settings → "Servers Back Up Every"), so every enabled server saves and backs up together on one schedule. Backups now verify the save actually completed (retrying once if not) and skip a redundant forced save when the server's own native Auto Save just ran.
