@@ -359,7 +359,9 @@ namespace ServerManagerTool
             // hook into the language change event
             GlobalizedApplication.Instance.GlobalizationManager.ResourceDictionaryChangedEvent += ResourceDictionaryChangedEvent;
             GameData.GameDataLoaded += GameData_GameDataLoaded;
-            Loaded += (s, e) => { RefreshArkApiStatus(); RefreshPlayerBackups(); PlayerProfileBackup.BackupWritten -= PlayerBackupWritten; PlayerProfileBackup.BackupWritten += PlayerBackupWritten; };
+            CreateExcludeItemChoices();
+            Loaded += (s, e) => { if (ExcludeItemMissingNote != null) ExcludeItemMissingNote.Visibility = _excludeChoices.Count == 0 ? Visibility.Visible : Visibility.Collapsed; };
+            Loaded += (s, e) => { SyncExcludeItemChoices(); RefreshArkApiStatus(); RefreshPlayerBackups(); PlayerProfileBackup.BackupWritten -= PlayerBackupWritten; PlayerProfileBackup.BackupWritten += PlayerBackupWritten; };
             Unloaded += (s, e) => PlayerProfileBackup.BackupWritten -= PlayerBackupWritten;
         }
 
@@ -388,6 +390,7 @@ namespace ServerManagerTool
             this.Settings.ConfigOverrideItemMaxQuantity.Update();
             this.Settings.ConfigOverrideSupplyCrateItems.Update();
             this.Settings.ExcludeItemIndices.Update();
+            this.SyncExcludeItemChoices();
             this.Settings.NPCSpawnSettings.Update();
             this.Settings.PreventTransferForClassNames.Update();
         }
@@ -425,6 +428,7 @@ namespace ServerManagerTool
 
                         ssc.Settings = server.Profile;
                         ssc.WatchMapChanges(server.Profile);
+                        ssc.SyncExcludeItemChoices();
                         ssc.RefreshArkApiStatus();
                         ssc.Runtime = server.Runtime;
                         ssc.ReinitializeNetworkAdapters();
@@ -1772,6 +1776,7 @@ namespace ServerManagerTool
         private void ExcludeItemIndicesOverrideGrids_SourceUpdated(object sender, DataTransferEventArgs e)
         {
             Settings.ExcludeItemIndices.Update();
+            SyncExcludeItemChoices();
         }
 
         private void CraftingOverrideGrids_SourceUpdated(object sender, DataTransferEventArgs e)
@@ -3745,6 +3750,121 @@ namespace ServerManagerTool
         #endregion
 
         #region Exclude Item Indices Overrides
+        // The Enable Exclude Items tick list: every item with its ID number; ticking one puts its ID on the exclude list, unticking takes it off.
+        private readonly System.Collections.ObjectModel.ObservableCollection<ExcludeItemChoice> _excludeChoices = new System.Collections.ObjectModel.ObservableCollection<ExcludeItemChoice>();
+        private System.ComponentModel.ICollectionView _excludeChoicesView;
+        private readonly HashSet<object> _excludeWatchedLists = new HashSet<object>();
+        private readonly HashSet<object> _excludeWatchedProfiles = new HashSet<object>();
+        private string _excludeItemFilterText = string.Empty;
+        private int _excludeItemShow;   // 0 = all items, 1 = only the ticked ones, 2 = only the ones not ticked
+        private bool _syncingExcludeChoices;
+
+        public System.ComponentModel.ICollectionView ExcludeItemChoices => _excludeChoicesView;
+
+        private void CreateExcludeItemChoices()
+        {
+            foreach (var choice in AseItemIds.Load())
+            {
+                choice.Toggled = ExcludeChoiceToggled;
+                _excludeChoices.Add(choice);
+            }
+
+            _excludeChoicesView = System.Windows.Data.CollectionViewSource.GetDefaultView(_excludeChoices);
+            _excludeChoicesView.Filter = o =>
+            {
+                var c = (ExcludeItemChoice)o;
+                if (_excludeItemShow == 1 && !c.IsChecked)
+                    return false;
+                if (_excludeItemShow == 2 && c.IsChecked)
+                    return false;
+
+                if (string.IsNullOrWhiteSpace(_excludeItemFilterText))
+                    return true;
+
+                var text = _excludeItemFilterText.Trim();
+                return c.DisplayName.IndexOf(text, StringComparison.OrdinalIgnoreCase) >= 0
+                    || c.ClassName.IndexOf(text, StringComparison.OrdinalIgnoreCase) >= 0
+                    || c.Id.ToString().Equals(text);
+            };
+        }
+
+        // makes the ticks match the server's exclude list (called when the list changes, is replaced, or an ID is typed in the table)
+        private void SyncExcludeItemChoices()
+        {
+            try
+            {
+                var profile = Settings;
+                if (profile?.ExcludeItemIndices == null)
+                    return;
+
+                // this one panel shows every server in turn: watch each server's profile and list once
+                if (_excludeWatchedProfiles.Add(profile))
+                {
+                    System.ComponentModel.DependencyPropertyDescriptor.FromProperty(ServerProfile.ExcludeItemIndicesProperty, typeof(ServerProfile))
+                        .AddValueChanged(profile, (s, e) => SyncExcludeItemChoices());
+                }
+
+                if (_excludeWatchedLists.Add(profile.ExcludeItemIndices))
+                {
+                    profile.ExcludeItemIndices.CollectionChanged += (s, e) => SyncExcludeItemChoices();
+                }
+
+                _syncingExcludeChoices = true;
+                try
+                {
+                    var ids = new HashSet<long>(profile.ExcludeItemIndices.Select(i => i.ItemId));
+                    foreach (var choice in _excludeChoices)
+                        choice.IsChecked = ids.Contains(choice.Id);
+                }
+                finally
+                {
+                    _syncingExcludeChoices = false;
+                }
+
+                if (_excludeItemShow != 0)
+                    _excludeChoicesView?.Refresh();
+            }
+            catch
+            {
+            }
+        }
+
+        private void ExcludeChoiceToggled(ExcludeItemChoice choice)
+        {
+            if (_syncingExcludeChoices || Settings?.ExcludeItemIndices == null)
+                return;
+
+            var list = Settings.ExcludeItemIndices;
+            if (choice.IsChecked)
+            {
+                if (!list.Any(i => i.ItemId == choice.Id))
+                    list.Add(new ExcludeItemIndicesOverride { ItemId = choice.Id });
+            }
+            else
+            {
+                foreach (var existing in list.Where(i => i.ItemId == choice.Id).ToList())
+                    list.Remove(existing);
+            }
+
+            list.Update();
+
+            // when only the ticked (or only the not ticked) items are shown, the item that was just changed leaves the view
+            if (_excludeItemShow != 0)
+                Dispatcher.BeginInvoke(new Action(() => _excludeChoicesView?.Refresh()));
+        }
+
+        private void ExcludeItemFilterBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            _excludeItemFilterText = ((TextBox)sender).Text ?? string.Empty;
+            _excludeChoicesView?.Refresh();
+        }
+
+        private void ExcludeItemShowBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            _excludeItemShow = Math.Max(0, ((ComboBox)sender).SelectedIndex);
+            _excludeChoicesView?.Refresh();
+        }
+
         private void AddExcludeItemIndicesOverride_Click(object sender, RoutedEventArgs e)
         {
             Settings.ExcludeItemIndices.Add(new ExcludeItemIndicesOverride());

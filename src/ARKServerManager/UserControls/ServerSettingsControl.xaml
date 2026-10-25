@@ -6346,14 +6346,41 @@
                                     <!--Empty Row for Last Splitter-->
                                 </Grid.RowDefinitions>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="2*"/>
+                                    <ColumnDefinition Width="1*"/>
                                 </Grid.ColumnDefinitions>
 
-                                <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4" Margin="5" Text="{DynamicResource ServerSettings_ExcludeItemIndicesOverrides_DisableLabel}" TextWrapping="Wrap" VerticalAlignment="Center" FontWeight="Bold" Foreground="DarkCyan"/>
+                                <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Margin="5" Text="{DynamicResource ServerSettings_ExcludeItemIndicesOverrides_DisableLabel}" TextWrapping="Wrap" VerticalAlignment="Center" FontWeight="Bold" Foreground="DarkCyan"/>
 
                                 <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="5" Text="{DynamicResource ServerSettings_ExcludeItemIndicesOverrides_WarningLabel}" TextWrapping="Wrap" VerticalAlignment="Center" FontWeight="Bold"/>
 
-                                <GroupBox  Grid.Row="2" Grid.Column="0" HorizontalAlignment="Stretch" Style="{StaticResource GroupBoxStyle}">
+                                <!-- the tick list: ticking an item puts its ID number on the exclude list, unticking takes it off -->
+                                <GroupBox Grid.Row="2" Grid.Column="0" HorizontalAlignment="Stretch" Style="{StaticResource GroupBoxStyle}">
+                                    <GroupBox.Header>
+                                        <Label Content="Pick the items to exclude"/>
+                                    </GroupBox.Header>
+                                    <DockPanel>
+                                        <DockPanel DockPanel.Dock="Top" Margin="0,0,0,4">
+                                            <ComboBox DockPanel.Dock="Right" Name="ExcludeItemShowBox" Width="130" Margin="5,0,0,0" SelectedIndex="0" VerticalContentAlignment="Center" SelectionChanged="ExcludeItemShowBox_SelectionChanged">
+                                                <ComboBoxItem Content="All items"/>
+                                                <ComboBoxItem Content="Ticked only"/>
+                                                <ComboBoxItem Content="Not ticked only"/>
+                                            </ComboBox>
+                                            <Label DockPanel.Dock="Left" Content="Search:" VerticalAlignment="Center"/>
+                                            <TextBox Name="ExcludeItemFilterBox" VerticalContentAlignment="Center" TextChanged="ExcludeItemFilterBox_TextChanged" ToolTip="Type part of an item name or its ID number"/>
+                                        </DockPanel>
+                                        <TextBlock Name="ExcludeItemMissingNote" DockPanel.Dock="Top" Margin="2,0,2,4" TextWrapping="Wrap" Visibility="Collapsed" Foreground="DarkRed" Text="The item list (AseItemIds.json next to the program) has not been made yet. Run the ItemIdDump plugin once on a server, then put the file it writes next to the manager. Until then, type the ID numbers in the table."/>
+                                        <ListBox ItemsSource="{Binding ExcludeItemChoices, ElementName=SettingsControl}" VirtualizingPanel.IsVirtualizing="True" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                                            <ListBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <CheckBox IsChecked="{Binding IsChecked, Mode=TwoWay}" Content="{Binding Label}" ToolTip="{Binding ClassName}" Margin="0,1"/>
+                                                </DataTemplate>
+                                            </ListBox.ItemTemplate>
+                                        </ListBox>
+                                    </DockPanel>
+                                </GroupBox>
+
+                                <GroupBox  Grid.Row="2" Grid.Column="1" HorizontalAlignment="Stretch" Style="{StaticResource GroupBoxStyle}">
                                     <GroupBox.Header>
                                         <StackPanel Orientation="Horizontal">
                                             <Label Content="{DynamicResource ServerSettings_ExcludeItemIndicesOverrides_ItemsLabel}"/>
@@ -6441,7 +6468,7 @@
                                     </DataGrid>
                                 </GroupBox>
 
-                                <GridSplitter Grid.Row="3" Grid.Column="0" Height="5" ShowsPreview="True" HorizontalAlignment="Stretch" VerticalAlignment="Center" Opacity="0"/>
+                                <GridSplitter Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Height="5" ShowsPreview="True" HorizontalAlignment="Stretch" VerticalAlignment="Center" Opacity="0"/>
                             </Grid>
                         </Expander>
 

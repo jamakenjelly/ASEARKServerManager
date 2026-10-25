@@ -1,4 +1,8 @@
-﻿Version 1.1.0.9
+﻿Version 1.1.0.10
+  - Exclude Item Indices now has a tick list: every item (621 of them, with its ID number) with a search box and an All / Ticked only / Not ticked only filter. Ticking an item puts its ID on the exclude list, unticking takes it off, and an ID typed in the table ticks the matching item. Each server keeps its own ticks. The item numbers were read from a real ASE server (current game build, including the Aquatica items) with the ItemIdDump plugin. Items from mods have no number here and still have to be typed in.
+
+
+Version 1.1.0.9
   - The green "A new version of the manager is available" bar with the Upgrade now button now shows under the header when a newer version is found (it was missing, so "Check for manager updates" had nothing to click).
 
 
