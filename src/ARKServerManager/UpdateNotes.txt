@@ -1,4 +1,8 @@
-﻿Version 1.1.0.13
+﻿Version 1.1.0.14
+  - The refresh button next to the public IP in the header has the same look as in the ASA manager (small, bordered, same size as the other icon buttons).
+
+
+Version 1.1.0.13
   - Global Settings has one tick, "Retry on fail until successful", instead of two (as in the ASA manager). Ticked, a failed server or mod download is retried until it works; unticked, it is not retried. Start already saves the profile first (so does a start from the Server Monitor or the main window), and Profile Auto-Save is gone, as in the ASA manager.
 
 
