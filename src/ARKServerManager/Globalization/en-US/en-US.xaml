@@ -2398,7 +2398,23 @@ Undocumented bye wildcard.</sys:String>
     <!--#endregion-->
 
     <!--#region Server Settings - Server File Details -->
-    <sys:String x:Key="ServerSettings_ServerFilesLabel">Server File Details</sys:String>
+    <sys:String x:Key="ServerSettings_PlayerBackupLabel">Player Profile Backup</sys:String>
+    <sys:String x:Key="ServerSettings_PlayerBackupTooltip">Each player's own profile is copied into the server's backup folder (PlayerProfile) 3 seconds after they connect and again after they disconnect. Needs RCON.</sys:String>
+    <sys:String x:Key="ServerSettings_PlayerBackupEnableLabel">Enable backup for player profile</sys:String>
+    <sys:String x:Key="ServerSettings_PlayerBackupKeepLabel">Files to keep (per profile):</sys:String>
+    <sys:String x:Key="ServerSettings_PlayerBackupNote">Each player profile is saved 3 seconds after the player connects and again after they disconnect. The server is watched over RCON, so RCON must be enabled.</sys:String>
+    <sys:String x:Key="ServerSettings_PlayerBackupManagementLabel">Player Profile Management</sys:String>
+    <sys:String x:Key="ServerSettings_PlayerBackupFilterLabel">Filter by Name or ID:</sys:String>
+    <sys:String x:Key="ServerSettings_PlayerBackupFilterButton">Filter</sys:String>
+    <sys:String x:Key="ServerSettings_PlayerBackupRefreshButton">Refresh backup file list</sys:String>
+    <sys:String x:Key="ServerSettings_PlayerBackupOpenButton">Open backup folder</sys:String>
+    <sys:String x:Key="ServerSettings_PlayerBackupRestoreButton">Restore selected backup</sys:String>
+    <sys:String x:Key="ServerSettings_PlayerBackupDeleteButton">Delete selected backup</sys:String>
+    <sys:String x:Key="ServerSettings_PlayerBackupTimeColumn">Time</sys:String>
+    <sys:String x:Key="ServerSettings_PlayerBackupNameColumn">Name</sys:String>
+    <sys:String x:Key="ServerSettings_PlayerBackupIdColumn">ID</sys:String>
+    <sys:String x:Key="ServerSettings_PlayerBackupStatusColumn">Status</sys:String>
+    <sys:String x:Key="ServerSettings_ServerFilesLabel">Player Access Lists</sys:String>
     <sys:String x:Key="ServerSettings_ServerFilesWarningLabel">NOTE: Any changes will require a server restart to take effect.</sys:String>
     <sys:String x:Key="ServerSettings_ServerFilesLoadErrorTitle">Load Error</sys:String>
     <sys:String x:Key="ServerSettings_ServerFilesSaveErrorTitle">Save Error</sys:String>

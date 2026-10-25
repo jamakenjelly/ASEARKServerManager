@@ -271,20 +271,38 @@ namespace ServerManagerTool.Plugin.Common
             if (Plugins == null || Plugins.Count == 0 || string.IsNullOrWhiteSpace(alertMessage))
                 return false;
 
-            var plugins = Plugins.Where(p => (p.PluginType is nameof(IAlertPlugin)) && (p.Plugin?.Enabled ?? false));
-            if (plugins.IsEmpty())
+            var plugins = Plugins.Where(p => (p.PluginType is nameof(IAlertPlugin)) && (p.Plugin?.Enabled ?? false)).ToList();
+            if (plugins.Count == 0)
                 return false;
 
-            lock (_syncLockProcessAlert)
-            {
-                var message = alertMessage.Replace("\\r\\n", "\\n");
-                message = message.Replace("\\n", "\n");
+            var message = alertMessage.Replace("\\r\\n", "\\n");
+            message = message.Replace("\\n", "\n");
 
-                foreach (var pluginItem in plugins)
+            void Send()
+            {
+                lock (_syncLockProcessAlert)
                 {
-                    ((IAlertPlugin)pluginItem.Plugin).HandleAlert(alertType, profileName, message.ToString());
+                    foreach (var pluginItem in plugins)
+                    {
+                        try
+                        {
+                            ((IAlertPlugin)pluginItem.Plugin).HandleAlert(alertType, profileName, message);
+                        }
+                        catch
+                        {
+                            // one alert plugin failing must not stop the others or the caller
+                        }
+                    }
                 }
             }
+
+            // The alert plugins post to Discord and the like, which can take seconds. When this is called from the window's own thread (a server
+            // starting or stopping, the player count changing) the alert is sent in the background, so the manager never waits for it. Anywhere else
+            // (the headless Auto Update / Auto Backup runs) it is sent right here, so it is out before that process ends.
+            if (System.Threading.SynchronizationContext.Current != null)
+                System.Threading.Tasks.Task.Run((Action)Send);
+            else
+                Send();
 
             return true;
         }

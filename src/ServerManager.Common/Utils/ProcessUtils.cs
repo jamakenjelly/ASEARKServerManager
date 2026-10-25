@@ -142,11 +142,31 @@ namespace ServerManagerTool.Common.Utils
             return null;
         }
 
+        // Only one console can be attached at a time, so stops are done one after the other.
+        private static readonly SemaphoreSlim StopLock = new SemaphoreSlim(1, 1);
+
+        /// <summary>
+        /// Asks a server's console program to stop (Ctrl-C) and waits for it to exit, killing it after 10 seconds. The waiting is done on a background
+        /// thread: this used to wait on the caller's thread, so a Stop click froze the manager until the server had closed.
+        /// </summary>
         public static async Task SendStopAsync(Process process)
         {
             if (process == null)
                 return;
 
+            await StopLock.WaitAsync().ConfigureAwait(false);
+            try
+            {
+                await Task.Run(() => SendStopCore(process)).ConfigureAwait(false);
+            }
+            finally
+            {
+                StopLock.Release();
+            }
+        }
+
+        private static void SendStopCore(Process process)
+        {
             var ts = new TaskCompletionSource<bool>();
             EventHandler handler = (s, e) => ts.TrySetResult(true);
 

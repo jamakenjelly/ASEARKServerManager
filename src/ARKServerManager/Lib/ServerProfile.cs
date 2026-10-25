@@ -1293,6 +1293,22 @@ namespace ServerManagerTool.Lib
         #endregion
 
         #region Server Details
+        public static readonly DependencyProperty PlayerBackupEnabledProperty = DependencyProperty.Register(nameof(PlayerBackupEnabled), typeof(bool), typeof(ServerProfile), new PropertyMetadata(false));
+        [DataMember]
+        public bool PlayerBackupEnabled
+        {
+            get { return (bool)GetValue(PlayerBackupEnabledProperty); }
+            set { SetValue(PlayerBackupEnabledProperty, value); }
+        }
+
+        public static readonly DependencyProperty PlayerBackupKeepProperty = DependencyProperty.Register(nameof(PlayerBackupKeep), typeof(int), typeof(ServerProfile), new PropertyMetadata(10));
+        [DataMember]
+        public int PlayerBackupKeep
+        {
+            get { return (int)GetValue(PlayerBackupKeepProperty); }
+            set { SetValue(PlayerBackupKeepProperty, value); }
+        }
+
         public static readonly DependencyProperty CultureProperty = DependencyProperty.Register(nameof(Culture), typeof(string), typeof(ServerProfile), new PropertyMetadata(String.Empty));
         [DataMember]
         public string Culture
@@ -5696,6 +5712,13 @@ namespace ServerManagerTool.Lib
                         var rootSaveFolder = Path.GetDirectoryName(saveGamesFolder);
                         restoredFileCount += ZipUtils.ExtractFiles(restoreFile, rootSaveFolder, Config.Default.SaveGamesRelativePath, recurseFolders: true);
                     }
+
+                    // Engine.ini / Game.ini / GameUserSettings.ini saved in the backup
+                    var configZipFolder = Config.Default.ServerConfigRelativePath.Replace('\\', '/');
+                    if (ZipUtils.DoesFolderExist(restoreFile, configZipFolder))
+                    {
+                        restoredFileCount += ZipUtils.ExtractFiles(restoreFile, InstallDirectory, configZipFolder, recurseFolders: true);
+                    }
                 }
                 else
                 {
@@ -5951,6 +5974,8 @@ namespace ServerManagerTool.Lib
         public void ResetServerOptions()
         {
             this.ClearValue(CultureProperty);
+            this.ClearValue(PlayerBackupEnabledProperty);
+            this.ClearValue(PlayerBackupKeepProperty);
             this.ClearValue(DisableValveAntiCheatSystemProperty);
             this.ClearValue(DisablePlayerMovePhysicsOptimizationProperty);
             this.ClearValue(DisableAntiSpeedHackDetectionProperty);
@@ -6648,6 +6673,8 @@ namespace ServerManagerTool.Lib
 
             // server options
             this.SetValue(CultureProperty, sourceProfile.Culture);
+            this.SetValue(PlayerBackupEnabledProperty, sourceProfile.PlayerBackupEnabled);
+            this.SetValue(PlayerBackupKeepProperty, sourceProfile.PlayerBackupKeep);
             this.SetValue(MaxPlayersProperty, sourceProfile.MaxPlayers);
             this.SetNullableValue(KickIdlePlayersPeriodProperty, sourceProfile.KickIdlePlayersPeriod);
             this.SetValue(EnableBanListURLProperty, sourceProfile.EnableBanListURL);

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Configuration;
 using System.Diagnostics;
@@ -785,6 +785,9 @@ namespace ServerManagerTool
             {
                 // initialize all the game data
                 GameData.Initialize();
+
+                // player profile backups (watches the running servers over RCON)
+                PlayerProfileBackup.Start();
 
                 StartupUri = new Uri("Windows/AutoUpdateWindow.xaml", UriKind.RelativeOrAbsolute);
             }

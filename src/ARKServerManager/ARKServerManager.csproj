@@ -36,7 +36,7 @@
     <PublisherName>Bletch1971</PublisherName>
     <SuiteName>Server Managers</SuiteName>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>1</ApplicationRevision>
+    <ApplicationRevision>2</ApplicationRevision>
     <ApplicationVersion>1.1.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -589,6 +589,11 @@
     </Compile>
     <Compile Include="Config.Designer.cs" />
     <Compile Include="Lib\ServerManager.cs" />
+    <Compile Include="Windows\UpdateNotesWindow.cs" />
+    <Compile Include="Lib\PlayerProfileBackup.cs" />
+    <Content Include="UpdateNotes.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Compile Include="Windows\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

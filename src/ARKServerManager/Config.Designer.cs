@@ -271,8 +271,7 @@ namespace ServerManagerTool {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("https://raw.githubusercontent.com/Bletch1971/ServerManagers/master/ASM/latest.txt" +
-            "")]
+        [global::System.Configuration.DefaultSettingValueAttribute("https://github.com/jamakenjelly/ServerManagers-source-ase/releases/latest/download/version.txt")]
         public string LatestASMVersionUrl {
             get {
                 return ((string)(this["LatestASMVersionUrl"]));
@@ -1208,8 +1207,7 @@ namespace ServerManagerTool {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("https://raw.githubusercontent.com/Bletch1971/ServerManagers/master/ASM/beta/lates" +
-            "t.txt")]
+        [global::System.Configuration.DefaultSettingValueAttribute("https://github.com/jamakenjelly/ServerManagers-source-ase/releases/latest/download/version.txt")]
         public string LatestASMBetaVersionUrl {
             get {
                 return ((string)(this["LatestASMBetaVersionUrl"]));
@@ -1218,8 +1216,7 @@ namespace ServerManagerTool {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("https://raw.githubusercontent.com/Bletch1971/ServerManagers/master/ASM/beta/lates" +
-            "t.zip")]
+        [global::System.Configuration.DefaultSettingValueAttribute("https://github.com/jamakenjelly/ServerManagers-source-ase/releases/latest/download/ASEARKServerManager-Update.zip")]
         public string LatestASMBetaDownloadUrl {
             get {
                 return ((string)(this["LatestASMBetaDownloadUrl"]));
@@ -1228,8 +1225,7 @@ namespace ServerManagerTool {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("https://raw.githubusercontent.com/Bletch1971/ServerManagers/master/ASM/latest.zip" +
-            "")]
+        [global::System.Configuration.DefaultSettingValueAttribute("https://github.com/jamakenjelly/ServerManagers-source-ase/releases/latest/download/ASEARKServerManager-Update.zip")]
         public string LatestASMDownloadUrl {
             get {
                 return ((string)(this["LatestASMDownloadUrl"]));
@@ -2140,9 +2136,7 @@ namespace ServerManagerTool {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=bletch1971%40hotmai" +
-            "l%2ecom&lc=US&item_name=Server%20Manager&currency_code=USD&bn=PP%2dDonationsBF%3" +
-            "abtn_donate_SM%2egif%3aNonHosted")]
+        [global::System.Configuration.DefaultSettingValueAttribute("https://www.paypal.com/donate/?hosted_button_id=ZY3J4Z3CLDM3U")]
         public string DonationUrl {
             get {
                 return ((string)(this["DonationUrl"]));
@@ -3385,6 +3379,42 @@ namespace ServerManagerTool {
             set
             {
                 this["ProfileSyncAutoShutdownEnabled"] = value;
+            }
+        }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool SectionPlayerProfileBackupIsExpanded {
+            get {
+                return ((bool)(this["SectionPlayerProfileBackupIsExpanded"]));
+            }
+            set {
+                this["SectionPlayerProfileBackupIsExpanded"] = value;
+            }
+        }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ManagerUpdateAutoCheck {
+            get {
+                return ((bool)(this["ManagerUpdateAutoCheck"]));
+            }
+            set {
+                this["ManagerUpdateAutoCheck"] = value;
+            }
+        }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("30")]
+        public int ManagerUpdateCheckMinutes {
+            get {
+                return ((int)(this["ManagerUpdateCheckMinutes"]));
+            }
+            set {
+                this["ManagerUpdateCheckMinutes"] = value;
             }
         }
     }

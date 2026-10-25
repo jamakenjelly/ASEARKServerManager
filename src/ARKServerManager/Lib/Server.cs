@@ -265,8 +265,23 @@ namespace ServerManagerTool.Lib
             return new Server(loadedProfile);
         }
 
-        public async Task StartAsync()
+        // alreadySaved: the caller has just saved the profile (the Start button does, before it validates it), so it is not saved a second time -
+        // each save writes all the server's files on the window's thread, and saving twice on every start made the manager freeze twice as long.
+        public async Task StartAsync(bool alreadySaved = false)
         {
+            // always start from the saved settings, so a change made since the last save is not lost
+            if (!alreadySaved)
+            {
+                try
+                {
+                    await System.Windows.Application.Current.Dispatcher.InvokeAsync(() => this.Profile.Save(false, false, null)).Task;
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error($"The profile could not be saved before starting: {ex.Message}");
+                }
+            }
+
             await this.Runtime.AttachToProfile(this.Profile);
             await this.Runtime.StartAsync();
         }

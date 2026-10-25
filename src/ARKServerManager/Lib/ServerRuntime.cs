@@ -512,12 +512,14 @@ namespace ServerManagerTool.Lib
         }
 
 
-        public Task StartAsync()
+        private bool _startInProgress;
+
+        public async Task StartAsync()
         {
             if(!Environment.Is64BitOperatingSystem)
             {
                 MessageBox.Show("The server requires a 64-bit operating system to run. Your operating system is 32-bit and therefore the Ark Server Manager cannot start the server. You may still load and save profiles and settings files for use on other machines.", "64-bit OS Required", MessageBoxButton.OK, MessageBoxImage.Error);
-                return TaskUtils.FinishedTask;
+                return;
             }
 
             switch(this.Status)
@@ -526,68 +528,90 @@ namespace ServerManagerTool.Lib
                 case ServerStatus.Initializing:
                 case ServerStatus.Stopping:
                     _logger.Debug($"{nameof(StartAsync)} - Server {this.ProfileSnapshot.ProfileName} already running.");
-                    return TaskUtils.FinishedTask;
+                    return;
             }
 
-            UnregisterForUpdates();
-
-            var serverExe = GetServerExe();
-            var launcherExe = GetServerLauncherFile();
-
-            if (Config.Default.ManageFirewallAutomatically)
-            {
-                if (SecurityUtils.IsAdministrator())
-                {
-                    var ports = new List<int>() { this.ProfileSnapshot.ServerPort, this.ProfileSnapshot.ServerPeerPort, this.ProfileSnapshot.QueryPort };
-                    if (this.ProfileSnapshot.RCONEnabled)
-                    {
-                        ports.Add(this.ProfileSnapshot.RCONPort);
-                    }
-
-                    if (!FirewallUtils.CreateFirewallRules(serverExe, ports, $"{Config.Default.FirewallRulePrefix} {this.ProfileSnapshot.ServerName}", description: "", group: Config.Default.FirewallRulePrefix.Replace(":", "")))
-                    {
-                        var result = MessageBox.Show("Failed to automatically set firewall rules. If you are running custom firewall software, you may need to set your firewall rules manually. You may turn off automatic firewall management in Settings.\r\n\r\nWould you like to continue running the server anyway?", "Automatic Firewall Management Error", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-                        if (result == MessageBoxResult.No)
-                        {
-                            return TaskUtils.FinishedTask;
-                        }
-                    }
-                }
-                else
-                {
-                    var result = MessageBox.Show("Failed to automatically set firewall rules. You must be running the server manager as an administrator to manage the firewall rules.\r\n\r\nWould you like to continue running the server anyway?", "Automatic Firewall Management Error", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-                    if (result == MessageBoxResult.No)
-                    {
-                        return TaskUtils.FinishedTask;
-                    }
-                }
-            }
-
-            CheckServerWorldFileExists();
-            ServerProfile.PurgeArkApiPendingDelete(this.ProfileSnapshot.InstallDirectory);
-            UpdateServerStatus(ServerStatus.Initializing, false);
+            // a second start while the first is still getting ready is ignored
+            if (_startInProgress)
+                return;
+            _startInProgress = true;
 
             try
             {
-                var startInfo = new ProcessStartInfo()
-                {
-                    FileName = launcherExe
-                };
+                var clock = System.Diagnostics.Stopwatch.StartNew();
+                UnregisterForUpdates();
 
-                var process = Process.Start(startInfo);
-                process.EnableRaisingEvents = true;
-            }
-            catch (Win32Exception ex)
-            {
-                UpdateServerStatus(ServerStatus.Unknown, AvailabilityStatus.Unavailable, false);
-                throw new FileNotFoundException($"Unable to find {Config.Default.LauncherFile} at {launcherExe}. Server Install Directory: {this.ProfileSnapshot.InstallDirectory}", launcherExe, ex);
+                var snapshot = this.ProfileSnapshot;
+                var serverExe = GetServerExe();
+                var launcherExe = GetServerLauncherFile();
+                var manageFirewall = Config.Default.ManageFirewallAutomatically;
+                var isAdministrator = SecurityUtils.IsAdministrator();
+
+                // The server is launched first. Only the quick file step that must come before it is done here (in the background, not to freeze the
+                // window); the Windows Firewall rules - which can take many seconds to set - are made while the server is already starting up.
+                await Task.Run(() => ServerProfile.PurgeArkApiPendingDelete(snapshot.InstallDirectory));
+
+                Task<bool> firewallTask = null;
+                var firewallClock = System.Diagnostics.Stopwatch.StartNew();
+                if (manageFirewall && isAdministrator)
+                {
+                    var ports = new List<int>() { snapshot.ServerPort, snapshot.ServerPeerPort, snapshot.QueryPort };
+                    if (snapshot.RCONEnabled)
+                    {
+                        ports.Add(snapshot.RCONPort);
+                    }
+
+                    var ruleName = $"{Config.Default.FirewallRulePrefix} {snapshot.ServerName}";
+                    var ruleGroup = Config.Default.FirewallRulePrefix.Replace(":", "");
+                    firewallTask = Task.Run(() =>
+                    {
+                        var created = FirewallUtils.CreateFirewallRules(serverExe, ports, ruleName, description: "", group: ruleGroup);
+                        firewallClock.Stop();
+                        return created;
+                    });
+                }
+
+                CheckServerWorldFileExists();
+                UpdateServerStatus(ServerStatus.Initializing, false);
+
+                try
+                {
+                    var startInfo = new ProcessStartInfo()
+                    {
+                        FileName = launcherExe
+                    };
+
+                    var process = Process.Start(startInfo);
+                    process.EnableRaisingEvents = true;
+                    _logger.Info($"Start '{snapshot.ProfileName}': the server was launched {clock.ElapsedMilliseconds} ms after the start began.");
+                }
+                catch (Win32Exception ex)
+                {
+                    UpdateServerStatus(ServerStatus.Unknown, AvailabilityStatus.Unavailable, false);
+                    throw new FileNotFoundException($"Unable to find {Config.Default.LauncherFile} at {launcherExe}. Server Install Directory: {snapshot.InstallDirectory}", launcherExe, ex);
+                }
+                finally
+                {
+                    RegisterForUpdates();
+                }
+
+                // the firewall result, now that the server is on its way
+                if (manageFirewall)
+                {
+                    var created = firewallTask != null && await firewallTask;
+                    if (firewallTask != null)
+                        _logger.Info($"Start '{snapshot.ProfileName}': the firewall rules took {firewallClock.ElapsedMilliseconds} ms ({(created ? "set" : "NOT set")}).");
+
+                    if (!isAdministrator)
+                        MessageBox.Show("The server was started, but the firewall rules could not be set automatically: the server manager must be run as an administrator to manage the firewall rules. Set them by hand, or turn off automatic firewall management in Settings.", "Automatic Firewall Management Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    else if (!created)
+                        MessageBox.Show("The server was started, but the firewall rules could not be set automatically. If you are running custom firewall software, you may need to set your firewall rules manually. You may turn off automatic firewall management in Settings.", "Automatic Firewall Management Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
             }
             finally
             {
-                RegisterForUpdates();
+                _startInProgress = false;
             }
-            
-            return TaskUtils.FinishedTask;            
         }
 
         public async Task StopAsync()

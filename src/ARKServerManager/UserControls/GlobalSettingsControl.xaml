@@ -55,6 +55,7 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -88,7 +89,17 @@
                 <Button   Grid.Row="5" Grid.Column="3" Grid.ColumnSpan="2" Margin="5,1,0,1" VerticalAlignment="Center" HorizontalAlignment="Right" Content="{DynamicResource DataDirectoryButtonContent}" Click="SetDataDir_Click" Visibility="Hidden" />
                 <Button   Grid.Row="5" Grid.Column="3" Grid.ColumnSpan="2" Margin="5,1,0,1" VerticalAlignment="Center" HorizontalAlignment="Right" Content="{DynamicResource DataDirectoryResetButtonContent}" Click="ResetDataDir_Click" />
 
-                <GroupBox Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="4" Style="{StaticResource GroupBoxStyle}">
+                <!-- how often the manager looks by itself for a newer version of the manager (the green Check for manager updates button asks at once) -->
+                <GroupBox Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="4" Header="Manager Updates" Style="{StaticResource GroupBoxStyle}">
+                    <StackPanel Orientation="Horizontal">
+                        <CheckBox Margin="5,2,15,2" VerticalAlignment="Center" IsChecked="{Binding Config.ManagerUpdateAutoCheck, Mode=TwoWay}" Content="Check for manager updates automatically" ToolTip="When on, the manager looks by itself for a newer version of the manager and shows the green Upgrade now bar."/>
+                        <Label Content="every" VerticalAlignment="Center" IsEnabled="{Binding Config.ManagerUpdateAutoCheck}"/>
+                        <TextBox Width="60" Margin="1" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Text="{Binding Config.ManagerUpdateCheckMinutes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding Config.ManagerUpdateAutoCheck}" ToolTip="Minutes between the automatic checks (5 to 1440)."/>
+                        <Label Content="minutes (5 to 1440)" VerticalAlignment="Center" IsEnabled="{Binding Config.ManagerUpdateAutoCheck}"/>
+                    </StackPanel>
+                </GroupBox>
+
+                <GroupBox Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="4" Style="{StaticResource GroupBoxStyle}">
                     <GroupBox.Header>
                         <Label Content="{DynamicResource GlobalSettings_LanguageSelectionLabel}"/>
                     </GroupBox.Header>
@@ -121,7 +132,7 @@
                     </Grid>
                 </GroupBox>
 
-                <GroupBox Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="4" Style="{StaticResource GroupBoxStyle}">
+                <GroupBox Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="4" Style="{StaticResource GroupBoxStyle}">
                     <GroupBox.Header>
                         <Label Content="{DynamicResource GlobalSettings_SteamSettingsLabel}"/>
                     </GroupBox.Header>
@@ -240,7 +251,7 @@
                     </Grid>
                 </GroupBox>
 
-                <GroupBox Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="4" Style="{StaticResource GroupBoxStyle}">
+                <GroupBox Grid.Row="10" Grid.Column="0" Grid.ColumnSpan="4" Style="{StaticResource GroupBoxStyle}">
                     <GroupBox.Header>
                         <Label Content="{DynamicResource GlobalSettings_CustomOverrideOptionsLabel}"/>
                     </GroupBox.Header>
@@ -273,7 +284,7 @@
                     </Grid>
                 </GroupBox>
 
-                <GroupBox Grid.Row="10" Grid.Column="0" Grid.ColumnSpan="4" Style="{StaticResource GroupBoxStyle}">
+                <GroupBox Grid.Row="11" Grid.Column="0" Grid.ColumnSpan="4" Style="{StaticResource GroupBoxStyle}">
                     <GroupBox.Header>
                         <Label Content="{DynamicResource ServerSettings_ProfileSyncSettingsLabel}"/>
                     </GroupBox.Header>
@@ -298,7 +309,7 @@
                     </Grid>
                 </GroupBox>
 
-                <GroupBox Grid.Row="11" Grid.Column="0" Grid.ColumnSpan="4" Style="{StaticResource GroupBoxStyle}">
+                <GroupBox Grid.Row="12" Grid.Column="0" Grid.ColumnSpan="4" Style="{StaticResource GroupBoxStyle}">
                     <GroupBox.Header>
                         <Label Content="{DynamicResource ServerSettings_CustomLevelProgressionsLabel}"/>
                     </GroupBox.Header>
@@ -318,7 +329,7 @@
                     </Grid>
                 </GroupBox>
 
-                <GroupBox Grid.Row="12" Grid.Column="0" Grid.ColumnSpan="4" Style="{StaticResource GroupBoxStyle}">
+                <GroupBox Grid.Row="13" Grid.Column="0" Grid.ColumnSpan="4" Style="{StaticResource GroupBoxStyle}">
                     <GroupBox.Header>
                         <Label Content="{DynamicResource GlobalSettings_ServerStatusLabel}"/>
                     </GroupBox.Header>
@@ -339,7 +350,7 @@
                     </Grid>
                 </GroupBox>
 
-                <GroupBox Grid.Row="13" Grid.Column="0" Grid.ColumnSpan="4" Style="{StaticResource GroupBoxStyle}">
+                <GroupBox Grid.Row="14" Grid.Column="0" Grid.ColumnSpan="4" Style="{StaticResource GroupBoxStyle}">
                     <GroupBox.Header>
                         <Label Content="{DynamicResource GlobalSettings_ServerStartupLabel}"/>
                     </GroupBox.Header>
@@ -361,7 +372,7 @@
                     </Grid>
                 </GroupBox>
 
-                <GroupBox Grid.Row="14" Grid.Column="0" Grid.ColumnSpan="4" Style="{StaticResource GroupBoxStyle}">
+                <GroupBox Grid.Row="15" Grid.Column="0" Grid.ColumnSpan="4" Style="{StaticResource GroupBoxStyle}">
                     <GroupBox.Header>
                         <Label Content="{DynamicResource GlobalSettings_UpdateModSettingsLabel}"/>
                     </GroupBox.Header>
@@ -394,7 +405,7 @@
                     </Grid>
                 </GroupBox>
 
-                <GroupBox Grid.Row="15" Grid.Column="0" Grid.ColumnSpan="4" Header="{DynamicResource GlobalSettings_PVEBackupSettingsLabel}" Style="{StaticResource GroupBoxStyle}">
+                <GroupBox Grid.Row="16" Grid.Column="0" Grid.ColumnSpan="4" Header="{DynamicResource GlobalSettings_PVEBackupSettingsLabel}" Style="{StaticResource GroupBoxStyle}">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -413,7 +424,7 @@
                     </Grid>
                 </GroupBox>
 
-                <GroupBox Grid.Row="16" Grid.Column="0" Grid.ColumnSpan="4" Header="{DynamicResource GlobalSettings_PVPBackupSettingsLabel}" Style="{StaticResource GroupBoxStyle}">
+                <GroupBox Grid.Row="17" Grid.Column="0" Grid.ColumnSpan="4" Header="{DynamicResource GlobalSettings_PVPBackupSettingsLabel}" Style="{StaticResource GroupBoxStyle}">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -432,7 +443,7 @@
                     </Grid>
                 </GroupBox>
 
-                <GroupBox Grid.Row="17" Grid.Column="0" Grid.ColumnSpan="4" Header="{DynamicResource GlobalSettings_BackupSettingsLabel}" Style="{StaticResource GroupBoxStyle}">
+                <GroupBox Grid.Row="18" Grid.Column="0" Grid.ColumnSpan="4" Header="{DynamicResource GlobalSettings_BackupSettingsLabel}" Style="{StaticResource GroupBoxStyle}">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -456,9 +467,9 @@
                         </StackPanel>
 
 
-                        <CheckBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" Margin="5,2,0,2" IsChecked="{Binding Config.AutoBackup_IncludeSaveGamesFolder, Mode=TwoWay}" Content="{DynamicResource GlobalSettings_BackupIncludeSaveGamesFolderLabel}" ToolTip="{DynamicResource GlobalSettings_BackupIncludeSaveGamesFolderLabelTooltip}" HorizontalAlignment="Left"/>
+                        <CheckBox Visibility="Collapsed" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" Margin="5,2,0,2" IsChecked="{Binding Config.AutoBackup_IncludeSaveGamesFolder, Mode=TwoWay}" Content="{DynamicResource GlobalSettings_BackupIncludeSaveGamesFolderLabel}" ToolTip="{DynamicResource GlobalSettings_BackupIncludeSaveGamesFolderLabelTooltip}" HorizontalAlignment="Left"/>
 
-                        <CheckBox Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4" Margin="5,2,0,2" IsChecked="{Binding Config.AutoBackup_IncludeConfigFolder, Mode=TwoWay}" Content="{DynamicResource GlobalSettings_BackupIncludeConfigFolderLabel}" ToolTip="{DynamicResource GlobalSettings_BackupIncludeConfigFolderLabelTooltip}" HorizontalAlignment="Left"/>
+                        <CheckBox Visibility="Collapsed" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4" Margin="5,2,0,2" IsChecked="{Binding Config.AutoBackup_IncludeConfigFolder, Mode=TwoWay}" Content="{DynamicResource GlobalSettings_BackupIncludeConfigFolderLabel}" ToolTip="{DynamicResource GlobalSettings_BackupIncludeConfigFolderLabelTooltip}" HorizontalAlignment="Left"/>
 
                         <CheckBox Grid.Row="3" Grid.Column="0" Margin="5,2,0,2" Grid.ColumnSpan="2" Content="{DynamicResource GlobalSettings_DeleteOldFilesLabel}" IsChecked="{Binding Config.AutoBackup_DeleteOldFiles, Mode=TwoWay}" ToolTip="{DynamicResource GlobalSettings_DeleteOldFilesTooltip}" VerticalAlignment="Center" HorizontalAlignment="Left"/>
                         <cctl:AnnotatedSlider Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="2" Margin="0" Label="{DynamicResource GlobalSettings_DeleteIntervalLabel}" Value="{Binding Config.AutoBackup_DeleteInterval}" Minimum="1" Maximum="1000" SmallChange="1" LargeChange="2" TickFrequency="5" LabelRelativeWidth="Auto" SliderRelativeWidth="15*" SuffixRelativeWidth="Auto" Suffix="{DynamicResource SliderUnits_Days}" ToolTip="{DynamicResource GlobalSettings_DeleteIntervalTooltip}" IsEnabled="{Binding Config.AutoBackup_DeleteOldFiles}"/>
@@ -471,23 +482,7 @@
                     </Grid>
                 </GroupBox>
 
-                <GroupBox Grid.Row="18" Grid.Column="0" Grid.ColumnSpan="4" Style="{StaticResource GroupBoxStyle}" IsEnabled="{Binding IsAdministrator}">
-                    <GroupBox.Header>
-                        <Label Content="{DynamicResource GlobalSettings_ProfileAutoSaveLabel}" VerticalAlignment="Center"/>
-                    </GroupBox.Header>
-
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" MinWidth="100"/>
-                            <ColumnDefinition Width="Auto" MinWidth="100"/>
-                        </Grid.ColumnDefinitions>
-
-                        <Label   Grid.Column="0" Content="{DynamicResource GlobalSettings_ProfileAutoSavePeriodLabel}" VerticalAlignment="Center"/>
-                        <TextBox Grid.Column="1" Margin="1" Width="100" HorizontalAlignment="Left" VerticalContentAlignment="Center" Text="{Binding Config.ProfileAutoSavePeriod, UpdateSourceTrigger=LostFocus}" ToolTip="{DynamicResource GlobalSettings_ProfileAutoSavePeriodTooltip}"/>
-                    </Grid>
-                </GroupBox>
-
-                <GroupBox Grid.Row="19" Grid.Column="0" Grid.ColumnSpan="4" Header="{DynamicResource GlobalSettings_PVEUpdateSettingsLabel}" Style="{StaticResource GroupBoxStyle}" IsEnabled="{Binding IsAdministrator}">
+                <GroupBox Grid.Row="20" Grid.Column="0" Grid.ColumnSpan="4" Header="{DynamicResource GlobalSettings_PVEUpdateSettingsLabel}" Style="{StaticResource GroupBoxStyle}" IsEnabled="{Binding IsAdministrator}">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -506,7 +501,7 @@
                     </Grid>
                 </GroupBox>
 
-                <GroupBox Grid.Row="20" Grid.Column="0" Grid.ColumnSpan="4" Header="{DynamicResource GlobalSettings_PVPUpdateSettingsLabel}" Style="{StaticResource GroupBoxStyle}" IsEnabled="{Binding IsAdministrator}">
+                <GroupBox Grid.Row="21" Grid.Column="0" Grid.ColumnSpan="4" Header="{DynamicResource GlobalSettings_PVPUpdateSettingsLabel}" Style="{StaticResource GroupBoxStyle}" IsEnabled="{Binding IsAdministrator}">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -525,7 +520,7 @@
                     </Grid>
                 </GroupBox>
 
-                <GroupBox Grid.Row="21" Grid.Column="0" Grid.ColumnSpan="4" Style="{StaticResource GroupBoxStyle}" IsEnabled="{Binding IsAdministrator}">
+                <GroupBox Grid.Row="22" Grid.Column="0" Grid.ColumnSpan="4" Style="{StaticResource GroupBoxStyle}" IsEnabled="{Binding IsAdministrator}">
                     <GroupBox.Header>
                         <CheckBox IsChecked="{Binding Config.AutoUpdate_EnableUpdate}" Content="{DynamicResource GlobalSettings_AutoUpdateLabel}" VerticalAlignment="Center"/>
                     </GroupBox.Header>
@@ -571,7 +566,7 @@
                     </Grid>
                 </GroupBox>
 
-                <GroupBox Grid.Row="22" Grid.Column="0" Grid.ColumnSpan="4" Style="{StaticResource GroupBoxStyle}">
+                <GroupBox Grid.Row="23" Grid.Column="0" Grid.ColumnSpan="4" Style="{StaticResource GroupBoxStyle}">
                     <GroupBox.Header>
                         <Label Content="{DynamicResource GlobalSettings_AutoRestartLabel}"/>
                     </GroupBox.Header>
@@ -600,7 +595,7 @@
                     </Grid>
                 </GroupBox>
 
-                <GroupBox Grid.Row="23" Grid.Column="0" Grid.ColumnSpan="4" Style="{StaticResource GroupBoxStyle}">
+                <GroupBox Grid.Row="24" Grid.Column="0" Grid.ColumnSpan="4" Style="{StaticResource GroupBoxStyle}">
                     <GroupBox.Header>
                         <Label Content="{DynamicResource GlobalSettings_ShutdownLabel}"/>
                     </GroupBox.Header>
@@ -648,7 +643,7 @@
                     </Grid>
                 </GroupBox>
 
-                <GroupBox Grid.Row="24" Grid.Column="0" Grid.ColumnSpan="4" Style="{StaticResource GroupBoxStyle}">
+                <GroupBox Grid.Row="25" Grid.Column="0" Grid.ColumnSpan="4" Style="{StaticResource GroupBoxStyle}">
                     <GroupBox.Header>
                         <Label Content="{DynamicResource GlobalSettings_AlertsLabel}"/>
                     </GroupBox.Header>
@@ -720,7 +715,7 @@
                     </Grid>
                 </GroupBox>
 
-                <GroupBox Grid.Row="26" Grid.Column="0" Grid.ColumnSpan="4" Style="{StaticResource GroupBoxStyle}">
+                <GroupBox Grid.Row="27" Grid.Column="0" Grid.ColumnSpan="4" Style="{StaticResource GroupBoxStyle}">
                     <GroupBox.Header>
                         <CheckBox IsChecked="{Binding Config.WebDashboardEnabled}" Content="{DynamicResource GlobalSettings_WebDashboardLabel}" VerticalAlignment="Center"/>
                     </GroupBox.Header>
@@ -762,7 +757,7 @@
                     </StackPanel>
                 </GroupBox>
 
-                <GroupBox Grid.Row="28" Grid.Column="0" Grid.ColumnSpan="4" Style="{StaticResource GroupBoxStyle}">
+                <GroupBox Grid.Row="29" Grid.Column="0" Grid.ColumnSpan="4" Style="{StaticResource GroupBoxStyle}">
                     <GroupBox.Header>
                         <Label Content="{DynamicResource GlobalSettings_AdvancedSettingsLabel}"/>
                     </GroupBox.Header>

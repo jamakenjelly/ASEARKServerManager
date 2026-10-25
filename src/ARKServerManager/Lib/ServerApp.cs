@@ -2441,7 +2441,7 @@ namespace ServerManagerTool.Lib
                                 files[key].Add(file.FullName);
                             }
 
-                            if (Config.Default.AutoBackup_IncludeSaveGamesFolder)
+                            // SaveGames and Config are always part of the backup now
                             {
                                 // backup the save games files
                                 var saveGamesFolder = GetServerSaveGamesFolder();
@@ -2462,7 +2462,6 @@ namespace ServerManagerTool.Lib
                                 }
                             }
 
-                            if (Config.Default.AutoBackup_IncludeConfigFolder)
                             {
                                 // backup Game.ini/GameUserSettings.ini and any other files in the
                                 // server's own config folder, so a bad Sync/manual edit has an
@@ -2472,8 +2471,11 @@ namespace ServerManagerTool.Lib
                                 {
                                     var configFolderInfo = new DirectoryInfo(configFolder);
 
-                                    var configFileFilter = $"*";
-                                    var configFiles = configFolderInfo.GetFiles(configFileFilter, SearchOption.AllDirectories);
+                                    // only the three ini files (RunServer.cmd etc. is not needed)
+                                    var configFiles = configFolderInfo.GetFiles("*.ini", SearchOption.AllDirectories)
+                                        .Where(f => f.Name.Equals("Engine.ini", StringComparison.OrdinalIgnoreCase)
+                                                 || f.Name.Equals("Game.ini", StringComparison.OrdinalIgnoreCase)
+                                                 || f.Name.Equals("GameUserSettings.ini", StringComparison.OrdinalIgnoreCase));
                                     foreach (var file in configFiles)
                                     {
                                         key = file.DirectoryName.Replace(configFolder, Config.Default.ServerConfigRelativePath);

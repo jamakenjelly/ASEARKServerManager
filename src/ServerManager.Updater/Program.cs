@@ -284,9 +284,28 @@ namespace ServerManagerTool.Updater
             var executablePath = ProcessUtils.GetMainModuleFilepath(pid);
             var processes = ProcessUtils.GetProcesses(process.ProcessName, executablePath);
 
-            // check if there is more than one instance of the application running
-            if (!processes.HasOne())
-                throw new Exception("The application to be updated has more than one instance running.");
+            // The manager starts other copies of itself for an automatic update or a backup (and Task Scheduler does too). Those copies must not be
+            // cut off in the middle of a server update, so they are waited for (up to 15 minutes) instead of failing at once.
+            var waitUntil = DateTime.Now.AddMinutes(15);
+            var announced = false;
+            while (true)
+            {
+                var others = processes.Where(p => p.Id != pid && !p.HasExited).ToList();
+                if (others.Count == 0)
+                    break;
+
+                if (DateTime.Now > waitUntil)
+                    throw new Exception("Other copies of the application are still running (an automatic update or backup). Try the upgrade again when they have finished.");
+
+                if (!announced)
+                {
+                    OutputMessage($"Waiting for {others.Count} other copy/copies of the application (an automatic update or backup is running) to finish...");
+                    announced = true;
+                }
+
+                System.Threading.Thread.Sleep(5000);
+                processes = ProcessUtils.GetProcesses(process.ProcessName, executablePath);
+            }
 
             // get the command line of the process
             var commandLine = ProcessUtils.GetCommandLineForProcess(pid);

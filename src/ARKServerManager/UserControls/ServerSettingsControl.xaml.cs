@@ -358,6 +358,8 @@ namespace ServerManagerTool
             // hook into the language change event
             GlobalizedApplication.Instance.GlobalizationManager.ResourceDictionaryChangedEvent += ResourceDictionaryChangedEvent;
             GameData.GameDataLoaded += GameData_GameDataLoaded;
+            Loaded += (s, e) => { RefreshPlayerBackups(); PlayerProfileBackup.BackupWritten -= PlayerBackupWritten; PlayerProfileBackup.BackupWritten += PlayerBackupWritten; };
+            Unloaded += (s, e) => PlayerProfileBackup.BackupWritten -= PlayerBackupWritten;
         }
 
         #region Event Methods
@@ -462,7 +464,146 @@ namespace ServerManagerTool
             }
         }
 
+        // The Start / Stop button shows that it was pressed ("Starting..." / "Stopping...", greyed out) at once, before the profile is saved - the
+        // save takes a moment on the window's own thread, and without this the button looked as if nothing had happened.
+        public static readonly DependencyProperty IsStartBusyProperty = DependencyProperty.Register(nameof(IsStartBusy), typeof(bool), typeof(ServerSettingsControl), new PropertyMetadata(false));
+        public static readonly DependencyProperty StartBusyTextProperty = DependencyProperty.Register(nameof(StartBusyText), typeof(string), typeof(ServerSettingsControl), new PropertyMetadata("Please wait..."));
+
+        public bool IsStartBusy
+        {
+            get { return (bool)GetValue(IsStartBusyProperty); }
+            set { SetValue(IsStartBusyProperty, value); }
+        }
+
+        public string StartBusyText
+        {
+            get { return (string)GetValue(StartBusyTextProperty); }
+            set { SetValue(StartBusyTextProperty, value); }
+        }
+
+        private void RefreshPlayerBackups()
+        {
+            try
+            {
+                if (PlayerBackupList == null || Server?.Profile == null)
+                    return;
+
+                var selected = (PlayerBackupList.SelectedItem as PlayerProfileBackup.Entry)?.File;
+                var entries = PlayerProfileBackup.List(PlayerProfileBackup.GetBackupFolder(Server.Profile), PlayerBackupFilterBox?.Text);
+                PlayerBackupList.ItemsSource = entries;
+                if (selected != null)
+                    PlayerBackupList.SelectedItem = entries.FirstOrDefault(x => x.File == selected);
+            }
+            catch
+            {
+            }
+        }
+
+        // a player connected or disconnected and the profile was backed up: show it in the list of the server it belongs to
+        private void PlayerBackupWritten(string profileId)
+        {
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                if (Server?.Profile != null && string.Equals(Server.Profile.ProfileID, profileId, StringComparison.OrdinalIgnoreCase))
+                    RefreshPlayerBackups();
+            }));
+        }
+
+        private void PlayerBackupRefresh_Click(object sender, RoutedEventArgs e) => RefreshPlayerBackups();
+
+        private void PlayerBackupOpen_Click(object sender, RoutedEventArgs e)
+        {
+            var folder = PlayerProfileBackup.GetBackupFolder(Server.Profile);
+            Directory.CreateDirectory(folder);
+            Process.Start("explorer.exe", folder);
+        }
+
+        private void PlayerBackupRestore_Click(object sender, RoutedEventArgs e)
+        {
+            var entry = PlayerBackupList.SelectedItem as PlayerProfileBackup.Entry;
+            if (entry == null)
+            {
+                MessageBox.Show("Select a player backup in the list first.", "Player Backup", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            if (Runtime.Status != ServerStatus.Stopped && Runtime.Status != ServerStatus.Uninstalled)
+            {
+                MessageBox.Show("Stop the server first - a player profile cannot be restored while it is running.", "Player Backup", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            if (MessageBox.Show($"Put the profile of {entry.Name} ({entry.Time:yyyy-MM-dd HH:mm:ss}, {entry.Status}) back into the save folder, replacing their current profile?", "Player Backup", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
+                return;
+
+            try
+            {
+                PlayerProfileBackup.Restore(entry, ServerProfile.GetProfileSavePath(Server.Profile));
+                MessageBox.Show("The player profile was restored.", "Player Backup", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("The restore failed." + Environment.NewLine + Environment.NewLine + ex.Message, "Player Backup", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void PlayerBackupDelete_Click(object sender, RoutedEventArgs e)
+        {
+            var entry = PlayerBackupList.SelectedItem as PlayerProfileBackup.Entry;
+            if (entry == null)
+            {
+                MessageBox.Show("Select a player backup in the list first.", "Player Backup", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            if (MessageBox.Show($"Delete the backup of {entry.Name} from {entry.Time:yyyy-MM-dd HH:mm:ss}?", "Player Backup", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
+                return;
+
+            try
+            {
+                File.Delete(entry.File);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Player Backup", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
+            RefreshPlayerBackups();
+        }
+
         private async void Start_Click(object sender, RoutedEventArgs e)
+        {
+            if (IsStartBusy)
+                return;
+
+            switch (this.Runtime.Status)
+            {
+                case ServerStatus.Stopped:
+                    StartBusyText = "Starting...";
+                    break;
+                case ServerStatus.Initializing:
+                case ServerStatus.Running:
+                    StartBusyText = "Stopping...";
+                    break;
+                default:
+                    StartBusyText = "Please wait...";
+                    break;
+            }
+
+            IsStartBusy = true;
+            try
+            {
+                // let the button repaint before the (blocking) work of the start begins
+                await System.Windows.Threading.Dispatcher.Yield(System.Windows.Threading.DispatcherPriority.Background);
+                await StartStopAsync();
+            }
+            finally
+            {
+                IsStartBusy = false;
+            }
+        }
+
+        private async Task StartStopAsync()
         {
             MessageBoxResult result = MessageBoxResult.None;
 
@@ -548,7 +689,7 @@ namespace ServerManagerTool
                                     return;
                             }
 
-                            await this.Server.StartAsync();
+                            await this.Server.StartAsync(alreadySaved: true);
 
                             // update the profile's last started time
                             UpdateLastStartedDetails(true);

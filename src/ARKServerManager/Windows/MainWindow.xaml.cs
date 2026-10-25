@@ -38,7 +38,6 @@ namespace ServerManagerTool
         private readonly ActionQueue versionChecker;
         private readonly ActionQueue scheduledTaskChecker;
         private readonly ActionQueue webDashboardChecker;
-        private readonly ActionQueue profileAutoSaver;
 
 
         public static readonly DependencyProperty AppInstanceProperty = DependencyProperty.Register(nameof(AppInstance), typeof(App), typeof(MainWindow), new PropertyMetadata(null));
@@ -75,6 +74,7 @@ namespace ServerManagerTool
             this.CommonConfig = CommonConfig.Default;
 
             InitializeComponent();
+            ManagerVersionText.Text = "v" + App.Instance.Version;
             WindowUtils.RemoveDefaultResourceDictionary(this, Config.Default.DefaultGlobalizationFile);
 
             this.ServerManager = ServerManager.Instance;
@@ -127,7 +127,6 @@ namespace ServerManagerTool
             this.versionChecker = new ActionQueue();
             this.scheduledTaskChecker = new ActionQueue();
             this.webDashboardChecker = new ActionQueue();
-            this.profileAutoSaver = new ActionQueue();
 
             IsAdministrator = SecurityUtils.IsAdministrator();
             if (!string.IsNullOrWhiteSpace(App.Instance.Title))
@@ -404,7 +403,16 @@ namespace ServerManagerTool
                     loadedProfiles,
                     profileFiles.Count,
                     profileFiles.Count - processedProfiles);
+
+                // let the bar and the count paint before the next profile is read
+                // (ApplicationIdle: everything queued, including the paint, runs first; a short pause keeps the count readable)
+                await System.Windows.Threading.Dispatcher.Yield(System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                await Task.Delay(120);
             }
+
+            // the bar stays full while the servers are sorted and checked, until the normal header comes back
+            ServerLoadStatus = _globalizer.GetResourceString("MainWindow_ServerLoadPreparing");
+            await System.Windows.Threading.Dispatcher.Yield(System.Windows.Threading.DispatcherPriority.Render);
 
             ServerManager.Instance.SortServers();
             ServerManager.Instance.CheckProfiles();
@@ -434,9 +442,10 @@ namespace ServerManagerTool
                 Tabs.SelectedIndex = 0;
 
             this.versionChecker.PostAction(CheckForUpdates).DoNotWait();
+            StartUpdateCheckTimer();
+            StartFreezeMonitor();
             this.scheduledTaskChecker.PostAction(CheckForScheduledTasks).DoNotWait();
             this.webDashboardChecker.PostAction(CheckForWebDashboard).DoNotWait();
-            this.profileAutoSaver.PostAction(AutoSaveProfiles).DoNotWait();
         }
 
         private void MainWindow_LocationChanged(object sender, EventArgs e)
@@ -524,7 +533,6 @@ namespace ServerManagerTool
             this.versionChecker.DisposeAsync().DoNotWait();
             this.scheduledTaskChecker.DisposeAsync().DoNotWait();
             this.webDashboardChecker.DisposeAsync().DoNotWait();
-            this.profileAutoSaver.DisposeAsync().DoNotWait();
         }
 
         private void ResourceDictionaryChangedEvent(object source, ResourceDictionaryChangedEventArgs e)
@@ -573,11 +581,12 @@ namespace ServerManagerTool
             if (string.IsNullOrWhiteSpace(Config.Default.DonationUrl))
                 return;
 
-            var result = MessageBox.Show(_globalizer.GetResourceString("MainWindow_Donate_Label"), _globalizer.GetResourceString("MainWindow_Donate_Title"), MessageBoxButton.YesNo, MessageBoxImage.Question);
-            if (result == MessageBoxResult.Yes)
-            {
-                Process.Start(Config.Default.DonationUrl);
-            }
+            Process.Start(new ProcessStartInfo(Config.Default.DonationUrl) { UseShellExecute = true });
+        }
+
+        private void UpdateNotes_Click(object sender, RoutedEventArgs e)
+        {
+            new UpdateNotesWindow { Owner = this }.ShowDialog();
         }
 
         private void Help_Click(object sender, RoutedEventArgs args)
@@ -1105,6 +1114,15 @@ namespace ServerManagerTool
 
         private async Task CheckForUpdates()
         {
+            await CheckForUpdatesOnce();
+
+            await Task.Delay(Config.Default.UpdateCheckTime * 60 * 1000);
+            this.versionChecker.PostAction(CheckForUpdates).DoNotWait();
+        }
+
+        // one check, without scheduling the next one (the timer below does the scheduling)
+        private async Task CheckForUpdatesOnce()
+        {
             string url = App.Instance.BetaVersion ? Config.Default.LatestASMBetaVersionUrl : Config.Default.LatestASMVersionUrl;
             var newVersion = await NetworkUtils.GetLatestServerManagerVersion(url);
 
@@ -1125,9 +1143,118 @@ namespace ServerManagerTool
                     // Ignore.
                 }
             }).DoNotWait();
+        }
 
-            await Task.Delay(Config.Default.UpdateCheckTime * 60 * 1000);
-            this.versionChecker.PostAction(CheckForUpdates).DoNotWait();
+        private System.Windows.Threading.DispatcherTimer _updateCheckTimer;
+        private DateTime _nextUpdateCheck;
+
+        // Records in the log whenever the window stops responding for more than about two seconds, and for how long, so a freeze can be matched with what
+        // was happening at that time (a Start, a Stop, a server closing ...). A timer on the window's thread runs every 250 ms; if it comes late, the
+        // thread was busy.
+        private System.Windows.Threading.DispatcherTimer _freezeMonitorTimer;
+        private DateTime _freezeMonitorLastTick;
+
+        private void StartFreezeMonitor()
+        {
+            _freezeMonitorLastTick = DateTime.UtcNow;
+            _freezeMonitorTimer = new System.Windows.Threading.DispatcherTimer { Interval = TimeSpan.FromMilliseconds(250) };
+            _freezeMonitorTimer.Tick += (s, e) =>
+            {
+                var now = DateTime.UtcNow;
+                var late = now - _freezeMonitorLastTick;
+                _freezeMonitorLastTick = now;
+                if (late > TimeSpan.FromSeconds(2))
+                    Logger.Warn($"The manager's window was not responding for {late.TotalSeconds:0.0} seconds (until {DateTime.Now:HH:mm:ss}).");
+            };
+            _freezeMonitorTimer.Start();
+        }
+
+        private static TimeSpan UpdateCheckInterval()
+            => TimeSpan.FromMinutes(Math.Max(5, Math.Min(1440, Config.Default.ManagerUpdateCheckMinutes)));
+
+        private void StartUpdateCheckTimer()
+        {
+            _nextUpdateCheck = DateTime.Now + UpdateCheckInterval();
+            _updateCheckTimer = new System.Windows.Threading.DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
+            _updateCheckTimer.Tick += (s, e) =>
+            {
+                try
+                {
+                    var tip = "Check now if there is a newer version of the manager.";
+                    if (!Config.Default.ManagerUpdateAutoCheck)
+                    {
+                        tip += "\r\nThe automatic check is off (Global Settings > Manager Updates).";
+                    }
+                    else
+                    {
+                        var left = _nextUpdateCheck - DateTime.Now;
+                        if (left <= TimeSpan.Zero)
+                        {
+                            _nextUpdateCheck = DateTime.Now + UpdateCheckInterval();
+                            this.versionChecker.PostAction(CheckForUpdatesOnce).DoNotWait();
+                            left = _nextUpdateCheck - DateTime.Now;
+                        }
+                        // a changed interval takes effect at once, never later than the new interval
+                        if (left > UpdateCheckInterval())
+                            _nextUpdateCheck = DateTime.Now + UpdateCheckInterval();
+                        tip += $"\r\nNext automatic check in {(int)left.TotalMinutes}:{left.Seconds:00} (every {(int)UpdateCheckInterval().TotalMinutes} minutes).";
+                    }
+
+                    CheckUpdateButton.ToolTip = tip;
+                }
+                catch (Exception)
+                {
+                    // Ignore.
+                }
+            };
+            _updateCheckTimer.Start();
+        }
+
+        // The green "Check for update" button: asks GitHub now and says what it found; a newer version also shows the green Upgrade now bar.
+        private async void CheckForUpdateNow_Click(object sender, RoutedEventArgs e)
+        {
+            var url = App.Instance.BetaVersion ? Config.Default.LatestASMBetaVersionUrl : Config.Default.LatestASMVersionUrl;
+            if (string.IsNullOrWhiteSpace(url))
+            {
+                MessageBox.Show("This copy of the manager has no update address to check.", "Check for update", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            var previous = CheckUpdateButton.Content;
+            CheckUpdateButton.IsEnabled = false;
+            CheckUpdateButton.Content = "Checking...";
+            try
+            {
+                // a throw-away query keeps a cached copy of the version file from being used
+                var newVersion = await NetworkUtils.GetLatestServerManagerVersion(url + (url.Contains("?") ? "&" : "?") + "t=" + DateTime.UtcNow.Ticks);
+
+                if (newVersion.Major == 0 && newVersion.Minor == 0)
+                {
+                    MessageBox.Show("The manager could not reach the update page. Check the internet connection and try again.", "Check for update", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                Version.TryParse(App.Instance.Version, out var appVersion);
+                this.LatestServerManagerVersion = newVersion;
+                this.NewServerManagerAvailable = appVersion < newVersion;
+                _nextUpdateCheck = DateTime.Now + UpdateCheckInterval();
+                Logger.Info("Check for update (button): latest " + newVersion + ", this manager " + App.Instance.Version);
+
+                if (this.NewServerManagerAvailable)
+                    MessageBox.Show($"A new version is available: {newVersion}\r\n\r\nThis manager is {App.Instance.Version}. Click \"Upgrade now\" in the green bar at the top to update.", "Check for update", MessageBoxButton.OK, MessageBoxImage.Information);
+                else
+                    MessageBox.Show($"You have the latest version ({App.Instance.Version}).", "Check for update", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                Logger.Error("Check for update (button) failed: " + ex.Message);
+                MessageBox.Show("The check for an update failed: " + ex.Message, "Check for update", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+            finally
+            {
+                CheckUpdateButton.Content = previous;
+                CheckUpdateButton.IsEnabled = true;
+            }
         }
 
         private async Task CheckForScheduledTasks()
@@ -1198,55 +1325,6 @@ namespace ServerManagerTool
 
             await Task.Delay(Config.Default.ScheduledTasksCheckTime * 1 * 1000);
             this.scheduledTaskChecker.PostAction(CheckForScheduledTasks).DoNotWait();
-        }
-
-        private async Task AutoSaveProfiles()
-        {
-            // Do not start another full-cluster operation immediately after the
-            // startup loader finishes. Wait for the configured autosave interval
-            // first, then stagger the individual profile saves below.
-            await Task.Delay(Math.Max(1, Config.Default.ProfileAutoSavePeriod) * 60 * 1000);
-
-            // Periodically saves every open profile tab so unsaved changes made in
-            // the UI aren't lost if the person forgets to click Save (or the app
-            // closes unexpectedly). Runs unconditionally on a timer rather than
-            // tracking per-field dirty state, similar to autosave in Office/etc.
-            if (Config.Default.ProfileAutoSavePeriod > 0)
-            {
-                var servers = new List<Server>();
-                await TaskUtils.RunOnUIThreadAsync(() =>
-                {
-                    servers = ServerManager.Instance.Servers.ToList();
-                });
-
-                // Saving every profile inside one dispatcher callback blocked the
-                // window for the whole cluster. Save one profile per callback and
-                // pause briefly between them so input, painting and status updates
-                // continue to be processed.
-                foreach (var server in servers)
-                {
-                    await TaskUtils.RunOnUIThreadAsync(() =>
-                    {
-                        try
-                        {
-                            if (server?.Profile == null || server.Profile.SOTF_Enabled)
-                                return;
-
-                            server.Profile.Save(false, false, null);
-                        }
-                        catch (Exception ex)
-                        {
-                            Logger.Debug($"{nameof(AutoSaveProfiles)} - Unable to auto-save profile '{server?.Profile?.ProfileName}'. {ex.Message}");
-                        }
-                    });
-
-                    await Task.Delay(75);
-                }
-
-                Logger.Info($"{nameof(AutoSaveProfiles)} performed");
-            }
-
-            this.profileAutoSaver.PostAction(AutoSaveProfiles).DoNotWait();
         }
 
         private async Task CheckForWebDashboard()

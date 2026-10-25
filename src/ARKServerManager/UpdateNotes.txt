@@ -1,0 +1,5 @@
+﻿Version 1.1.0.2
+  - The manager can now update itself from its own GitHub page: the green "Check for manager updates" button (top right) looks for a newer version, and a newer version shows the green Upgrade bar. It also checks by itself every 30 minutes (Global Settings > Manager Updates).
+
+  - New header buttons: Update notes (this window), Donate and the manager's version.
+

@@ -2,8 +2,13 @@
 #   dist\ASEARKServerManager-Setup-Release.exe   from  src\ARKServerManager\bin\Release
 #   powershell -ExecutionPolicy Bypass -File make-installer.ps1              (builds the manager in Release first)
 #   add -SkipBuild to use the build folder as it is
+#   add -BumpRevision to raise the version number first (needed for each new release; the manager's version is 1.1.0.<revision>)
+#   It also makes the two files of the manager's own upgrade button (GitHub release assets):
+#     dist\version.txt                     just the version number
+#     dist\ASEARKServerManager-Update.zip  the program files
 param(
-    [switch]$SkipBuild
+    [switch]$SkipBuild,
+    [switch]$BumpRevision
 )
 
 $ErrorActionPreference = 'Stop'
@@ -16,6 +21,16 @@ $payloadDir = Join-Path $root 'src\ServerManager.Installer\payload'
 $payload = Join-Path $payloadDir 'payload.zip'
 $dist = Join-Path $root 'dist'
 $setupName = 'ASEARKServerManager-Setup-Release.exe'
+
+if ($BumpRevision) {
+    $text = Get-Content $managerProject -Raw
+    $m = [regex]::Match($text, '<ApplicationRevision>(\d+)</ApplicationRevision>')
+    if (-not $m.Success) { throw 'ApplicationRevision was not found in the manager project.' }
+    $next = [int]$m.Groups[1].Value + 1
+    $text = $text.Replace($m.Value, "<ApplicationRevision>$next</ApplicationRevision>")
+    [System.IO.File]::WriteAllText($managerProject, $text, (New-Object System.Text.UTF8Encoding($true)))
+    Write-Host "Version raised: revision $next"
+}
 
 if (-not $SkipBuild) {
     Write-Host 'Building the manager (Release)...'
@@ -43,6 +58,12 @@ try {
         [void][System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile($zip, $_.FullName, $relative, 'Optimal')
         $count++
     }
+    # the updater cannot replace itself while it runs: the new one travels as NewServerManagerUpdater.exe, and the manager swaps it in at the next upgrade
+    $newUpdater = Join-Path $source 'ServerManagerUpdater.exe'
+    if (Test-Path $newUpdater) {
+        [void][System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile($zip, $newUpdater, 'NewServerManagerUpdater.exe', 'Optimal')
+        $count++
+    }
     Write-Host "  $count files"
 } finally {
     $zip.Dispose()
@@ -58,4 +79,11 @@ if (-not (Test-Path $built)) { throw "Installer not found at $built" }
 
 New-Item -ItemType Directory -Force $dist | Out-Null
 Copy-Item $built (Join-Path $dist $setupName) -Force
+# the manager's own version is the one in its manifest (what the program reports and compares)
+$manifest = Join-Path $source 'ARK Server Manager.exe.manifest'
+$version = ([regex]::Match((Get-Content $manifest -Raw), 'assemblyIdentity name="ARK Server Manager.exe" version="([^"]+)"')).Groups[1].Value
+if (-not $version) { throw 'The version was not found in the manifest.' }
+[System.IO.File]::WriteAllText((Join-Path $dist 'version.txt'), $version)
+Copy-Item $payload (Join-Path $dist 'ASEARKServerManager-Update.zip') -Force
+Write-Host "Update files for GitHub: version.txt ($version) and ASEARKServerManager-Update.zip"
 Write-Host ("Done: {0} ({1:N1} MB)" -f (Join-Path $dist $setupName), ((Get-Item (Join-Path $dist $setupName)).Length / 1MB))
