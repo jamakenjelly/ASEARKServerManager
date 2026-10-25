@@ -6618,6 +6618,9 @@ namespace ServerManagerTool.Lib
                 case ServerProfileCategory.ServerFiles:
                     SyncServerFiles(sourceProfile);
                     break;
+                case ServerProfileCategory.PlayerProfileBackup:
+                    SyncPlayerProfileBackupSection(sourceProfile);
+                    break;
                 case ServerProfileCategory.CustomEngineSettings:
                     SyncCustomEngineSettingsSection(sourceProfile);
                     break;
@@ -6673,8 +6676,6 @@ namespace ServerManagerTool.Lib
 
             // server options
             this.SetValue(CultureProperty, sourceProfile.Culture);
-            this.SetValue(PlayerBackupEnabledProperty, sourceProfile.PlayerBackupEnabled);
-            this.SetValue(PlayerBackupKeepProperty, sourceProfile.PlayerBackupKeep);
             this.SetValue(MaxPlayersProperty, sourceProfile.MaxPlayers);
             this.SetNullableValue(KickIdlePlayersPeriodProperty, sourceProfile.KickIdlePlayersPeriod);
             this.SetValue(EnableBanListURLProperty, sourceProfile.EnableBanListURL);
@@ -7241,6 +7242,12 @@ namespace ServerManagerTool.Lib
             this.SetValue(EventColorsChanceOverrideProperty, sourceProfile.EventColorsChanceOverride);
             this.SetNullableValue(NewYear1UTCProperty, sourceProfile.NewYear1UTC);
             this.SetNullableValue(NewYear2UTCProperty, sourceProfile.NewYear2UTC);
+        }
+
+        private void SyncPlayerProfileBackupSection(ServerProfile sourceProfile)
+        {
+            this.SetValue(PlayerBackupEnabledProperty, sourceProfile.PlayerBackupEnabled);
+            this.SetValue(PlayerBackupKeepProperty, sourceProfile.PlayerBackupKeep);
         }
 
         private void SyncServerFiles(ServerProfile sourceProfile)

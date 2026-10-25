@@ -27,5 +27,6 @@
         PreventTransferOverrides,
         PGM,
         SOTF,
+        PlayerProfileBackup,
     }
 }

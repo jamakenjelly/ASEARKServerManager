@@ -258,6 +258,7 @@ namespace ServerManagerTool
             SyncSections.Add(new SyncSection() { Selected = false, Category = ServerProfileCategory.Structures, SectionName = _globalizer.GetResourceString("ServerSettings_StructuresLabel") });
             SyncSections.Add(new SyncSection() { Selected = false, Category = ServerProfileCategory.Engrams, SectionName = _globalizer.GetResourceString("ServerSettings_EngramsLabel") });
             SyncSections.Add(new SyncSection() { Selected = false, Category = ServerProfileCategory.ServerFiles, SectionName = _globalizer.GetResourceString("ServerSettings_ServerFilesLabel") });
+            SyncSections.Add(new SyncSection() { Selected = false, Category = ServerProfileCategory.PlayerProfileBackup, SectionName = _globalizer.GetResourceString("ServerSettings_PlayerBackupLabel") });
             SyncSections.Add(new SyncSection() { Selected = false, Category = ServerProfileCategory.CustomGameUserSettings, SectionName = _globalizer.GetResourceString("ServerSettings_CustomGameUserSettingsLabel") });
             SyncSections.Add(new SyncSection() { Selected = false, Category = ServerProfileCategory.CustomGameSettings, SectionName = _globalizer.GetResourceString("ServerSettings_CustomGameSettingsLabel") });
             if (Config.Default.SectionCustomEngineSettingsEnabled)

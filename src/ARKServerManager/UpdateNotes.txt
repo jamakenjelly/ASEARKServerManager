@@ -1,4 +1,8 @@
-﻿Version 1.1.0.11
+﻿Version 1.1.0.12
+  - Sync Profile now has a "Player Profile Backup" section of its own (the Enable tick and the number of files to keep), next to Player Access Lists. It used to be copied only as a side effect of syncing Administration.
+
+
+Version 1.1.0.11
   - Game data from the servers' own files. When the manager starts it reads every mod installed in your servers (ShooterGame\Content\Mods) and writes a game data file for each one, named after the mod (from its .mod file): the mod's items, engrams, creatures, spawn containers and supply crates, so they show in the lists with the mod's name. The base game's files are read the same way for anything the built-in data does not have yet (new items from the master item list, engrams, creatures, spawn containers, supply crates). The files are made again only when a mod or the server build changes, and are used the next time the manager starts. The Game Data window shows the mod's name for these files.
 
   - + Map / - Map buttons (Administration, next to Total Conversion): add a map to the map list by its launch name and a display name, and remove it again. A map you add is kept in a game data file of its own, so it is still there after a restart.
