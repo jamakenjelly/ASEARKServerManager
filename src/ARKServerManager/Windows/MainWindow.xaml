@@ -213,6 +213,7 @@
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition/>
                 </Grid.RowDefinitions>
                 <DockPanel Grid.Row="0" LastChildFill="False" Height="180">
@@ -781,7 +782,15 @@
                     </Border>
                 </Border>
 
-                <eo:TabControl Name="Tabs" Grid.Row="1" Margin="0" ShowCloseTabButton="True" ShowNewTabButton="True" NewItemRequested="Servers_AddNew" PreviewItemClose="Servers_Remove" ItemsSource="{Binding AllServers}"
+                <!-- a newer version of the manager is on the release page: a bar under the header with the upgrade button -->
+                <Border Grid.Row="1" Background="#FF1E7A3C" Padding="8,4" Visibility="{Binding NewServerManagerAvailable, ElementName=Main, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <DockPanel LastChildFill="False">
+                        <TextBlock DockPanel.Dock="Left" Foreground="White" FontWeight="Bold" VerticalAlignment="Center" Text="{Binding LatestServerManagerVersion, ElementName=Main, StringFormat='A new version of the manager is available: {0}'}"/>
+                        <Button DockPanel.Dock="Right" Padding="14,2" Margin="12,0,0,0" Content="Upgrade now" Click="Upgrade_Click"/>
+                    </DockPanel>
+                </Border>
+
+                <eo:TabControl Name="Tabs" Grid.Row="2" Margin="0" ShowCloseTabButton="True" ShowNewTabButton="True" NewItemRequested="Servers_AddNew" PreviewItemClose="Servers_Remove" ItemsSource="{Binding AllServers}"
                                HeaderTemplate="{StaticResource ServerTabHeaderTemplate}"
                                NewTabButtonStyle="{StaticResource ServerTabNewButtonStyle}"
                                CloseTabButtonStyle="{StaticResource ServerTabCloseButtonStyle}"

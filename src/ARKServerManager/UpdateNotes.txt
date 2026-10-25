@@ -1,4 +1,8 @@
-﻿Version 1.1.0.8
+﻿Version 1.1.0.9
+  - The green "A new version of the manager is available" bar with the Upgrade now button now shows under the header when a newer version is found (it was missing, so "Check for manager updates" had nothing to click).
+
+
+Version 1.1.0.8
   - ArkApi section: new "Install / Update ArkApi" and "Remove ArkApi" buttons with a status line (installed version, and when a newer one is available). The package (ArkApi 3.56: version.dll, msdia140.dll and a default config.json) comes from this manager's GitHub page. Your plugins in ArkApi\Plugins and the server's config.json are never overwritten, and the server must be stopped first. Remove only takes out version.dll.
 
 
