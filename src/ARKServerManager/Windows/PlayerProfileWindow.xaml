@@ -11,7 +11,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
-    <Grid Background="{StaticResource BeigeGradient}">
+    <Grid Background="{DynamicResource BeigeGradient}">
         <StackPanel Margin="3" CanVerticallyScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto">
             <Grid>
                 <Grid.RowDefinitions>

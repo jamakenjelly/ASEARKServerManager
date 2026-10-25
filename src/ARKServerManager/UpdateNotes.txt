@@ -1,4 +1,8 @@
-﻿Version 1.1.0.3
+﻿Version 1.1.0.4
+  - Two looks, as in the ASA manager: Default (the original beige look) and Light (blue), chosen with the Default / Light buttons in the header. The choice is kept for this PC and shows in every open window at once. Buttons are now light blue and rounded in both looks.
+
+
+Version 1.1.0.3
   - After the profiles have loaded, the header looks like the ASA manager's: "All n servers loaded" above the All / PVE / PVP buttons on the left, and on the right the public IP, Server Monitor, Update notes, Donate and Check for manager updates (with the version). The header is taller to fit them and has the same banner picture as the ASA manager.
 
 

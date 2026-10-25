@@ -20,12 +20,12 @@
         </ResourceDictionary>
     </Window.Resources>
 
-    <Grid Background="{StaticResource GradientBackground}">
+    <Grid Background="{DynamicResource GradientBackground}">
         <DockPanel x:Name="dockPanel">
-            <Border DockPanel.Dock="Top" BorderThickness="1" BorderBrush="LightGray" Margin="2" Background="{StaticResource HeaderBrush}">
+            <Border DockPanel.Dock="Top" BorderThickness="1" BorderBrush="LightGray" Margin="2" Background="{DynamicResource HeaderBrush}">
                 <DockPanel Margin="2,2,2,1" LastChildFill="False">
                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
-                        <Menu VerticalAlignment="Center" Margin="1" Background="{StaticResource HeaderBrush}">
+                        <Menu VerticalAlignment="Center" Margin="1" Background="{DynamicResource HeaderBrush}">
                             <MenuItem Header="{DynamicResource PlayerList_Menu_Players}">
                                 <MenuItem Header="{DynamicResource PlayerList_Menu_Sort}">
                                     <MenuItem Header="{DynamicResource PlayerList_Menu_SortName}"           IsCheckable="True" Command="{Binding SortPlayersCommand}"   CommandParameter="{x:Static en:PlayerSortType.Name}"           IsChecked="{Binding PlayerSorting, Converter={StaticResource EnumConverter}, ConverterParameter=Name}"/>

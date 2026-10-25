@@ -771,6 +771,9 @@ namespace ServerManagerTool
                 Environment.Exit(0);
             }
 
+            // the look of the manager (Default or Light), chosen with the buttons in the main window
+            AppTheme.Apply(Config.Default.ThemeName, false);
+
             DataFileDetails.PlayerFileExtension = Config.Default.PlayerFileExtension;
             DataFileDetails.TribeFileExtension = Config.Default.TribeFileExtension;
 

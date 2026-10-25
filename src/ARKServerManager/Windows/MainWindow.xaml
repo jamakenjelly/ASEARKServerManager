@@ -155,7 +155,7 @@
                     <TextBlock Margin="2,0,0,0" VerticalAlignment="Center" Text="{Binding Profile.ProfileName}">
                         <TextBlock.Style>
                             <Style TargetType="{x:Type TextBlock}">
-                                <Setter Property="Foreground" Value="Black"/>
+                                <Setter Property="Foreground" Value="{DynamicResource ThemeText}"/>
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding Profile.SOTF_Enabled}" Value="True">
                                         <Setter Property="Foreground" Value="Red"/>
@@ -328,6 +328,14 @@
                         </Button>
                     </Grid>
 
+                    <!-- the look of the manager: Default or Light (blue) -->
+                    <Border DockPanel.Dock="Right" Margin="0,0,6,0" Padding="3" Height="42" VerticalAlignment="Center" Background="#333333" BorderBrush="#777777" BorderThickness="1" CornerRadius="4">
+                        <StackPanel Orientation="Vertical" VerticalAlignment="Center">
+                            <Button x:Name="DefaultThemeButton" Content="Default" Width="46" Height="16" FontSize="10" Padding="0" Margin="0,0,0,2" Foreground="White" Background="#FF333333" BorderBrush="#FF777777" ToolTip="Default look" Click="DefaultTheme_Click"/>
+                            <Button x:Name="LightThemeButton" Content="Light" Width="46" Height="16" FontSize="10" Padding="0" Foreground="White" Background="#FF333333" BorderBrush="#FF777777" ToolTip="Light blue look" Click="LightTheme_Click"/>
+                        </StackPanel>
+                    </Border>
+
                     <Grid DockPanel.Dock="Right" VerticalAlignment="Center" Margin="10,0,10,0">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -365,9 +373,9 @@
                             </Label.Style>
                         </Label>
                         <StackPanel Grid.Row="1" Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Margin="5,0,0,0">
-                            <Button Tag="PVE" Margin="5,0,0,0" Background="#00AA00" Foreground="White" Padding="1" Content="{DynamicResource MainWindow_AutoBackupTaskRunLabel}" BorderThickness="1" BorderBrush="White" Click="AutoBackupTaskRun_Click" VerticalAlignment="Center" ToolTip="{DynamicResource MainWindow_AutoBackupTaskRunTooltip}">
+                            <Button Tag="PVE" Margin="5,0,0,0" Background="#00AA00" Foreground="White" Padding="1" Content="{DynamicResource MainWindow_AutoBackupTaskRunLabel}" BorderThickness="1" BorderBrush="{DynamicResource ThemeTaskBorder}" Click="AutoBackupTaskRun_Click" VerticalAlignment="Center" ToolTip="{DynamicResource MainWindow_AutoBackupTaskRunTooltip}">
                                 <Button.Style>
-                                    <Style TargetType="{x:Type Button}">
+                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
                                         <Setter Property="Visibility" Value="Collapsed"/>
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding AutoBackupState}" Value="{x:Static tsk:TaskState.Ready}">
@@ -377,9 +385,9 @@
                                     </Style>
                                 </Button.Style>
                             </Button>
-                            <Button Tag="PVE" Margin="5,0,0,0" Background="#AA8A00" Foreground="White" Padding="1" BorderThickness="1" BorderBrush="White" Click="AutoBackupTaskState_Click" VerticalAlignment="Center">
+                            <Button Tag="PVE" Margin="5,0,0,0" Background="#AA8A00" Foreground="White" Padding="1" BorderThickness="1" BorderBrush="{DynamicResource ThemeTaskBorder}" Click="AutoBackupTaskState_Click" VerticalAlignment="Center">
                                 <Button.Style>
-                                    <Style TargetType="{x:Type Button}">
+                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
                                         <Setter Property="Content" Value="{DynamicResource MainWindow_AutoBackupTaskEnableLabel}"/>
                                         <Setter Property="ToolTip" Value="{DynamicResource MainWindow_AutoBackupTaskEnableTooltip}"/>
                                         <Setter Property="Visibility" Value="Collapsed"/>
@@ -404,9 +412,9 @@
                                     </Style>
                                 </Button.Style>
                             </Button>
-                            <Button Tag="PVE" Margin="5,0,0,0" Background="#AA8A00" Foreground="White" Padding="1" Content="{DynamicResource MainWindow_AutoBackupTaskStopLabel}" BorderThickness="1" BorderBrush="White" Click="AutoBackupTaskStop_Click" VerticalAlignment="Center" ToolTip="{DynamicResource MainWindow_AutoBackupTaskStopTooltip}">
+                            <Button Tag="PVE" Margin="5,0,0,0" Background="#AA8A00" Foreground="White" Padding="1" Content="{DynamicResource MainWindow_AutoBackupTaskStopLabel}" BorderThickness="1" BorderBrush="{DynamicResource ThemeTaskBorder}" Click="AutoBackupTaskStop_Click" VerticalAlignment="Center" ToolTip="{DynamicResource MainWindow_AutoBackupTaskStopTooltip}">
                                 <Button.Style>
-                                    <Style TargetType="{x:Type Button}">
+                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
                                         <Setter Property="Visibility" Value="Collapsed"/>
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding AutoBackupState}" Value="{x:Static tsk:TaskState.Running}">
@@ -438,9 +446,9 @@
                             </Label.Style>
                         </Label>
                         <StackPanel Grid.Row="2" Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Margin="5,0,0,0">
-                            <Button Tag="PVP" Margin="5,0,0,0" Background="#00AA00" Foreground="White" Padding="1" Content="{DynamicResource MainWindow_AutoBackupTaskRunLabel}" BorderThickness="1" BorderBrush="White" Click="AutoBackupTaskRun_Click" VerticalAlignment="Center" ToolTip="{DynamicResource MainWindow_AutoBackupTaskRunTooltip}">
+                            <Button Tag="PVP" Margin="5,0,0,0" Background="#00AA00" Foreground="White" Padding="1" Content="{DynamicResource MainWindow_AutoBackupTaskRunLabel}" BorderThickness="1" BorderBrush="{DynamicResource ThemeTaskBorder}" Click="AutoBackupTaskRun_Click" VerticalAlignment="Center" ToolTip="{DynamicResource MainWindow_AutoBackupTaskRunTooltip}">
                                 <Button.Style>
-                                    <Style TargetType="{x:Type Button}">
+                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
                                         <Setter Property="Visibility" Value="Collapsed"/>
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding AutoBackupStatePVP}" Value="{x:Static tsk:TaskState.Ready}">
@@ -450,9 +458,9 @@
                                     </Style>
                                 </Button.Style>
                             </Button>
-                            <Button Tag="PVP" Margin="5,0,0,0" Background="#AA8A00" Foreground="White" Padding="1" BorderThickness="1" BorderBrush="White" Click="AutoBackupTaskState_Click" VerticalAlignment="Center">
+                            <Button Tag="PVP" Margin="5,0,0,0" Background="#AA8A00" Foreground="White" Padding="1" BorderThickness="1" BorderBrush="{DynamicResource ThemeTaskBorder}" Click="AutoBackupTaskState_Click" VerticalAlignment="Center">
                                 <Button.Style>
-                                    <Style TargetType="{x:Type Button}">
+                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
                                         <Setter Property="Content" Value="{DynamicResource MainWindow_AutoBackupTaskEnableLabel}"/>
                                         <Setter Property="ToolTip" Value="{DynamicResource MainWindow_AutoBackupTaskEnableTooltip}"/>
                                         <Setter Property="Visibility" Value="Collapsed"/>
@@ -477,9 +485,9 @@
                                     </Style>
                                 </Button.Style>
                             </Button>
-                            <Button Tag="PVP" Margin="5,0,0,0" Background="#AA8A00" Foreground="White" Padding="1" Content="{DynamicResource MainWindow_AutoBackupTaskStopLabel}" BorderThickness="1" BorderBrush="White" Click="AutoBackupTaskStop_Click" VerticalAlignment="Center" ToolTip="{DynamicResource MainWindow_AutoBackupTaskStopTooltip}">
+                            <Button Tag="PVP" Margin="5,0,0,0" Background="#AA8A00" Foreground="White" Padding="1" Content="{DynamicResource MainWindow_AutoBackupTaskStopLabel}" BorderThickness="1" BorderBrush="{DynamicResource ThemeTaskBorder}" Click="AutoBackupTaskStop_Click" VerticalAlignment="Center" ToolTip="{DynamicResource MainWindow_AutoBackupTaskStopTooltip}">
                                 <Button.Style>
-                                    <Style TargetType="{x:Type Button}">
+                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
                                         <Setter Property="Visibility" Value="Collapsed"/>
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding AutoBackupStatePVP}" Value="{x:Static tsk:TaskState.Running}">
@@ -511,9 +519,9 @@
                             </Label.Style>
                         </Label>
                         <StackPanel Grid.Row="3" Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Margin="5,0,0,0">
-                            <Button Tag="PVE" Margin="5,0,0,0" Background="#00AA00" Foreground="White" Padding="1" Content="{DynamicResource MainWindow_AutoUpdateTaskRunLabel}" BorderThickness="1" BorderBrush="White" Click="AutoUpdateTaskRun_Click" VerticalAlignment="Center" ToolTip="{DynamicResource MainWindow_AutoUpdateTaskRunTooltip}">
+                            <Button Tag="PVE" Margin="5,0,0,0" Background="#00AA00" Foreground="White" Padding="1" Content="{DynamicResource MainWindow_AutoUpdateTaskRunLabel}" BorderThickness="1" BorderBrush="{DynamicResource ThemeTaskBorder}" Click="AutoUpdateTaskRun_Click" VerticalAlignment="Center" ToolTip="{DynamicResource MainWindow_AutoUpdateTaskRunTooltip}">
                                 <Button.Style>
-                                    <Style TargetType="{x:Type Button}">
+                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
                                         <Setter Property="Visibility" Value="Collapsed"/>
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding AutoUpdateState}" Value="{x:Static tsk:TaskState.Ready}">
@@ -523,9 +531,9 @@
                                     </Style>
                                 </Button.Style>
                             </Button>
-                            <Button Tag="PVE" Margin="5,0,0,0" Background="#AA8A00" Foreground="White" Padding="1" BorderThickness="1" BorderBrush="White" Click="AutoUpdateTaskState_Click" VerticalAlignment="Center">
+                            <Button Tag="PVE" Margin="5,0,0,0" Background="#AA8A00" Foreground="White" Padding="1" BorderThickness="1" BorderBrush="{DynamicResource ThemeTaskBorder}" Click="AutoUpdateTaskState_Click" VerticalAlignment="Center">
                                 <Button.Style>
-                                    <Style TargetType="{x:Type Button}">
+                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
                                         <Setter Property="Content" Value="{DynamicResource MainWindow_AutoUpdateTaskEnableLabel}"/>
                                         <Setter Property="ToolTip" Value="{DynamicResource MainWindow_AutoUpdateTaskEnableTooltip}"/>
                                         <Setter Property="Visibility" Value="Collapsed"/>
@@ -550,9 +558,9 @@
                                     </Style>
                                 </Button.Style>
                             </Button>
-                            <Button Tag="PVE" Margin="5,0,0,0" Background="#AA8A00" Foreground="White" Padding="1" Content="{DynamicResource MainWindow_AutoUpdateTaskStopLabel}" BorderThickness="1" BorderBrush="White" Click="AutoUpdateTaskStop_Click" VerticalAlignment="Center" ToolTip="{DynamicResource MainWindow_AutoUpdateTaskStopTooltip}">
+                            <Button Tag="PVE" Margin="5,0,0,0" Background="#AA8A00" Foreground="White" Padding="1" Content="{DynamicResource MainWindow_AutoUpdateTaskStopLabel}" BorderThickness="1" BorderBrush="{DynamicResource ThemeTaskBorder}" Click="AutoUpdateTaskStop_Click" VerticalAlignment="Center" ToolTip="{DynamicResource MainWindow_AutoUpdateTaskStopTooltip}">
                                 <Button.Style>
-                                    <Style TargetType="{x:Type Button}">
+                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
                                         <Setter Property="Visibility" Value="Collapsed"/>
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding AutoUpdateState}" Value="{x:Static tsk:TaskState.Running}">
@@ -584,9 +592,9 @@
                             </Label.Style>
                         </Label>
                         <StackPanel Grid.Row="4" Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Margin="5,0,0,0">
-                            <Button Tag="PVP" Margin="5,0,0,0" Background="#00AA00" Foreground="White" Padding="1" Content="{DynamicResource MainWindow_AutoUpdateTaskRunLabel}" BorderThickness="1" BorderBrush="White" Click="AutoUpdateTaskRun_Click" VerticalAlignment="Center" ToolTip="{DynamicResource MainWindow_AutoUpdateTaskRunTooltip}">
+                            <Button Tag="PVP" Margin="5,0,0,0" Background="#00AA00" Foreground="White" Padding="1" Content="{DynamicResource MainWindow_AutoUpdateTaskRunLabel}" BorderThickness="1" BorderBrush="{DynamicResource ThemeTaskBorder}" Click="AutoUpdateTaskRun_Click" VerticalAlignment="Center" ToolTip="{DynamicResource MainWindow_AutoUpdateTaskRunTooltip}">
                                 <Button.Style>
-                                    <Style TargetType="{x:Type Button}">
+                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
                                         <Setter Property="Visibility" Value="Collapsed"/>
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding AutoUpdateStatePVP}" Value="{x:Static tsk:TaskState.Ready}">
@@ -596,9 +604,9 @@
                                     </Style>
                                 </Button.Style>
                             </Button>
-                            <Button Tag="PVP" Margin="5,0,0,0" Background="#AA8A00" Foreground="White" Padding="1" BorderThickness="1" BorderBrush="White" Click="AutoUpdateTaskState_Click" VerticalAlignment="Center">
+                            <Button Tag="PVP" Margin="5,0,0,0" Background="#AA8A00" Foreground="White" Padding="1" BorderThickness="1" BorderBrush="{DynamicResource ThemeTaskBorder}" Click="AutoUpdateTaskState_Click" VerticalAlignment="Center">
                                 <Button.Style>
-                                    <Style TargetType="{x:Type Button}">
+                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
                                         <Setter Property="Content" Value="{DynamicResource MainWindow_AutoUpdateTaskEnableLabel}"/>
                                         <Setter Property="ToolTip" Value="{DynamicResource MainWindow_AutoUpdateTaskEnableTooltip}"/>
                                         <Setter Property="Visibility" Value="Collapsed"/>
@@ -623,9 +631,9 @@
                                     </Style>
                                 </Button.Style>
                             </Button>
-                            <Button Tag="PVP" Margin="5,0,0,0" Background="#AA8A00" Foreground="White" Padding="1" Content="{DynamicResource MainWindow_AutoUpdateTaskStopLabel}" BorderThickness="1" BorderBrush="White" Click="AutoUpdateTaskStop_Click" VerticalAlignment="Center" ToolTip="{DynamicResource MainWindow_AutoUpdateTaskStopTooltip}">
+                            <Button Tag="PVP" Margin="5,0,0,0" Background="#AA8A00" Foreground="White" Padding="1" Content="{DynamicResource MainWindow_AutoUpdateTaskStopLabel}" BorderThickness="1" BorderBrush="{DynamicResource ThemeTaskBorder}" Click="AutoUpdateTaskStop_Click" VerticalAlignment="Center" ToolTip="{DynamicResource MainWindow_AutoUpdateTaskStopTooltip}">
                                 <Button.Style>
-                                    <Style TargetType="{x:Type Button}">
+                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
                                         <Setter Property="Visibility" Value="Collapsed"/>
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding AutoUpdateStatePVP}" Value="{x:Static tsk:TaskState.Running}">
@@ -659,7 +667,7 @@
                         <StackPanel Grid.Row="5" Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Margin="5,0,0,0">
                             <Button Margin="5,0,0,0" Padding="1" BorderThickness="1" BorderBrush="White" Click="WebDashboardTaskState_Click" VerticalAlignment="Center" Content="{Binding WebDashboardButtonLabel}">
                                 <Button.Style>
-                                    <Style TargetType="{x:Type Button}">
+                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
                                         <Setter Property="Visibility" Value="Visible"/>
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding WebDashboardState}" Value="Disabled">

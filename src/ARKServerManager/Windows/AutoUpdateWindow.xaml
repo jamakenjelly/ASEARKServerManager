@@ -13,7 +13,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
-    <Grid Background="{StaticResource GradientBackground}">
+    <Grid Background="{DynamicResource GradientBackground}">
         <StackPanel HorizontalAlignment="Stretch" Margin="10" VerticalAlignment="Stretch" Width="Auto">
             <ProgressBar x:Name="CompletionProgress" Height="10"/>
             <Label x:Name="StatusLabel" Content="{DynamicResource AutoUpdater_Status}" HorizontalContentAlignment="Center"/>

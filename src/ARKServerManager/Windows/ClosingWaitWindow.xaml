@@ -1,4 +1,4 @@
-<Window x:Class="ServerManagerTool.ClosingWaitWindow"
+﻿<Window x:Class="ServerManagerTool.ClosingWaitWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Width="420" ResizeMode="NoResize" SizeToContent="Height" WindowStyle="SingleBorderWindow" WindowStartupLocation="CenterOwner" ShowInTaskbar="False"
@@ -11,7 +11,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
-    <Grid Background="{StaticResource BeigeGradient}" Margin="10">
+    <Grid Background="{DynamicResource BeigeGradient}" Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>

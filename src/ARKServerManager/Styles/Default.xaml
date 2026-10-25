@@ -28,31 +28,16 @@
     <cc:StringNullOrEmptyToVisibilityConverter x:Key="StringNullOrEmptyToVisibilityConverter"/>
     <cc:InvertStringNullOrEmptyToVisibilityConverter x:Key="InvertStringNullOrEmptyToVisibilityConverter"/>
 
-    <SolidColorBrush x:Key="BeigeBorder" Color="#FFD8CCBC"/>
-    <SolidColorBrush x:Key="BeigeLabel" Color="#FFE6DFD8"/>
     <SolidColorBrush x:Key="DarkBorder" Color="#FF10274F"/>
-    <SolidColorBrush x:Key="HeaderBrush" Color="#FFF0F0F0"/>
     <SolidColorBrush x:Key="SolidBackground" Color="White" />
     <SolidColorBrush x:Key="WarningMessage" Color="Red"/>
     <SolidColorBrush x:Key="TabItem.Selected.Background" Color="#FFFFFF"/>
     <SolidColorBrush x:Key="TabItem.Selected.Border" Color="#ACACAC"/>
-    <SolidColorBrush x:Key="UnSyncedSetting" Color="RoyalBlue"/>
-    <SolidColorBrush x:Key="FoundSetting" Color="AliceBlue"/>
-
-    <LinearGradientBrush x:Key="GradientBackground" EndPoint="0.5,1" StartPoint="0.5,0">
-        <GradientStop Color="#FFECE1D4" Offset="1"/>
-        <GradientStop Color="#FFEAE8E6"/>
-    </LinearGradientBrush>
-
-    <LinearGradientBrush x:Key="BeigeGradient" EndPoint="0.5,1" StartPoint="0.5,0">
-        <GradientStop Color="#FFECE1D4" Offset="1"/>
-        <GradientStop Color="#FFEAE8E6"/>
-    </LinearGradientBrush>
 
 
     <!--Generic control styles-->
     <Style TargetType="{x:Type Label}">
-        <Setter Property="Foreground" Value="Black" />
+        <Setter Property="Foreground" Value="{DynamicResource ThemeText}" />
     </Style>
 
     <!--Named styles-->
@@ -60,19 +45,60 @@
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="Width" Value="Auto"/>
         <Setter Property="Height" Value="Auto"/>
-        <Setter Property="BorderBrush" Value="#FFD8CCBC"/>
-        <Setter Property="Background" Value="#FFE6DFD8"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource BeigeBorder}"/>
+        <Setter Property="Background" Value="{DynamicResource BeigeLabel}"/>
     </Style>
 
     <Style x:Key="GroupBoxStyle" TargetType="GroupBox" BasedOn="{StaticResource {x:Type GroupBox}}">
-        <Setter Property="BorderBrush" Value="{StaticResource BeigeBorder}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource BeigeBorder}"/>
         <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
         <Setter Property="Background" Value="Transparent"/>
     </Style>
 
+    <!-- list column headers follow the theme -->
+    <Style TargetType="{x:Type GridViewColumnHeader}">
+        <Setter Property="Foreground" Value="{DynamicResource ThemeText}"/>
+        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type GridViewColumnHeader}">
+                    <Grid SnapsToDevicePixels="True">
+                        <Border Background="{DynamicResource ThemeButtonBrush}" BorderBrush="{DynamicResource ThemeButtonBorder}" BorderThickness="0,0,1,1">
+                            <ContentPresenter Margin="4,2" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="Center" RecognizesAccessKey="True"/>
+                        </Border>
+                        <Thumb x:Name="PART_HeaderGripper" HorizontalAlignment="Right" Width="6" Margin="0,0,-3,0" Cursor="SizeWE">
+                            <Thumb.Template>
+                                <ControlTemplate TargetType="{x:Type Thumb}">
+                                    <Border Background="Transparent"/>
+                                </ControlTemplate>
+                            </Thumb.Template>
+                        </Thumb>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- readable disabled fields in both themes -->
+    <Style TargetType="{x:Type TextBox}">
+        <Style.Triggers>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Background" Value="{DynamicResource ThemeLocked}"/>
+                <Setter Property="Foreground" Value="{DynamicResource ThemeDisabledText}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="{x:Type ComboBox}">
+        <Style.Triggers>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Foreground" Value="#FF444444"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
     <Style x:Key="HiddenTextBoxStyle" TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
         <Setter Property="VerticalContentAlignment" Value="Center"/>
-        <Setter Property="Background" Value="Wheat"/>
+        <Setter Property="Background" Value="{DynamicResource ThemeLocked}"/>
         <Setter Property="IsReadOnly" Value="True"/>
     </Style>
 
@@ -89,27 +115,67 @@
         <Setter Property="BorderBrush" Value="{StaticResource DarkBorder}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CornerRadius" Value="3"/>
-        <Setter Property="Background" Value="{StaticResource BeigeLabel}"/>
+        <Setter Property="Background" Value="{DynamicResource BeigeLabel}"/>
     </Style>
 
     <Style x:Key="BorderLightStyle" TargetType="Border">
-        <Setter Property="BorderBrush" Value="{StaticResource BeigeBorder}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource BeigeBorder}"/>
         <Setter Property="BorderThickness" Value="1"/>
     </Style>
 
     <Style x:Key="BorderFillLightStyle" TargetType="Border">
-        <Setter Property="Background" Value="{StaticResource BeigeLabel}"/>
-        <Setter Property="BorderBrush" Value="{StaticResource BeigeBorder}"/>
+        <Setter Property="Background" Value="{DynamicResource BeigeLabel}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource BeigeBorder}"/>
     </Style>
 
     <Style x:Key="GridSplitterBorderStyle" TargetType="GridSplitter">
-        <Setter Property="BorderBrush" Value="{StaticResource BeigeBorder}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource BeigeBorder}"/>
         <Setter Property="BorderThickness" Value="1"/>
     </Style>
     
+    <!-- every button: light blue, rounded, with a blue highlight on hover / press. The highlight is an overlay so buttons that set their own
+         colour (Run, Disable, ...) keep it. -->
+    <Style TargetType="{x:Type Button}">
+        <Setter Property="Foreground" Value="{DynamicResource ThemeText}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeButtonBorder}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Background" Value="{DynamicResource ThemeButtonBrush}"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Padding" Value="1"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid SnapsToDevicePixels="True">
+                        <Border x:Name="bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="3"/>
+                        <Border x:Name="hl" CornerRadius="3" Background="#3A4F9BE8" Opacity="0"/>
+                        <ContentPresenter Margin="{TemplateBinding Padding}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" RecognizesAccessKey="True"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="hl" Property="Opacity" Value="1"/>
+                            <Setter TargetName="bd" Property="BorderBrush" Value="#FF4F86C6"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="hl" Property="Background" Value="#664F9BE8"/>
+                            <Setter TargetName="hl" Property="Opacity" Value="1"/>
+                        </Trigger>
+                        <Trigger Property="IsKeyboardFocused" Value="True">
+                            <Setter TargetName="bd" Property="BorderBrush" Value="#FF4F86C6"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.55"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style x:Key="ButtonStyle1" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
         <Setter Property="Background" Value="#00ffffff"/>
-        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeOutline}"/>
         <Setter Property="Width" Value="22"/>
         <Setter Property="Height" Value="22"/>
         <Setter Property="Margin" Value="2"/>
@@ -117,7 +183,8 @@
     </Style>
     
     <Style x:Key="ButtonStyle2" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
-        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeOutline}"/>
         <Setter Property="Width" Value="22"/>
         <Setter Property="Height" Value="22"/>
         <Setter Property="Margin" Value="2"/>
@@ -126,7 +193,8 @@
     
     <Style x:Key="ButtonStyle3" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
         <Setter Property="Background" Value="#00ffffff"/>
-        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeOutline}"/>
         <Setter Property="Height" Value="22"/>
         <Setter Property="Margin" Value="2"/>
         <Setter Property="Padding" Value="0"/>
@@ -323,9 +391,9 @@
     <SolidColorBrush x:Key="SliderThumb.Static.Border" Color="#FFACACAC"/>
     <SolidColorBrush x:Key="SliderThumb.Track.Border" Color="#FFD6D6D6"/>
     <SolidColorBrush x:Key="SliderThumb.Track.BorderBackground" Color="#FFE7EAEA"/>
-    <SolidColorBrush x:Key="SliderThumb.Grip.Fill" Color="#FFE6DFD8"/>
-    <SolidColorBrush x:Key="SliderThumb.Tick.Bottom" Color="#FFD8CCBC"/>
-    <SolidColorBrush x:Key="SliderThumb.Track.Background" Color="#FFBFA786"/>
+    <SolidColorBrush x:Key="SliderThumb.Grip.Fill" Color="#FFE8EDF3"/>
+    <SolidColorBrush x:Key="SliderThumb.Tick.Bottom" Color="#FFC5CFDA"/>
+    <SolidColorBrush x:Key="SliderThumb.Track.Background" Color="#FF8EA2B8"/>
 
     <!--Expander-->
     <SolidColorBrush x:Key="Expander.MouseOver.Circle.Stroke" Color="#FF5593FF"/>
@@ -577,85 +645,85 @@
 
     <ContentControl x:Key="ServerMonitorButtonContent">
         <StackPanel Orientation="Horizontal" Height="20" Margin="0,0,5,0">
-            <Image Margin="5,1,5,0" Source="{com:Icon Path=/Ark Server Manager;component/Art/Servers.ico,Size=64}" Width="20" VerticalAlignment="Center"/>
+            <Image Margin="5,1,5,0" Source="{com:Icon Path=/ASAARKServerManager Standalone;component/Art/Servers.ico,Size=64}" Width="20" VerticalAlignment="Center"/>
             <Label Content="{DynamicResource ServerMonitor_Title}" VerticalAlignment="Center" Padding="0" FontWeight="Bold"/>
         </StackPanel>
     </ContentControl>
     <ContentControl x:Key="SettingFindButtonContent">
         <StackPanel Orientation="Horizontal" Height="27">
-            <Image Margin="5,0,5,0" Source="{com:Icon Path=/Ark Server Manager;component/Art/Find.ico,Size=32}" Width="16" VerticalAlignment="Center"/>
+            <Image Margin="5,0,5,0" Source="{com:Icon Path=/ASAARKServerManager Standalone;component/Art/Find.ico,Size=32}" Width="16" VerticalAlignment="Center"/>
             <Label Content="{DynamicResource ServerSettings_SettingFindButtonLabel}" VerticalAlignment="Center"/>
         </StackPanel>
     </ContentControl>
     <ContentControl x:Key="SupportZipButtonContent">
         <StackPanel Orientation="Horizontal" Height="27">
-            <Image Margin="5,0,5,0" Source="{com:Icon Path=/Ark Server Manager;component/Art/Zip.ico,Size=32}" Width="16" VerticalAlignment="Center"/>
+            <Image Margin="5,0,5,0" Source="{com:Icon Path=/ASAARKServerManager Standalone;component/Art/Zip.ico,Size=32}" Width="16" VerticalAlignment="Center"/>
             <Label Content="{DynamicResource ServerSettings_SupportZipButtonLabel}" VerticalAlignment="Center"/>
         </StackPanel>
     </ContentControl>
     <ContentControl x:Key="SyncProfileButtonContent">
         <StackPanel Orientation="Horizontal" Height="27">
-            <Image Margin="5,0,5,0" Source="{com:Icon Path=/Ark Server Manager;component/Art/Copy.ico,Size=32}" Width="16" VerticalAlignment="Center"/>
+            <Image Margin="5,0,5,0" Source="{com:Icon Path=/ASAARKServerManager Standalone;component/Art/Copy.ico,Size=32}" Width="16" VerticalAlignment="Center"/>
             <Label Content="{DynamicResource ServerSettings_SyncProfileButtonLabel}" VerticalAlignment="Center"/>
         </StackPanel>
     </ContentControl>
     <ContentControl x:Key="ImportButtonContent">
         <StackPanel Orientation="Horizontal" Height="27">
-            <Image Margin="5,0,5,0" Source="{com:Icon Path=/Ark Server Manager;component/Art/FolderImport.ico,Size=32}" Width="16" VerticalAlignment="Center"/>
+            <Image Margin="5,0,5,0" Source="{com:Icon Path=/ASAARKServerManager Standalone;component/Art/FolderImport.ico,Size=32}" Width="16" VerticalAlignment="Center"/>
             <Label Content="{DynamicResource ServerSettings_ImportButtonLabel}" VerticalAlignment="Center"/>
         </StackPanel>
     </ContentControl>
     <ContentControl x:Key="SaveButtonContent">
         <StackPanel Orientation="Horizontal" Height="27">
-            <Image Margin="5,0,5,0" Source="{com:Icon Path=/Ark Server Manager;component/Art/Save.ico,Size=32}" Width="16" VerticalAlignment="Center"/>
+            <Image Margin="5,0,5,0" Source="{com:Icon Path=/ASAARKServerManager Standalone;component/Art/Save.ico,Size=32}" Width="16" VerticalAlignment="Center"/>
             <Label Content="{DynamicResource ServerSettings_SaveButtonLabel}" VerticalAlignment="Center"/>
         </StackPanel>
     </ContentControl>
     <ContentControl x:Key="StopButtonContent">
         <StackPanel Orientation="Horizontal" Height="27">
-            <Image Margin="5,0,5,0" Source="{com:Icon Path=/Ark Server Manager;component/Art/Stop.ico,Size=32}" Width="16" VerticalAlignment="Center"/>
+            <Image Margin="5,0,5,0" Source="{com:Icon Path=/ASAARKServerManager Standalone;component/Art/Stop.ico,Size=32}" Width="16" VerticalAlignment="Center"/>
             <Label Content="{DynamicResource ServerSettings_StopButtonLabel}" VerticalAlignment="Center"/>
         </StackPanel>
     </ContentControl>
     <ContentControl x:Key="StartButtonContent">
         <StackPanel Orientation="Horizontal" Height="27">
-            <Image Margin="5,0,5,0" Source="{com:Icon Path=/Ark Server Manager;component/Art/Start.ico,Size=32}" Width="16" VerticalAlignment="Center"/>
+            <Image Margin="5,0,5,0" Source="{com:Icon Path=/ASAARKServerManager Standalone;component/Art/Start.ico,Size=32}" Width="16" VerticalAlignment="Center"/>
             <Label Content="{DynamicResource ServerSettings_StartButtonLabel}" VerticalAlignment="Center"/>
         </StackPanel>
     </ContentControl>
     <ContentControl x:Key="OpenRCONButtonContent">
         <StackPanel Orientation="Horizontal"  Height="27">
-            <Image Margin="5,0,5,0" Source="{com:Icon Path=/Ark Server Manager;component/Art/Command.ico,Size=32}" Width="16" VerticalAlignment="Center"/>
+            <Image Margin="5,0,5,0" Source="{com:Icon Path=/ASAARKServerManager Standalone;component/Art/Command.ico,Size=32}" Width="16" VerticalAlignment="Center"/>
             <Label Content="{DynamicResource ServerSettings_RCONButtonLabel}" VerticalAlignment="Center"/>
         </StackPanel>
     </ContentControl>
     <ContentControl x:Key="PlayerListButtonContent">
         <StackPanel Orientation="Horizontal"  Height="27">
-            <Image Margin="5,0,5,0" Source="{com:Icon Path=/Ark Server Manager;component/Art/Players.ico,Size=32}" Width="16" VerticalAlignment="Center"/>
+            <Image Margin="5,0,5,0" Source="{com:Icon Path=/ASAARKServerManager Standalone;component/Art/Players.ico,Size=32}" Width="16" VerticalAlignment="Center"/>
             <Label Content="{DynamicResource ServerSettings_PlayerListButtonLabel}" VerticalAlignment="Center"/>
         </StackPanel>
     </ContentControl>
     <ContentControl x:Key="ResetRCONButtonContent">
         <StackPanel Orientation="Horizontal" Height="20">
-            <Image Margin="5,0,5,0" Source="{com:Icon Path=/Ark Server Manager;component/Art/Refresh.ico,Size=32}" Width="16" VerticalAlignment="Center"/>
+            <Image Margin="5,0,5,0" Source="{com:Icon Path=/ASAARKServerManager Standalone;component/Art/Refresh.ico,Size=32}" Width="16" VerticalAlignment="Center"/>
             <Label Content="{DynamicResource ServerSettings_RCONButtonLabel}" VerticalAlignment="Center" Margin="0,-5,0,-5"/>
         </StackPanel>
     </ContentControl>
     <ContentControl x:Key="UpgradeButtonContent">
         <StackPanel Orientation="Horizontal" Height="27">
-            <Image Margin="5,0,5,0" Source="{com:Icon Path=/Ark Server Manager;component/Art/Download.ico,Size=32}" Width="16" VerticalAlignment="Center"/>
+            <Image Margin="5,0,5,0" Source="{com:Icon Path=/ASAARKServerManager Standalone;component/Art/Download.ico,Size=32}" Width="16" VerticalAlignment="Center"/>
             <Label Content="{DynamicResource ServerSettings_UpgradeButtonLabel}" VerticalAlignment="Center"/>
         </StackPanel>
     </ContentControl>
     <ContentControl x:Key="InstallButtonContent">
         <StackPanel Orientation="Horizontal" Height="27">
-            <Image Margin="5,0,5,0" Source="{com:Icon Path=/Ark Server Manager;component/Art/Download.ico,Size=32}" Width="16" VerticalAlignment="Center"/>
+            <Image Margin="5,0,5,0" Source="{com:Icon Path=/ASAARKServerManager Standalone;component/Art/Download.ico,Size=32}" Width="16" VerticalAlignment="Center"/>
             <Label Content="{DynamicResource ServerSettings_InstallButtonLabel}" VerticalAlignment="Center"/>
         </StackPanel>
     </ContentControl>
     <ContentControl x:Key="CancelInstallButtonContent">
         <StackPanel Orientation="Horizontal" Height="27">
-            <Image Margin="5,0,5,0" Source="{com:Icon Path=/Ark Server Manager;component/Art/Stop.ico,Size=32}" Width="16" VerticalAlignment="Center"/>
+            <Image Margin="5,0,5,0" Source="{com:Icon Path=/ASAARKServerManager Standalone;component/Art/Stop.ico,Size=32}" Width="16" VerticalAlignment="Center"/>
             <Label Content="{DynamicResource ServerSettings_CancelUpgradeButtonLabel}" VerticalAlignment="Center"/>
         </StackPanel>
     </ContentControl>
@@ -666,38 +734,38 @@
     </ContentControl>
     <ContentControl x:Key="ShowCmdButtonContent">
         <StackPanel Orientation="Horizontal" Height="20">
-            <Image Margin="5,0,5,0" Source="{com:Icon Path=/Ark Server Manager;component/Art/Command.ico,Size=32}" Width="16" VerticalAlignment="Center"/>
+            <Image Margin="5,0,5,0" Source="{com:Icon Path=/ASAARKServerManager Standalone;component/Art/Command.ico,Size=32}" Width="16" VerticalAlignment="Center"/>
             <Label Content="{DynamicResource ServerSettings_ShowCommandButtonLabel}" VerticalAlignment="Center" Margin="0,-5,0,-5"/>
         </StackPanel>
     </ContentControl>
     <ContentControl x:Key="CreateSymLinkButtonContent">
         <StackPanel Orientation="Horizontal" Height="20">
-            <Image Margin="5,0,5,0" Source="{com:Icon Path=/Ark Server Manager;component/Art/Command.ico,Size=32}" Width="16" VerticalAlignment="Center"/>
+            <Image Margin="5,0,5,0" Source="{com:Icon Path=/ASAARKServerManager Standalone;component/Art/Command.ico,Size=32}" Width="16" VerticalAlignment="Center"/>
             <Label Content="{DynamicResource ServerSettings_CreateSymbolicLinkButtonLabel}" VerticalAlignment="Center" Margin="0,-5,0,-5"/>
         </StackPanel>
     </ContentControl>
 
     <ContentControl x:Key="ShutdownButtonContent">
         <StackPanel Orientation="Horizontal">
-            <Image Width="16" Height="16" Margin="5,0,5,0" Source="{com:Icon Path=/Ark Server Manager;component/Art/Stop.ico,Size=32}" VerticalAlignment="Center"/>
+            <Image Width="16" Height="16" Margin="5,0,5,0" Source="{com:Icon Path=/ASAARKServerManager Standalone;component/Art/Stop.ico,Size=32}" VerticalAlignment="Center"/>
             <Label Content="{DynamicResource ShutdownWindow_ShutdownButtonLabel}" VerticalAlignment="Center" Padding="5,0"/>
         </StackPanel>
     </ContentControl>
     <ContentControl x:Key="RestartButtonContent">
         <StackPanel Orientation="Horizontal">
-            <Image Width="16" Height="16" Margin="5,0,5,0" Source="{com:Icon Path=/Ark Server Manager;component/Art/Start.ico,Size=32}" VerticalAlignment="Center"/>
+            <Image Width="16" Height="16" Margin="5,0,5,0" Source="{com:Icon Path=/ASAARKServerManager Standalone;component/Art/Start.ico,Size=32}" VerticalAlignment="Center"/>
             <Label Content="{DynamicResource ShutdownWindow_RestartButtonLabel}" VerticalAlignment="Center" Padding="5,0"/>
         </StackPanel>
     </ContentControl>
     <ContentControl x:Key="CancelShutdownButtonContent">
         <StackPanel Orientation="Horizontal">
-            <Image Width="16" Height="16" Margin="5,0,5,0" Source="{com:Icon Path=/Ark Server Manager;component/Art/Cancel.ico,Size=32}" VerticalAlignment="Center"/>
+            <Image Width="16" Height="16" Margin="5,0,5,0" Source="{com:Icon Path=/ASAARKServerManager Standalone;component/Art/Cancel.ico,Size=32}" VerticalAlignment="Center"/>
             <Label Content="{DynamicResource ShutdownWindow_CancelShutdownButtonLabel}" VerticalAlignment="Center" Padding="5,0"/>
         </StackPanel>
     </ContentControl>
     <ContentControl x:Key="StopButtonContent2">
         <StackPanel Orientation="Horizontal">
-            <Image Width="16" Height="16" Margin="5,0,5,0" Source="{com:Icon Path=/Ark Server Manager;component/Art/Stop.ico,Size=32}" VerticalAlignment="Center"/>
+            <Image Width="16" Height="16" Margin="5,0,5,0" Source="{com:Icon Path=/ASAARKServerManager Standalone;component/Art/Stop.ico,Size=32}" VerticalAlignment="Center"/>
             <Label Content="{DynamicResource ShutdownWindow_StopButtonLabel}" VerticalAlignment="Center" Padding="5,0"/>
         </StackPanel>
     </ContentControl>

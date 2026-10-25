@@ -1,4 +1,4 @@
-<Window x:Class="ServerManagerTool.ArkApiConfigEditWindow"
+﻿<Window x:Class="ServerManagerTool.ArkApiConfigEditWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         MinWidth="800" MinHeight="450" Width="1100" Height="700" WindowStyle="ToolWindow" WindowStartupLocation="CenterOwner" ShowInTaskbar="False" ResizeMode="CanResize"
@@ -13,7 +13,7 @@
         </ResourceDictionary>
     </Window.Resources>
 
-    <Grid Background="{StaticResource GradientBackground}">
+    <Grid Background="{DynamicResource GradientBackground}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="300"/>
             <ColumnDefinition Width="*"/>

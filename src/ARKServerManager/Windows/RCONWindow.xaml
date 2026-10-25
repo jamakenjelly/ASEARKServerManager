@@ -37,10 +37,10 @@
                 <ColumnDefinition Width="200" MinWidth="200" x:Name="playerListColumn" />
             </Grid.ColumnDefinitions>
 
-            <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" BorderThickness="1" BorderBrush="LightGray" Margin="2" Background="{StaticResource HeaderBrush}">
+            <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" BorderThickness="1" BorderBrush="LightGray" Margin="2" Background="{DynamicResource HeaderBrush}">
                 <DockPanel Margin="2,2,2,1" LastChildFill="False">
                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
-                        <Menu VerticalAlignment="Center" Margin="1" Background="{StaticResource HeaderBrush}">
+                        <Menu VerticalAlignment="Center" Margin="1" Background="{DynamicResource HeaderBrush}">
                             <MenuItem Header="{DynamicResource RCON_Menu_File}" VerticalAlignment="Stretch">
                                 <MenuItem Header="{DynamicResource RCON_Menu_ViewLogs}"    Command="{Binding ViewLogsCommand}"/>
                                 <MenuItem Header="{DynamicResource RCON_Menu_ClearLogs}">
@@ -49,13 +49,13 @@
                             </MenuItem>
                         </Menu>
 
-                        <Menu VerticalAlignment="Center" Margin="1" Background="{StaticResource HeaderBrush}">
+                        <Menu VerticalAlignment="Center" Margin="1" Background="{DynamicResource HeaderBrush}">
                             <MenuItem Header="{DynamicResource RCON_Menu_Console}" VerticalAlignment="Stretch">
                                 <MenuItem Header="{DynamicResource RCON_Menu_AutoScroll}" IsCheckable="True" IsChecked="{Binding ScrollOnNewInput}"/>
                             </MenuItem>
                         </Menu>
 
-                        <Menu VerticalAlignment="Center" Margin="1" Background="{StaticResource HeaderBrush}">
+                        <Menu VerticalAlignment="Center" Margin="1" Background="{DynamicResource HeaderBrush}">
                             <MenuItem Header="{DynamicResource RCON_Menu_Server}" VerticalAlignment="Stretch">
                                 <MenuItem Header="{DynamicResource RCON_Menu_SaveWorld}">
                                     <MenuItem Header="{DynamicResource RCON_Menu_Confirm}" Command="{Binding SaveWorldCommand}"/>
@@ -66,7 +66,7 @@
                             </MenuItem>
                         </Menu>
 
-                        <Menu VerticalAlignment="Center" Margin="1" Background="{StaticResource HeaderBrush}">
+                        <Menu VerticalAlignment="Center" Margin="1" Background="{DynamicResource HeaderBrush}">
                             <MenuItem Header="{DynamicResource RCON_Menu_Players}">
                                 <MenuItem Header="{DynamicResource RCON_Menu_Sort}">
                                     <MenuItem Header="{DynamicResource RCON_Menu_SortOnline}"         IsCheckable="True" Command="{Binding SortPlayersCommand}"   CommandParameter="{x:Static en:PlayerSortType.Online}"         IsChecked="{Binding PlayerSorting, Converter={StaticResource EnumConverter}, ConverterParameter=Online}"/>

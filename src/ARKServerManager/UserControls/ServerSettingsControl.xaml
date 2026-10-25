@@ -48,7 +48,7 @@
 
             <ControlTemplate x:Key="ExpanderTemplateSE" TargetType="{x:Type Expander}">
                 <Border BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="3" SnapsToDevicePixels="true" Padding="1" Margin="0,0,0,3" BorderBrush="Black">
-                    <DockPanel Background="#FFEAE7E0">
+                    <DockPanel Background="{DynamicResource ThemePanel}">
                         <ToggleButton x:Name="HeaderSite" ContentTemplate="{TemplateBinding HeaderTemplate}" ContentTemplateSelector="{TemplateBinding HeaderTemplateSelector}" Content="{TemplateBinding Header}" DockPanel.Dock="Top" Foreground="{TemplateBinding Foreground}" FontWeight="{TemplateBinding FontWeight}" FocusVisualStyle="{StaticResource ExpanderHeaderFocusVisual}" FontStyle="{TemplateBinding FontStyle}" FontStretch="{TemplateBinding FontStretch}" FontSize="{TemplateBinding FontSize}" FontFamily="{TemplateBinding FontFamily}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" IsChecked="{Binding IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" Margin="4,4,1,4" MinWidth="0" MinHeight="0" Padding="{TemplateBinding Padding}" Style="{StaticResource ExpanderDownHeaderStyle}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
                         <ContentPresenter x:Name="ExpandSite" DockPanel.Dock="Bottom" Focusable="false" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Margin="10,0,0,0"/>
                     </DockPanel>
@@ -82,7 +82,7 @@
             </ControlTemplate>
             <ControlTemplate x:Key="ExpanderTemplateSotF" TargetType="{x:Type Expander}">
                 <Border BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="3" SnapsToDevicePixels="true" Padding="1" Margin="0,0,0,3" BorderBrush="Black">
-                    <DockPanel Background="#FFEAE0E0">
+                    <DockPanel Background="{DynamicResource ThemePanel}">
                         <ToggleButton x:Name="HeaderSite" ContentTemplate="{TemplateBinding HeaderTemplate}" ContentTemplateSelector="{TemplateBinding HeaderTemplateSelector}" Content="{TemplateBinding Header}" DockPanel.Dock="Top" Foreground="{TemplateBinding Foreground}" FontWeight="{TemplateBinding FontWeight}" FocusVisualStyle="{StaticResource ExpanderHeaderFocusVisual}" FontStyle="{TemplateBinding FontStyle}" FontStretch="{TemplateBinding FontStretch}" FontSize="{TemplateBinding FontSize}" FontFamily="{TemplateBinding FontFamily}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" IsChecked="{Binding IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" Margin="4,4,1,4" MinWidth="0" MinHeight="0" Padding="{TemplateBinding Padding}" Style="{StaticResource ExpanderDownHeaderStyle}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
                         <ContentPresenter x:Name="ExpandSite" DockPanel.Dock="Bottom" Focusable="false" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Margin="10,0,0,0"/>
                     </DockPanel>
@@ -116,7 +116,7 @@
             </ControlTemplate>
             <ControlTemplate x:Key="ExpanderTemplatePGM" TargetType="{x:Type Expander}">
                 <Border BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="3" SnapsToDevicePixels="true" Padding="1" Margin="0,0,0,3" BorderBrush="Black">
-                    <DockPanel Background="#E8E0EA">
+                    <DockPanel Background="{DynamicResource ThemePanel}">
                         <ToggleButton x:Name="HeaderSite" ContentTemplate="{TemplateBinding HeaderTemplate}" ContentTemplateSelector="{TemplateBinding HeaderTemplateSelector}" Content="{TemplateBinding Header}" DockPanel.Dock="Top" Foreground="{TemplateBinding Foreground}" FontWeight="{TemplateBinding FontWeight}" FocusVisualStyle="{StaticResource ExpanderHeaderFocusVisual}" FontStyle="{TemplateBinding FontStyle}" FontStretch="{TemplateBinding FontStretch}" FontSize="{TemplateBinding FontSize}" FontFamily="{TemplateBinding FontFamily}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" IsChecked="{Binding IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" Margin="4,4,1,4" MinWidth="0" MinHeight="0" Padding="{TemplateBinding Padding}" Style="{StaticResource ExpanderDownHeaderStyle}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
                         <ContentPresenter x:Name="ExpandSite" DockPanel.Dock="Bottom" Focusable="false" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Margin="10,0,0,0"/>
                     </DockPanel>
@@ -150,7 +150,7 @@
             </ControlTemplate>
 
             <DataTemplate x:Key="PlayerLevelItemTemplate">
-                <Border BorderBrush="Black" BorderThickness="1" Background="Beige">
+                <Border BorderBrush="Black" BorderThickness="1" Background="{DynamicResource ThemePanel}">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
@@ -176,7 +176,7 @@
                 </Border>
             </DataTemplate>
             <DataTemplate x:Key="DinoLevelItemTemplate">
-                <Border BorderBrush="Black" BorderThickness="1" Background="Beige">
+                <Border BorderBrush="Black" BorderThickness="1" Background="{DynamicResource ThemePanel}">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
@@ -619,7 +619,7 @@
                                             <Label  Content="{DynamicResource ServerSettings_ServerNameLengthLabel}" VerticalAlignment="Center">
                                                 <Label.Style>
                                                     <Style BasedOn="{StaticResource {x:Type Label}}" TargetType="{x:Type Label}">
-                                                        <Setter Property="Foreground" Value="Black"/>
+                                                        <Setter Property="Foreground" Value="{DynamicResource ThemeText}"/>
                                                         <Style.Triggers>
                                                             <DataTrigger Binding="{Binding ServerNameLengthToLong, FallbackValue=False}" Value="true">
                                                                 <Setter Property="Foreground" Value="Red"/>
@@ -631,7 +631,7 @@
                                             <Label  Content="{Binding ServerNameLength, FallbackValue=0}" VerticalAlignment="Center">
                                                 <Label.Style>
                                                     <Style BasedOn="{StaticResource {x:Type Label}}" TargetType="{x:Type Label}">
-                                                        <Setter Property="Foreground" Value="Black"/>
+                                                        <Setter Property="Foreground" Value="{DynamicResource ThemeText}"/>
                                                         <Style.Triggers>
                                                             <DataTrigger Binding="{Binding ServerNameLengthToLong, FallbackValue=False}" Value="true">
                                                                 <Setter Property="Foreground" Value="Red"/>
@@ -993,7 +993,7 @@
                                             <Label  Content="{DynamicResource ServerSettings_MOTDLineCountLabel}" VerticalAlignment="Center">
                                                 <Label.Style>
                                                     <Style BasedOn="{StaticResource {x:Type Label}}" TargetType="{x:Type Label}">
-                                                        <Setter Property="Foreground" Value="Black"/>
+                                                        <Setter Property="Foreground" Value="{DynamicResource ThemeText}"/>
                                                         <Style.Triggers>
                                                             <DataTrigger Binding="{Binding MOTDLineCountToLong, FallbackValue=False}" Value="true">
                                                                 <Setter Property="Foreground" Value="Red"/>
@@ -1005,7 +1005,7 @@
                                             <Label  Content="{Binding MOTDLineCount, FallbackValue=0}" VerticalAlignment="Center">
                                                 <Label.Style>
                                                     <Style BasedOn="{StaticResource {x:Type Label}}" TargetType="{x:Type Label}">
-                                                        <Setter Property="Foreground" Value="Black"/>
+                                                        <Setter Property="Foreground" Value="{DynamicResource ThemeText}"/>
                                                         <Style.Triggers>
                                                             <DataTrigger Binding="{Binding MOTDLineCountToLong, FallbackValue=False}" Value="true">
                                                                 <Setter Property="Foreground" Value="Red"/>
@@ -1020,7 +1020,7 @@
                                             <Label  Content="{DynamicResource ServerSettings_MOTDLengthLabel}" VerticalAlignment="Center">
                                                 <Label.Style>
                                                     <Style BasedOn="{StaticResource {x:Type Label}}" TargetType="{x:Type Label}">
-                                                        <Setter Property="Foreground" Value="Black"/>
+                                                        <Setter Property="Foreground" Value="{DynamicResource ThemeText}"/>
                                                         <Style.Triggers>
                                                             <DataTrigger Binding="{Binding MOTDLengthToLong, FallbackValue=False}" Value="true">
                                                                 <Setter Property="Foreground" Value="Red"/>
@@ -1032,7 +1032,7 @@
                                             <Label  Content="{Binding MOTDLength, FallbackValue=0}" VerticalAlignment="Center">
                                                 <Label.Style>
                                                     <Style BasedOn="{StaticResource {x:Type Label}}" TargetType="{x:Type Label}">
-                                                        <Setter Property="Foreground" Value="Black"/>
+                                                        <Setter Property="Foreground" Value="{DynamicResource ThemeText}"/>
                                                         <Style.Triggers>
                                                             <DataTrigger Binding="{Binding MOTDLengthToLong, FallbackValue=False}" Value="true">
                                                                 <Setter Property="Foreground" Value="Red"/>
@@ -3445,14 +3445,14 @@
                                                         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                                                         <Setter Property="VerticalAlignment" Value="Stretch" />
                                                         <Setter Property="VerticalContentAlignment" Value="Stretch" />
-                                                        <Setter Property="Foreground" Value="Black" />
-                                                        <Setter Property="Background" Value="White" />
+                                                        <Setter Property="Foreground" Value="{DynamicResource ThemeText}" />
+                                                        <Setter Property="Background" Value="{DynamicResource ThemeInput}" />
                                                         <Style.Triggers>
                                                             <DataTrigger Binding="{Binding Mod}" Value="Aberration">
                                                                 <Setter Property="Background" Value="#EFDAF5" />
                                                             </DataTrigger>
                                                             <DataTrigger Binding="{Binding Mod}" Value="ArkPrime">
-                                                                <Setter Property="Background" Value="Beige" />
+                                                                <Setter Property="Background" Value="{DynamicResource ThemeBeige}" />
                                                             </DataTrigger>
                                                             <DataTrigger Binding="{Binding Mod}" Value="Extinction">
                                                                 <Setter Property="Background" Value="#FF8B8B" />
@@ -3473,7 +3473,7 @@
                                                                 <Setter Property="Background" Value="#F4E9DB" />
                                                             </DataTrigger>
                                                             <DataTrigger Binding="{Binding Mod}" Value="TheCenter">
-                                                                <Setter Property="Background" Value="Beige" />
+                                                                <Setter Property="Background" Value="{DynamicResource ThemeBeige}" />
                                                             </DataTrigger>
                                                             <DataTrigger Binding="{Binding Mod}" Value="Valguero">
                                                                 <Setter Property="Background" Value="#FBFBBE" />
@@ -3846,13 +3846,13 @@
                                                 </ListBox.ItemTemplate>
                                                 <ListBox.ItemContainerStyle>
                                                     <Style TargetType="{x:Type ListBoxItem}" >
-                                                        <Setter Property="Background" Value="White" />
+                                                        <Setter Property="Background" Value="{DynamicResource ThemeInput}" />
                                                         <Style.Triggers>
                                                             <DataTrigger Binding="{Binding Mod}" Value="Aberration">
                                                                 <Setter Property="Background" Value="#EFDAF5" />
                                                             </DataTrigger>
                                                             <DataTrigger Binding="{Binding Mod}" Value="ArkPrime">
-                                                                <Setter Property="Background" Value="Beige" />
+                                                                <Setter Property="Background" Value="{DynamicResource ThemeBeige}" />
                                                             </DataTrigger>
                                                             <DataTrigger Binding="{Binding Mod}" Value="Extinction">
                                                                 <Setter Property="Background" Value="#FF8B8B" />
@@ -3873,7 +3873,7 @@
                                                                 <Setter Property="Background" Value="#F4E9DB" />
                                                             </DataTrigger>
                                                             <DataTrigger Binding="{Binding Mod}" Value="TheCenter">
-                                                                <Setter Property="Background" Value="Beige" />
+                                                                <Setter Property="Background" Value="{DynamicResource ThemeBeige}" />
                                                             </DataTrigger>
                                                             <DataTrigger Binding="{Binding Mod}" Value="Valguero">
                                                                 <Setter Property="Background" Value="#FBFBBE" />
@@ -4369,8 +4369,8 @@
                                                     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                                                     <Setter Property="VerticalAlignment" Value="Stretch" />
                                                     <Setter Property="VerticalContentAlignment" Value="Stretch" />
-                                                    <Setter Property="Foreground" Value="Black" />
-                                                    <Setter Property="Background" Value="White" />
+                                                    <Setter Property="Foreground" Value="{DynamicResource ThemeText}" />
+                                                    <Setter Property="Background" Value="{DynamicResource ThemeInput}" />
                                                     <Style.Triggers>
                                                         <DataTrigger Binding="{Binding IsTekgram}" Value="True">
                                                             <Setter Property="Foreground" Value="Blue" />
@@ -4379,7 +4379,7 @@
                                                             <Setter Property="Background" Value="#EFDAF5" />
                                                         </DataTrigger>
                                                         <DataTrigger Binding="{Binding Mod}" Value="ArkPrime">
-                                                            <Setter Property="Background" Value="Beige" />
+                                                            <Setter Property="Background" Value="{DynamicResource ThemeBeige}" />
                                                         </DataTrigger>
                                                         <DataTrigger Binding="{Binding Mod}" Value="Extinction">
                                                             <Setter Property="Background" Value="#FF8B8B" />
@@ -4400,7 +4400,7 @@
                                                             <Setter Property="Background" Value="#F4E9DB" />
                                                         </DataTrigger>
                                                         <DataTrigger Binding="{Binding Mod}" Value="TheCenter">
-                                                            <Setter Property="Background" Value="Beige" />
+                                                            <Setter Property="Background" Value="{DynamicResource ThemeBeige}" />
                                                         </DataTrigger>
                                                         <DataTrigger Binding="{Binding Mod}" Value="Valguero">
                                                             <Setter Property="Background" Value="#FBFBBE" />
@@ -5040,11 +5040,11 @@
                                         <ListView.ItemContainerStyle>
                                             <Style TargetType="{x:Type ListViewItem}" >
                                                 <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                                                <Setter Property="Background" Value="White" />
+                                                <Setter Property="Background" Value="{DynamicResource ThemeInput}" />
 
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding ShowColored}" Value="True">
-                                                        <Setter Property="Background" Value="Beige" />
+                                                        <Setter Property="Background" Value="{DynamicResource ThemeBeige}" />
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>

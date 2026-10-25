@@ -18,6 +18,6 @@
         </ResourceDictionary>
     </Window.Resources>
     <Grid>
-        <sm:GlobalSettingsControl x:Name="globalSettingsControl" HorizontalAlignment="Stretch" VerticalContentAlignment="Stretch" Background="{StaticResource BeigeGradient}"/>
+        <sm:GlobalSettingsControl x:Name="globalSettingsControl" HorizontalAlignment="Stretch" VerticalContentAlignment="Stretch" Background="{DynamicResource BeigeGradient}"/>
     </Grid>
 </Window>

@@ -337,8 +337,29 @@ namespace ServerManagerTool
             set { SetValue(IsServerLoadingProperty, value); }
         }
 
+        private void UpdateThemeButtons()
+        {
+            var selected = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(0x5B, 0x9B, 0xD5));
+            var normal = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(0x33, 0x33, 0x33));
+            DefaultThemeButton.Background = AppTheme.Current == AppTheme.DefaultName ? selected : normal;
+            LightThemeButton.Background = AppTheme.Current == AppTheme.LightName ? selected : normal;
+        }
+
+        private void DefaultTheme_Click(object sender, RoutedEventArgs e)
+        {
+            AppTheme.Apply(AppTheme.DefaultName);
+            UpdateThemeButtons();
+        }
+
+        private void LightTheme_Click(object sender, RoutedEventArgs e)
+        {
+            AppTheme.Apply(AppTheme.LightName);
+            UpdateThemeButtons();
+        }
+
         private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
+            UpdateThemeButtons();
             //
             // Kick off the initialization.
             //

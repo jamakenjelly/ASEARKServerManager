@@ -43,7 +43,7 @@
         </ResourceDictionary>
     </Window.Resources>
 
-    <Grid Background="{StaticResource BeigeGradient}" MouseLeftButtonUp="OnMouseLeftButtonUp" MouseMove="OnMouseMove">
+    <Grid Background="{DynamicResource BeigeGradient}" MouseLeftButtonUp="OnMouseLeftButtonUp" MouseMove="OnMouseMove">
         <DockPanel x:Name="dockPanel">
             <Grid>
                 <Grid.RowDefinitions>

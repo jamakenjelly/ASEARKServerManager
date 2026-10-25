@@ -22,7 +22,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid Margin="3" Background="{StaticResource BeigeGradient}">
+    <Grid Margin="3" Background="{DynamicResource BeigeGradient}">
         <ScrollViewer VerticalScrollBarVisibility="Visible">
             <Grid>
                 <Grid.RowDefinitions>
