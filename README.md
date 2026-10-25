@@ -51,10 +51,11 @@ Set up in Global Settings: port, a login for each admin and an optional Discord 
 
 - Your settings, server profiles and servers stay in your own data folder and are not touched by an install or an upgrade.
 - Not an official Studio Wildcard product. ARK: Survival Evolved must be obtained separately.
-- The source of the version before the ASA features were merged in is public: https://github.com/jamakenjelly/ASEARKServerManager-original
+- The source of the version before the ASA features were merged in is public: https://github.com/jamakenjelly/ServerManagers-source-ase-original
 
 ## Credits
 
 This manager is built on the open-source ARK Server Manager project by its original authors and contributors:
 https://github.com/Bletch1971/ServerManagers - thank you.
+
 
