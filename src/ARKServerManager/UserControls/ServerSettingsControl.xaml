@@ -803,6 +803,10 @@
                                             </Button.Style>
                                         </Button>
 
+                                        <StackPanel Grid.Row="1" Grid.Column="4" Grid.ColumnSpan="5" Margin="5,1,0,0" Orientation="Horizontal" HorizontalAlignment="Right">
+                                            <Button Padding="8,0" Margin="0,0,3,0" Content="+ Map" ToolTip="Add a map to the list: the map name as it goes on the launch line, and the name to show. It stays in the list after a restart." Click="AddCustomMap_Click"/>
+                                            <Button Padding="8,0" Content="- Map" ToolTip="Remove the selected map from the list (only maps you added yourself)." Click="RemoveCustomMap_Click"/>
+                                        </StackPanel>
                                         <Label   Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Content="{DynamicResource ServerSettings_TotalConversionLabel}" ToolTip="{DynamicResource ServerSettings_TotalConversionTooltip}" VerticalAlignment="Center" Foreground="{DynamicResource UnSyncedSetting}"/>
                                         <ComboBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Margin="1" Name="TotalConversionComboBox" ItemsSource="{Binding BaseTotalConversions, ElementName=SettingsControl}" SelectedValue="{Binding TotalConversionModId, Mode=TwoWay, UpdateSourceTrigger=Explicit}" SelectedValuePath="ValueMember" DisplayMemberPath="DisplayMember" IsEditable="True" ToolTip="{DynamicResource ServerSettings_TotalConversionTooltip}" LostFocus="ComboBoxItemList_LostFocus" PreviewMouseWheel="ComboBox_PreviewMouseWheel"/>
                                         <Button  Grid.Row="1" Grid.Column="3" Width="22" Height="22" Margin="5,1,0,0" ToolTip="{DynamicResource ServerSettings_FindTotalConversionMapNameTooltip}" HorizontalAlignment="Left" Command="{Binding ResetActionCommand, ElementName=SettingsControl}" CommandParameter="{x:Static enum:ServerSettingsResetAction.MapNameTotalConversionProperty}">

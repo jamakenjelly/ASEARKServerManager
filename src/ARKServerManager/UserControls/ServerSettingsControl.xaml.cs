@@ -588,6 +588,70 @@ namespace ServerManagerTool
             }
         }
 
+        private void AddCustomMap_Click(object sender, RoutedEventArgs e)
+        {
+            var nameBox = new TextBox { Margin = new Thickness(0, 2, 0, 8), Text = string.Empty, ToolTip = "The map as it goes on the launch line, for example MyMap_WP" };
+            var descBox = new TextBox { Margin = new Thickness(0, 2, 0, 8), Text = string.Empty, ToolTip = "The name shown in the list" };
+            var ok = new Button { Content = "Add", Padding = new Thickness(16, 3, 16, 3), Margin = new Thickness(0, 0, 8, 0), IsDefault = true };
+            var cancel = new Button { Content = "Cancel", Padding = new Thickness(16, 3, 16, 3), IsCancel = true };
+            var buttons = new StackPanel { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Right };
+            buttons.Children.Add(ok);
+            buttons.Children.Add(cancel);
+            var panel = new StackPanel { Margin = new Thickness(14) };
+            panel.Children.Add(new TextBlock { Text = "Map name (as in the launch line, e.g. MyMap_WP):" });
+            panel.Children.Add(nameBox);
+            panel.Children.Add(new TextBlock { Text = "Name shown in the list:" });
+            panel.Children.Add(descBox);
+            panel.Children.Add(buttons);
+
+            var window = new Window { Title = "Add a map to the list", Content = panel, Width = 420, SizeToContent = SizeToContent.Height, Owner = Window.GetWindow(this), WindowStartupLocation = WindowStartupLocation.CenterOwner, ResizeMode = ResizeMode.NoResize };
+            ok.Click += (s, a) => { window.DialogResult = true; };
+            if (window.ShowDialog() != true)
+                return;
+
+            var className = nameBox.Text.Trim();
+            if (!Regex.IsMatch(className, @"^[A-Za-z0-9_]+$"))
+            {
+                MessageBox.Show("The map name can only have letters, numbers and underscores.", "Add a map", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            var display = string.IsNullOrWhiteSpace(descBox.Text) ? className : descBox.Text.Trim();
+            try
+            {
+                AseCustomMaps.Add(className, display);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Add a map", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            var existing = BaseGameMaps.FirstOrDefault(m => string.Equals(m.ValueMember, className, StringComparison.OrdinalIgnoreCase));
+            if (existing != null)
+                BaseGameMaps.Remove(existing);
+            BaseGameMaps.Add(new ServerManagerTool.Common.Model.ComboBoxItem(className, display));
+            Server.Profile.ServerMap = className;
+        }
+
+        private void RemoveCustomMap_Click(object sender, RoutedEventArgs e)
+        {
+            var className = Server.Profile.ServerMap;
+            if (!AseCustomMaps.IsCustom(className))
+            {
+                MessageBox.Show("Only maps you added yourself can be removed from the list. Pick (or type) the map you added first.", "Remove a map", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            if (MessageBox.Show($"Remove {className} from the map list? Servers already set to this map keep it.", "Remove a map", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
+                return;
+
+            AseCustomMaps.Remove(className);
+            var item = BaseGameMaps.FirstOrDefault(m => string.Equals(m.ValueMember, className, StringComparison.OrdinalIgnoreCase));
+            if (item != null)
+                BaseGameMaps.Remove(item);
+        }
+
         private void RefreshPlayerBackups()
         {
             try

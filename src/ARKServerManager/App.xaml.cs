@@ -786,6 +786,9 @@ namespace ServerManagerTool
             }
             else
             {
+                // game data from the servers' own files (mods and the base game), read below with the rest
+                AseGameData.GenerateFromAnyInstalledServer();
+
                 // initialize all the game data
                 GameData.Initialize();
 

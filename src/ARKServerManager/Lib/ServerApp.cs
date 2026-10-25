@@ -2417,28 +2417,20 @@ namespace ServerManagerTool.Lib
                                 { key, new List<string> { worldFile } }
                             };
 
-                            // backup the player files
-                            var playerFileFilter = $"*{Config.Default.PlayerFileExtension}";
-                            var playerFiles = saveFolderInfo.GetFiles(playerFileFilter, SearchOption.TopDirectoryOnly);
-                            foreach (var file in playerFiles)
+                            // back up the whole save folder (world save, rolling backup files, player / tribe / tribute files and anything else
+                            // the map keeps there), as the ASA manager does
+                            foreach (var file in saveFolderInfo.GetFiles("*", SearchOption.AllDirectories))
                             {
-                                files[key].Add(file.FullName);
-                            }
+                                if (string.Equals(file.FullName, worldFile, StringComparison.OrdinalIgnoreCase))
+                                    continue;
 
-                            // backup the tribe files
-                            var tribeFileFilter = $"*{Config.Default.TribeFileExtension}";
-                            var tribeFiles = saveFolderInfo.GetFiles(tribeFileFilter, SearchOption.TopDirectoryOnly);
-                            foreach (var file in tribeFiles)
-                            {
-                                files[key].Add(file.FullName);
-                            }
-
-                            // backup the tribute tribe files
-                            var tributeTribeFileFilter = $"*{Config.Default.TributeTribeFileExtension}";
-                            var tributeTribeFiles = saveFolderInfo.GetFiles(tributeTribeFileFilter, SearchOption.TopDirectoryOnly);
-                            foreach (var file in tributeTribeFiles)
-                            {
-                                files[key].Add(file.FullName);
+                                var relativeDir = file.DirectoryName.Length > saveFolderInfo.FullName.Length
+                                    ? file.DirectoryName.Substring(saveFolderInfo.FullName.Length).TrimStart('\\', '/')
+                                    : string.Empty;
+                                if (files.ContainsKey(relativeDir))
+                                    files[relativeDir].Add(file.FullName);
+                                else
+                                    files.Add(relativeDir, new List<string> { file.FullName });
                             }
 
                             // SaveGames and Config are always part of the backup now

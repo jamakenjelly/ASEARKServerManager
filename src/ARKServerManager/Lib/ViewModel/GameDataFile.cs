@@ -7,6 +7,7 @@ namespace ServerManagerTool.Lib.ViewModel
     {
         public static readonly DependencyProperty CreatedDateProperty = DependencyProperty.Register(nameof(CreatedDate), typeof(DateTime), typeof(GameDataFile), new PropertyMetadata(DateTime.MinValue));
         public static readonly DependencyProperty FileProperty = DependencyProperty.Register(nameof(File), typeof(string), typeof(GameDataFile), new PropertyMetadata(string.Empty));
+        public static readonly DependencyProperty DisplayNameProperty = DependencyProperty.Register(nameof(DisplayName), typeof(string), typeof(GameDataFile), new PropertyMetadata(string.Empty));
         public static readonly DependencyProperty FileNameProperty = DependencyProperty.Register(nameof(FileName), typeof(string), typeof(GameDataFile), new PropertyMetadata(string.Empty));
         public static readonly DependencyProperty IsUserDataProperty = DependencyProperty.Register(nameof(IsUserData), typeof(bool), typeof(GameDataFile), new PropertyMetadata(true));
         public static readonly DependencyProperty VersionProperty = DependencyProperty.Register(nameof(Version), typeof(string), typeof(GameDataFile), new PropertyMetadata(string.Empty));
@@ -22,6 +23,13 @@ namespace ServerManagerTool.Lib.ViewModel
         {
             get { return (string)GetValue(FileProperty); }
             set { SetValue(FileProperty, value); }
+        }
+
+        // what the list shows: the mod's / map's own name for generated files, otherwise the file name
+        public string DisplayName
+        {
+            get { return (string)GetValue(DisplayNameProperty); }
+            set { SetValue(DisplayNameProperty, value); }
         }
 
         public string FileName

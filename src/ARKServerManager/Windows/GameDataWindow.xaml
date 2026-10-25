@@ -69,7 +69,7 @@
                 </DataGrid.VerticalGridLinesBrush>
 
                 <DataGrid.Columns>
-                    <DataGridTextColumn     Width="4*" Binding="{Binding FileName, Mode=OneWay}">
+                    <DataGridTextColumn     Width="4*" Binding="{Binding DisplayName, Mode=OneWay}">
                         <DataGridTextColumn.Header>
                             <TextBlock Text="{DynamicResource GameDataWindow_NameColumnLabel}" />
                         </DataGridTextColumn.Header>

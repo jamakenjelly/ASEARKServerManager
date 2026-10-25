@@ -1,4 +1,12 @@
-﻿Version 1.1.0.10
+﻿Version 1.1.0.11
+  - Game data from the servers' own files. When the manager starts it reads every mod installed in your servers (ShooterGame\Content\Mods) and writes a game data file for each one, named after the mod (from its .mod file): the mod's items, engrams, creatures, spawn containers and supply crates, so they show in the lists with the mod's name. The base game's files are read the same way for anything the built-in data does not have yet (new items from the master item list, engrams, creatures, spawn containers, supply crates). The files are made again only when a mod or the server build changes, and are used the next time the manager starts. The Game Data window shows the mod's name for these files.
+
+  - + Map / - Map buttons (Administration, next to Total Conversion): add a map to the map list by its launch name and a display name, and remove it again. A map you add is kept in a game data file of its own, so it is still there after a restart.
+
+  - Backups now take the whole save folder of the map (world file, rolling backup files, player, tribe and tribute files and everything else in it), as the ASA manager does, plus SaveGames and the three ini files.
+
+
+Version 1.1.0.10
   - Exclude Item Indices now has a tick list: every item (621 of them, with its ID number) with a search box and an All / Ticked only / Not ticked only filter. Ticking an item puts its ID on the exclude list, unticking takes it off, and an ID typed in the table ticks the matching item. Each server keeps its own ticks. The item numbers were read from a real ASE server (current game build, including the Aquatica items) with the ItemIdDump plugin. Items from mods have no number here and still have to be typed in.
 
 

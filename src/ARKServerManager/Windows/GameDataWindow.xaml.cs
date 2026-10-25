@@ -223,6 +223,7 @@ namespace ServerManagerTool
                 CreatedDate = baseGameData?.Created ?? DateTime.MinValue,
                 File = file,
                 FileName = string.IsNullOrWhiteSpace(file) ? string.Empty : Path.GetFileNameWithoutExtension(file),
+                DisplayName = isUserData ? AseGameData.DisplayNameForFile(file) : Path.GetFileNameWithoutExtension(file),
                 IsUserData = isUserData,
                 Version = baseGameData?.Version ?? "0.0.0",
                 HasError = baseGameData == null,
