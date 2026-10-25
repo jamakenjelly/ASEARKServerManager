@@ -1,4 +1,10 @@
-﻿Version 1.1.0.6
+﻿Version 1.1.0.7
+  - Map Spawner Overrides now only offer the map spawners of the map the profile is set to, plus the base game ones every map shares (and PGM's when PGM is on). Change the map and the list follows. A map that is not in the game data still shows them all, and spawners a profile already uses stay in the list.
+
+  - The Server Options box in Administration is split into labelled boxes: Players and Access, Anti-Cheat and Security, Performance and Stability, Dinosaurs and Spawning, Structures and Meshes, Logging, Network and Connections, and Saves and Clusters. No setting was added or removed; they are only grouped.
+
+
+Version 1.1.0.6
   - The Plugins button is gone from the header, and the info (?) button now sits next to the Game Data button, as in the ASA manager. It opens an About window: who made the manager, the Discord and GitHub links, and the original project it is based on.
 
 

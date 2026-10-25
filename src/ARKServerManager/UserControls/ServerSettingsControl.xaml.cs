@@ -13,6 +13,7 @@ using ServerManagerTool.Lib.ViewModel;
 using ServerManagerTool.Plugin.Common;
 using ServerManagerTool.Utils;
 using System;
+using System.ComponentModel;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -391,6 +392,26 @@ namespace ServerManagerTool
             this.Settings.PreventTransferForClassNames.Update();
         }
 
+        private ServerProfile _mapWatchedProfile;
+
+        // the map spawner list follows the profile's map: when the map is changed the list is rebuilt
+        private void WatchMapChanges(ServerProfile profile)
+        {
+            var descriptor = DependencyPropertyDescriptor.FromProperty(ServerProfile.ServerMapProperty, typeof(ServerProfile));
+            if (_mapWatchedProfile != null)
+                descriptor.RemoveValueChanged(_mapWatchedProfile, MapChangedForSpawners);
+            _mapWatchedProfile = profile;
+            if (profile != null)
+                descriptor.AddValueChanged(profile, MapChangedForSpawners);
+        }
+
+        private void MapChangedForSpawners(object sender, EventArgs e)
+        {
+            if (!ReferenceEquals(sender, this.Settings))
+                return;
+            RefreshBaseMapSpawnerList();
+        }
+
         private static void ServerPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var ssc = (ServerSettingsControl)d;
@@ -403,6 +424,7 @@ namespace ServerManagerTool
                         oldserver?.Profile.Save(false, false, null);
 
                         ssc.Settings = server.Profile;
+                        ssc.WatchMapChanges(server.Profile);
                         ssc.Runtime = server.Runtime;
                         ssc.ReinitializeNetworkAdapters();
                         ssc.RefreshBaseDinoList();
@@ -4170,6 +4192,8 @@ namespace ServerManagerTool
 
         // See _cachedBaseDinoList above - same reasoning, same fix.
         private static ComboBoxItemList _cachedBaseMapSpawnerList;
+        private static readonly Dictionary<string, string> _mapSpawnerMods = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        private const string BasePrimalMod = "ArkPrime";
 
         public void RefreshBaseMapSpawnerList()
         {
@@ -4179,6 +4203,7 @@ namespace ServerManagerTool
 
                 foreach (var mapSpawner in GameData.GetMapSpawners())
                 {
+                    _mapSpawnerMods[mapSpawner.ClassName] = mapSpawner.Mod ?? string.Empty;
                     baseList.Add(new Common.Model.ComboBoxItem
                     {
                         DisplayMember = string.IsNullOrWhiteSpace(mapSpawner.Mod) ? $"{mapSpawner.DisplayName}" : $"({mapSpawner.DisplayMod}) {mapSpawner.DisplayName}",
@@ -4190,9 +4215,24 @@ namespace ServerManagerTool
                 _cachedBaseMapSpawnerList = baseList;
             }
 
+            // Only the map spawners that belong to the map the profile is set to are offered (plus the base game ones every map shares, and PGM's when
+            // that is on). A map that is not in the game data shows them all. Spawners the profile already has stay in the list.
+            var mapMod = GameData.GetGameMapMod(this.Settings.ServerMap);
+            var used = new HashSet<string>(this.Settings.NPCSpawnSettings.Select(n => n.NPCSpawnEntriesContainerClassString ?? string.Empty), StringComparer.OrdinalIgnoreCase);
+
             var newList = new ComboBoxItemList();
             foreach (var item in _cachedBaseMapSpawnerList)
+            {
+                if (!string.IsNullOrWhiteSpace(mapMod) && _mapSpawnerMods.TryGetValue(item.ValueMember, out var itemMod) && !string.IsNullOrWhiteSpace(itemMod))
+                {
+                    var wanted = itemMod.Equals(mapMod, StringComparison.OrdinalIgnoreCase)
+                        || itemMod.Equals(BasePrimalMod, StringComparison.OrdinalIgnoreCase)
+                        || (this.Settings.PGM_Enabled && itemMod.Equals("PGM", StringComparison.OrdinalIgnoreCase));
+                    if (!wanted && !used.Contains(item.ValueMember))
+                        continue;
+                }
                 newList.Add(item);
+            }
 
             foreach (var spawnSetting in this.Settings.NPCSpawnSettings)
             {

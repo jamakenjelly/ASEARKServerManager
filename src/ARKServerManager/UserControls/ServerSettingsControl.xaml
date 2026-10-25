@@ -1081,238 +1081,240 @@
                                         </StackPanel>
                                     </GroupBox.Header>
 
-                                    <Grid>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition/>
-                                            <RowDefinition/>
-                                            <RowDefinition/>
-                                            <RowDefinition/>
-                                            <RowDefinition/>
-                                            <RowDefinition/>
-                                            <RowDefinition/>
-                                            <RowDefinition/>
-                                            <RowDefinition/>
-                                            <RowDefinition/>
-                                            <RowDefinition/>
-                                            <RowDefinition/>
-                                            <RowDefinition/>
-                                            <RowDefinition/>
-                                            <RowDefinition/>
-                                            <RowDefinition/>
-                                            <RowDefinition/>
-                                            <RowDefinition/>
-                                            <RowDefinition/>
-                                            <RowDefinition/>
-                                            <RowDefinition/>
-                                            <RowDefinition/>
-                                            <RowDefinition/>
-                                            <RowDefinition/>
-                                            <RowDefinition/>
-                                        </Grid.RowDefinitions>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="1*"/>
-                                            <ColumnDefinition Width="1*"/>
-                                            <ColumnDefinition Width="1*"/>
-                                            <ColumnDefinition Width="1*"/>
-                                        </Grid.ColumnDefinitions>
-
-                                        <cctl:AnnotatedSlider Grid.Row="0" Grid.Column="0" Margin="20,1,5,1" Grid.ColumnSpan="2" Label="{DynamicResource ServerSettings_MaxPlayersLabel}" Value="{Binding MaxPlayers}" ToolTip="{DynamicResource ServerSettings_MaxPlayersTooltip}" VerticalAlignment="Center" Minimum="1" Maximum="250" LargeChange="25" SmallChange="10" TickFrequency="50" LabelRelativeWidth="Auto" SliderRelativeWidth="15*" SuffixRelativeWidth="0"/>
-                                        <cctl:AnnotatedCheckBoxAndIntegerSlider Grid.Row="0" Grid.Column="2" Margin="20,1,5,1" Grid.ColumnSpan="2" Label="{DynamicResource ServerSettings_EnableIdleTimeoutLabel}" Suffix="{DynamicResource ServerSettings_IdleTimeoutUnits}" Value="{Binding KickIdlePlayersPeriod}" ToolTip="{DynamicResource ServerSettings_IdleTimeoutTooltip}" Minimum="60" Maximum="7200" VerticalAlignment="Center" LargeChange="300" SmallChange="60" TickFrequency="300" LabelRelativeWidth="Auto" SliderRelativeWidth="15*" SuffixRelativeWidth="Auto"/>
-
-                                        <cctl:CheckBoxAndTextBlock Grid.Row="1" Grid.Column="0" Margin="5" VerticalAlignment="Center" IsChecked="{Binding EnableBanListURL, Mode=TwoWay}" Text="{DynamicResource ServerSettings_UseBanListLabel}" ToolTip="{DynamicResource ServerSettings_UseBanListTooltip}"/>
-                                        <DockPanel Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="4" HorizontalAlignment="Stretch">
-
-                                            <Button  DockPanel.Dock="Right" ToolTip="{DynamicResource ServerSettings_ResetBanlistTooltip}" Style="{StaticResource ButtonStyle1}" Command="{Binding ResetActionCommand, ElementName=SettingsControl}" CommandParameter="{x:Static enum:ServerSettingsResetAction.BanListProperty}">
-                                                <Image Source="{com:Icon Path=/Ark Server Manager;component/Art/Refresh.ico,Size=32}"/>
-                                            </Button>
-
-                                            <TextBox DockPanel.Dock="Left" Margin="1" Text="{Binding BanListURL}" ToolTip="{DynamicResource ServerSettings_BanListTooltip}" IsEnabled="{Binding EnableBanListURL}"/>
-                                        </DockPanel>
-                                        <cctl:CheckBoxAndTextBlock Grid.Row="2" Grid.Column="0" Margin="5" VerticalAlignment="Center" IsChecked="{Binding EnableCustomDynamicConfigUrl, Mode=TwoWay}" Text="{DynamicResource ServerSettings_UseCustomDynamicConfigUrlLabel}" ToolTip="{DynamicResource ServerSettings_UseCustomDynamicConfigUrlTooltip}"/>
-                                        <DockPanel Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="4" HorizontalAlignment="Stretch">
-                                            <TextBox DockPanel.Dock="Left" Margin="1" Text="{Binding CustomDynamicConfigUrl}" ToolTip="{DynamicResource ServerSettings_CustomDynamicConfigUrlTooltip}" IsEnabled="{Binding EnableCustomDynamicConfigUrl}"/>
-                                        </DockPanel>
-
-                                        <cctl:CheckBoxAndTextBlock Grid.Row="3" Grid.Column="0" Margin="5" VerticalAlignment="Center" IsChecked="{Binding EnableCustomLiveTuningUrl, Mode=TwoWay}" Text="{DynamicResource ServerSettings_UseCustomLiveTuningUrlLabel}" ToolTip="{DynamicResource ServerSettings_UseCustomLiveTuningUrlTooltip}"/>
-                                        <DockPanel Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3" HorizontalAlignment="Stretch">
-                                            <TextBox DockPanel.Dock="Left" Margin="1" Text="{Binding CustomLiveTuningUrl}" ToolTip="{DynamicResource ServerSettings_CustomLiveTuningUrlTooltip}" IsEnabled="{Binding EnableCustomLiveTuningUrl}"/>
-                                        </DockPanel>
-
-                                        <Label Grid.Row="4" Grid.Column="0" Content="{DynamicResource ServerSettings_CultureLabel}" ToolTip="{DynamicResource ServerSettings_CultureTooltip}" VerticalAlignment="Center"/>
-                                        <ComboBox Grid.Row="4" Grid.Column="1" Margin="1" Name="CultureComboBox" ItemsSource="{Binding Culture, ElementName=SettingsControl}" SelectedValue="{Binding Culture, Mode=TwoWay, UpdateSourceTrigger=Explicit}" SelectedValuePath="ValueMember" DisplayMemberPath="DisplayMember" IsEditable="True" ToolTip="{DynamicResource ServerSettings_CultureTooltip}" LostFocus="ComboBoxItemList_LostFocus" PreviewMouseWheel="ComboBox_PreviewMouseWheel"/>
-
-                                        <cctl:CheckBoxAndTextBlock Grid.Row="5" Grid.Column="0" Margin="5,5,5,0" Grid.ColumnSpan="2" IsChecked="{Binding DisableValveAntiCheatSystem, Mode=TwoWay}" Text="{DynamicResource ServerSettings_DisableVACLabel}" VerticalAlignment="Center" HorizontalAlignment="Left" ToolTip="{DynamicResource ServerSettings_DisableVACTooltip}"/>
-                                        <cctl:CheckBoxAndTextBlock Grid.Row="6" Grid.Column="0" Margin="5,5,5,0" Grid.ColumnSpan="2" IsChecked="{Binding UseBattlEye, Mode=TwoWay}" Text="{DynamicResource ServerSettings_UseBattlEyeLabel}" VerticalAlignment="Center" HorizontalAlignment="Left" ToolTip="{DynamicResource ServerSettings_UseBattlEyeTooltip}"/>
-                                        <cctl:CheckBoxAndTextBlock Grid.Row="7" Grid.Column="0" Margin="5,5,5,0" Grid.ColumnSpan="2" IsChecked="{Binding DisablePlayerMovePhysicsOptimization, Mode=TwoWay}" Text="{DynamicResource ServerSettings_DisablePMVOptimizationLabel}" VerticalAlignment="Center" HorizontalAlignment="Left" ToolTip="{DynamicResource ServerSettings_DisablePMVOptimizationTooltip}"/>
-                                        <cctl:CheckBoxAndTextBlock Grid.Row="8" Grid.Column="0" Margin="5,5,5,0" Grid.ColumnSpan="2" IsChecked="{Binding OutputServerLog, Mode=TwoWay}" Text="{DynamicResource ServerSettings_OutputServerLogLabel}" VerticalAlignment="Center" HorizontalAlignment="Left" ToolTip="{DynamicResource ServerSettings_OutputServerLogTooltip}"/>
-                                        <cctl:CheckBoxAndTextBlock Grid.Row="9" Grid.Column="0" Margin="5,5,5,0" Grid.ColumnSpan="2" IsChecked="{Binding UseNoHangDetection, Mode=TwoWay}" Text="{DynamicResource ServerSettings_UseNoHangDetectionLabel}" VerticalAlignment="Center" HorizontalAlignment="Left" ToolTip="{DynamicResource ServerSettings_UseNoHangDetectionTooltip}"/>
-                                        <cctl:CheckBoxAndTextBlock Grid.Row="10" Grid.Column="0" Margin="5,5,5,0" Grid.ColumnSpan="2" IsChecked="{Binding NoDinos, Mode=TwoWay}" Text="{DynamicResource ServerSettings_NoDinosLabel}" VerticalAlignment="Center" HorizontalAlignment="Left" ToolTip="{DynamicResource ServerSettings_NoDinosTooltip}"/>
-                                        <cctl:CheckBoxAndTextBlock Grid.Row="11" Grid.Column="0" Margin="5,5,5,0" Grid.ColumnSpan="2" IsChecked="{Binding NoUnderMeshChecking, Mode=TwoWay}" Text="{DynamicResource ServerSettings_NoUnderMeshCheckingLabel}" VerticalAlignment="Center" HorizontalAlignment="Left" ToolTip="{DynamicResource ServerSettings_NoUnderMeshCheckingTooltip}"/>
-                                        <cctl:CheckBoxAndTextBlock Grid.Row="11" Grid.Column="2" Margin="5,5,5,0" Grid.ColumnSpan="2" IsChecked="{Binding ReducedTickRateWhenEmpty, Mode=TwoWay}" Text="{DynamicResource ServerSettings_ReducedTickRateWhenEmptyLabel}" VerticalAlignment="Center" HorizontalAlignment="Left" ToolTip="{DynamicResource ServerSettings_ReducedTickRateWhenEmptyTooltip}"/>
-                                        <cctl:CheckBoxAndTextBlock Grid.Row="12" Grid.Column="0" Margin="5,5,5,0" Grid.ColumnSpan="2" IsChecked="{Binding NoUnderMeshKilling, Mode=TwoWay}" Text="{DynamicResource ServerSettings_NoUnderMeshKillingLabel}" VerticalAlignment="Center" HorizontalAlignment="Left" ToolTip="{DynamicResource ServerSettings_NoUnderMeshKillingTooltip}"/>
-                                        <cctl:CheckBoxAndTextBlock Grid.Row="13" Grid.Column="0" Margin="5,5,5,0" Grid.ColumnSpan="2" IsChecked="{Binding UseVivox, Mode=TwoWay}" Text="{DynamicResource ServerSettings_UseVivoxLabel}" VerticalAlignment="Center" HorizontalAlignment="Left" ToolTip="{DynamicResource ServerSettings_UseVivoxTooltip}"/>
-                                        <cctl:CheckBoxAndTextBlock Grid.Row="14" Grid.Column="0" Margin="5,5,5,0" Grid.ColumnSpan="2" IsChecked="{Binding AllowSharedConnections, Mode=TwoWay}" Text="{DynamicResource ServerSettings_AllowSharedConnectionsLabel}" VerticalAlignment="Center" HorizontalAlignment="Left" ToolTip="{DynamicResource ServerSettings_AllowSharedConnectionsTooltip}"/>
-                                        <cctl:CheckBoxAndTextBlock Grid.Row="15" Grid.Column="0" Margin="5,5,5,0" Grid.ColumnSpan="2" IsChecked="{Binding SecureSendArKPayload, Mode=TwoWay}" Text="{DynamicResource ServerSettings_SecureSendArKPayloadLabel}" VerticalAlignment="Center" HorizontalAlignment="Left" ToolTip="{DynamicResource ServerSettings_SecureSendArKPayloadTooltip}"/>
-                                        <cctl:CheckBoxAndTextBlock Grid.Row="16" Grid.Column="0" Margin="5,5,5,0" Grid.ColumnSpan="2" IsChecked="{Binding UseItemDupeCheck, Mode=TwoWay}" Text="{DynamicResource ServerSettings_UseItemDupeCheckLabel}" VerticalAlignment="Center" HorizontalAlignment="Left" ToolTip="{DynamicResource ServerSettings_UseItemDupeCheckTooltip}"/>
-                                        <cctl:CheckBoxAndTextBlock Grid.Row="17" Grid.Column="0" Margin="5,5,5,0" Grid.ColumnSpan="2" IsChecked="{Binding UseSecureSpawnRules, Mode=TwoWay}" Text="{DynamicResource ServerSettings_UseSecureSpawnRulesLabel}" VerticalAlignment="Center" HorizontalAlignment="Left" ToolTip="{DynamicResource ServerSettings_UseSecureSpawnRulesTooltip}"/>
-
-                                        <cctl:CheckBoxAndTextBlock Grid.Row="18" Grid.Column="0" Grid.ColumnSpan="4" Margin="5,5,5,0" IsChecked="{Binding ForceRespawnDinos, Mode=TwoWay}" Text="{DynamicResource ServerSettings_ForceRespawnDinosLabel}" VerticalAlignment="Center" HorizontalAlignment="Left" ToolTip="{DynamicResource ServerSettings_ForceRespawnDinosTooltip}"/>
-                                        <cctl:CheckBoxAndTextBlock Grid.Row="19" Grid.Column="0" Grid.ColumnSpan="4" Margin="5,5,5,0" IsChecked="{Binding EnableServerAutoForceRespawnWildDinosInterval, Mode=TwoWay}" Text="{DynamicResource ServerSettings_EnableServerAutoForceRespawnWildDinosIntervalLabel}" VerticalAlignment="Center" HorizontalAlignment="Left" ToolTip="{DynamicResource ServerSettings_EnableServerAutoForceRespawnWildDinosIntervalTooltip}"/>
-
-                                        <cctl:AnnotatedSlider Grid.Row="20" Grid.Column="0" Grid.ColumnSpan="4" Margin="20,1,5,1" Label="{DynamicResource ServerSettings_ServerAutoForceRespawnWildDinosIntervalLabel}" Value="{Binding ServerAutoForceRespawnWildDinosInterval, Converter={StaticResource SecondsToHoursConverter}}" Suffix="{DynamicResource SliderUnits_Hours}" Minimum="1" Maximum="720" SmallChange="1" LargeChange="24" TickFrequency="24" LabelRelativeWidth="Auto" SliderRelativeWidth="15*" SuffixRelativeWidth="Auto" ToolTip="{DynamicResource ServerSettings_ServerAutoForceRespawnWildDinosIntervalTooltip}" IsEnabled="{Binding EnableServerAutoForceRespawnWildDinosInterval, FallbackValue=False}"/>
-
-                                        <Label Grid.Row="21" Grid.Column="0" Margin="20,0,5,0" Grid.ColumnSpan="2" Content="{DynamicResource ServerSettings_AltSaveDirectoryNameLabel}" ToolTip="{DynamicResource ServerSettings_AltSaveDirectoryNameTooltip}" VerticalAlignment="Center" MinWidth="200" Foreground="{DynamicResource UnSyncedSetting}"/>
-                                        <TextBox Grid.Row="21" Grid.Column="2" Margin="1,1,0,1" VerticalContentAlignment="Center" HorizontalAlignment="Stretch" ToolTip="{DynamicResource ServerSettings_AltSaveDirectoryNameTooltip}">
-                                            <Validation.ErrorTemplate>
-                                                <ControlTemplate>
-                                                    <StackPanel>
-                                                        <AdornedElementPlaceholder x:Name="textBox"/>
-                                                        <TextBlock Text="{Binding [0].ErrorContent}" Background="Red" Foreground="White"/>
-                                                    </StackPanel>
-                                                </ControlTemplate>
-                                            </Validation.ErrorTemplate>
-                                            <TextBox.Text>
-                                                <Binding Path="AltSaveDirectoryName">
-                                                    <Binding.ValidationRules>
-                                                        <cvr:StringNoSpacesValidationRule ValidatesOnTargetUpdated="true" />
-                                                    </Binding.ValidationRules>
-                                                </Binding>
-                                            </TextBox.Text>
-                                        </TextBox>
-                                        <Label Grid.Row="21" Grid.Column="3" Content="{DynamicResource ServerSettings_AltSaveDirectoryNameLabel2}" ToolTip="{DynamicResource ServerSettings_AltSaveDirectoryNameTooltip}" VerticalAlignment="Center"/>
-
-                                        <TextBlock Grid.Row="22" Grid.Column="0" Grid.ColumnSpan="4" Margin="30,0,5,0" Text="{DynamicResource ServerSettings_AltSaveDirectoryNameNote}" FontWeight="Bold" TextWrapping="WrapWithOverflow" IsEnabled="False"/>
-
-                                        <Label Grid.Row="23" Grid.Column="0" Margin="20,0,5,0" Grid.ColumnSpan="2" Content="{DynamicResource ServerSettings_CrossArkClusterIdLabel}" ToolTip="{DynamicResource ServerSettings_CrossArkClusterIdTooltip}" VerticalAlignment="Center" MinWidth="200" Foreground="{DynamicResource UnSyncedSetting}"/>
-                                        <TextBox Grid.Row="23" Grid.Column="2" Margin="1,1,0,1" VerticalContentAlignment="Center" HorizontalAlignment="Stretch" Text="{Binding CrossArkClusterId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True}" ToolTip="{DynamicResource ServerSettings_CrossArkClusterIdTooltip}"/>
-                                        <cctl:CheckBoxAndTextBlock Grid.Row="23" Grid.Column="3" Margin="5,1,0,0" IsEnabled="{Binding CrossArkClusterId, Converter={StaticResource HasStringValueConverter}, FallbackValue=false}" IsChecked="{Binding ClusterDirOverride, Mode=TwoWay}" Text="{DynamicResource ServerSettings_ClusterDirOverrideLabel}" ToolTip="{DynamicResource ServerSettings_ClusterDirOverrideTooltip}" VerticalAlignment="Center" HorizontalAlignment="Left" UseLayoutRounding="False" Foreground="{DynamicResource UnSyncedSetting}"/>
-
-                                        <cctl:CheckBoxAndTextBlock Grid.Row="5" Grid.Column="2" Margin="5,5,5,0" Grid.ColumnSpan="2" IsChecked="{Binding DisableAntiSpeedHackDetection, Mode=TwoWay}" Text="{DynamicResource ServerSettings_DisableAntiSpeedHackLabel}" VerticalAlignment="Center" HorizontalAlignment="Left" ToolTip="{DynamicResource ServerSettings_DisableAntiSpeedHackTooltip}"/>
-                                        <cctl:AnnotatedSlider Grid.Row="6" Grid.Column="2" Margin="20,1,5,1" Grid.ColumnSpan="2" Label="{DynamicResource ServerSettings_AntiSpeedHackBiasLabel}" Value="{Binding SpeedHackBias}" Suffix="{DynamicResource ServerSettings_AntiSpeedHackBiasUnits}" Minimum="0.0" Maximum="1.0" SmallChange="0.1" LargeChange="0.25" TickFrequency="60" LabelRelativeWidth="Auto" SliderRelativeWidth="15*" SuffixRelativeWidth="Auto" ToolTip="{DynamicResource ServerSettings_AntiSpeedHackBiasTooltip}" />
-                                        <cctl:CheckBoxAndTextBlock Grid.Row="12" Grid.Column="2" Margin="5,5,5,0" Grid.ColumnSpan="2" IsChecked="{Binding StasisKeepControllers, Mode=TwoWay}" Text="{DynamicResource ServerSettings_StasisKeepControllersLabel}" VerticalAlignment="Center" HorizontalAlignment="Left" ToolTip="{DynamicResource ServerSettings_StasisKeepControllersTooltip}"/>
-                                        <cctl:CheckBoxAndTextBlock Grid.Row="13" Grid.Column="2" Margin="5,5,5,0" Grid.ColumnSpan="2" IsChecked="{Binding ServerAllowAnsel, Mode=TwoWay}" Text="{DynamicResource ServerSettings_ServerAllowAnselLabel}" VerticalAlignment="Center" HorizontalAlignment="Left" ToolTip="{DynamicResource ServerSettings_ServerAllowAnselTooltip}"/>
-                                        <cctl:CheckBoxAndTextBlock Grid.Row="14" Grid.Column="2" Margin="5,5,5,0" Grid.ColumnSpan="2" IsChecked="{Binding StructureMemoryOptimizations, Mode=TwoWay}" Text="{DynamicResource ServerSettings_StructureMemoryOptimizationsLabel}" VerticalAlignment="Center" HorizontalAlignment="Left" ToolTip="{DynamicResource ServerSettings_StructureMemoryOptimizationsTooltip}"/>
-                                        <cctl:CheckBoxAndTextBlock Grid.Row="15" Grid.Column="2" Margin="5,5,5,0" Grid.ColumnSpan="2" IsChecked="{Binding UseStructureStasisGrid, Mode=TwoWay}" Text="{DynamicResource ServerSettings_UseStructureStasisGridLabel}" VerticalAlignment="Center" HorizontalAlignment="Left" ToolTip="{DynamicResource ServerSettings_UseStructureStasisGridTooltip}"/>
-                                        <cctl:CheckBoxAndTextBlock Grid.Row="16" Grid.Column="2" Margin="5,5,5,0" IsChecked="{Binding Crossplay, Mode=TwoWay}" Text="{DynamicResource ServerSettings_CrossplayLabel}" VerticalAlignment="Center" HorizontalAlignment="Left" ToolTip="{DynamicResource ServerSettings_CrossplayTooltip}">
-                                            <cctl:CheckBoxAndTextBlock.Style>
-                                                <Style TargetType="{x:Type cctl:CheckBoxAndTextBlock}">
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding Runtime.Status, ElementName=SettingsControl}" Value="{x:Null}">
-                                                            <Setter Property="IsEnabled" Value="False"/>
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding Runtime.Status, ElementName=SettingsControl}" Value="{x:Static ce:ServerStatus.Initializing}">
-                                                            <Setter Property="IsEnabled" Value="False"/>
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding Runtime.Status, ElementName=SettingsControl}" Value="{x:Static ce:ServerStatus.Running}">
-                                                            <Setter Property="IsEnabled" Value="False"/>
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding Runtime.Status, ElementName=SettingsControl}" Value="{x:Static ce:ServerStatus.Stopping}">
-                                                            <Setter Property="IsEnabled" Value="False"/>
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding Runtime.Status, ElementName=SettingsControl}" Value="{x:Static ce:ServerStatus.Stopped}">
-                                                            <Setter Property="IsEnabled" Value="True"/>
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding Runtime.Status, ElementName=SettingsControl}" Value="{x:Static ce:ServerStatus.Unknown}">
-                                                            <Setter Property="IsEnabled" Value="False"/>
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding Runtime.Status, ElementName=SettingsControl}" Value="{x:Static ce:ServerStatus.Updating}">
-                                                            <Setter Property="IsEnabled" Value="False"/>
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding Runtime.Status, ElementName=SettingsControl}" Value="{x:Static ce:ServerStatus.Uninstalled}">
-                                                            <Setter Property="IsEnabled" Value="true"/>
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </cctl:CheckBoxAndTextBlock.Style>
-                                        </cctl:CheckBoxAndTextBlock>
-                                        <cctl:CheckBoxAndTextBlock Grid.Row="16" Grid.Column="3" Margin="5,5,5,0" IsChecked="{Binding EnablePublicIPForEpic, Mode=TwoWay}" Text="{DynamicResource ServerSettings_EnablePublicIPForEpicLabel}" VerticalAlignment="Center" HorizontalAlignment="Left" ToolTip="{DynamicResource ServerSettings_EnablePublicIPForEpicTooltip}">
-                                            <cctl:CheckBoxAndTextBlock.Style>
-                                                <Style TargetType="{x:Type cctl:CheckBoxAndTextBlock}">
-                                                    <Setter Property="IsEnabled" Value="False"/>
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding Runtime.Status, ElementName=SettingsControl}" Value="{x:Null}">
-                                                            <Setter Property="IsEnabled" Value="False"/>
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding Runtime.Status, ElementName=SettingsControl}" Value="{x:Static ce:ServerStatus.Initializing}">
-                                                            <Setter Property="IsEnabled" Value="False"/>
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding Runtime.Status, ElementName=SettingsControl}" Value="{x:Static ce:ServerStatus.Running}">
-                                                            <Setter Property="IsEnabled" Value="False"/>
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding Runtime.Status, ElementName=SettingsControl}" Value="{x:Static ce:ServerStatus.Stopping}">
-                                                            <Setter Property="IsEnabled" Value="False"/>
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding Runtime.Status, ElementName=SettingsControl}" Value="{x:Static ce:ServerStatus.Unknown}">
-                                                            <Setter Property="IsEnabled" Value="False"/>
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding Runtime.Status, ElementName=SettingsControl}" Value="{x:Static ce:ServerStatus.Updating}">
-                                                            <Setter Property="IsEnabled" Value="False"/>
-                                                        </DataTrigger>
-                                                        <MultiDataTrigger>
-                                                            <MultiDataTrigger.Conditions>
-                                                                <Condition Binding="{Binding Runtime.Status, ElementName=SettingsControl}" Value="{x:Static ce:ServerStatus.Stopped}"/>
-                                                                <Condition Binding="{Binding Crossplay}" Value="true"/>
-                                                            </MultiDataTrigger.Conditions>
-                                                            <Setter Property="IsEnabled" Value="True"/>
-                                                        </MultiDataTrigger>
-                                                        <MultiDataTrigger>
-                                                            <MultiDataTrigger.Conditions>
-                                                                <Condition Binding="{Binding Runtime.Status, ElementName=SettingsControl}" Value="{x:Static ce:ServerStatus.Uninstalled}"/>
-                                                                <Condition Binding="{Binding Crossplay}" Value="true"/>
-                                                            </MultiDataTrigger.Conditions>
-                                                            <Setter Property="IsEnabled" Value="True"/>
-                                                        </MultiDataTrigger>
-                                                        <MultiDataTrigger>
-                                                            <MultiDataTrigger.Conditions>
-                                                                <Condition Binding="{Binding Runtime.Status, ElementName=SettingsControl}" Value="{x:Static ce:ServerStatus.Stopped}"/>
-                                                                <Condition Binding="{Binding EpicOnly}" Value="true"/>
-                                                            </MultiDataTrigger.Conditions>
-                                                            <Setter Property="IsEnabled" Value="True"/>
-                                                        </MultiDataTrigger>
-                                                        <MultiDataTrigger>
-                                                            <MultiDataTrigger.Conditions>
-                                                                <Condition Binding="{Binding Runtime.Status, ElementName=SettingsControl}" Value="{x:Static ce:ServerStatus.Uninstalled}"/>
-                                                                <Condition Binding="{Binding EpicOnly}" Value="true"/>
-                                                            </MultiDataTrigger.Conditions>
-                                                            <Setter Property="IsEnabled" Value="True"/>
-                                                        </MultiDataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </cctl:CheckBoxAndTextBlock.Style>
-                                        </cctl:CheckBoxAndTextBlock>
-                                        <cctl:CheckBoxAndTextBlock Grid.Row="17" Grid.Column="2" Margin="5,5,5,0" IsChecked="{Binding EpicOnly, Mode=TwoWay}" Text="{DynamicResource ServerSettings_EpicOnlyLabel}" VerticalAlignment="Center" HorizontalAlignment="Left" ToolTip="{DynamicResource ServerSettings_EpicOnlyTooltip}">
-                                            <cctl:CheckBoxAndTextBlock.Style>
-                                                <Style TargetType="{x:Type cctl:CheckBoxAndTextBlock}">
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding Runtime.Status, ElementName=SettingsControl}" Value="{x:Null}">
-                                                            <Setter Property="IsEnabled" Value="False"/>
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding Runtime.Status, ElementName=SettingsControl}" Value="{x:Static ce:ServerStatus.Initializing}">
-                                                            <Setter Property="IsEnabled" Value="False"/>
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding Runtime.Status, ElementName=SettingsControl}" Value="{x:Static ce:ServerStatus.Running}">
-                                                            <Setter Property="IsEnabled" Value="False"/>
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding Runtime.Status, ElementName=SettingsControl}" Value="{x:Static ce:ServerStatus.Stopping}">
-                                                            <Setter Property="IsEnabled" Value="False"/>
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding Runtime.Status, ElementName=SettingsControl}" Value="{x:Static ce:ServerStatus.Stopped}">
-                                                            <Setter Property="IsEnabled" Value="True"/>
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding Runtime.Status, ElementName=SettingsControl}" Value="{x:Static ce:ServerStatus.Unknown}">
-                                                            <Setter Property="IsEnabled" Value="False"/>
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding Runtime.Status, ElementName=SettingsControl}" Value="{x:Static ce:ServerStatus.Updating}">
-                                                            <Setter Property="IsEnabled" Value="False"/>
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding Runtime.Status, ElementName=SettingsControl}" Value="{x:Static ce:ServerStatus.Uninstalled}">
-                                                            <Setter Property="IsEnabled" Value="true"/>
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </cctl:CheckBoxAndTextBlock.Style>
-                                        </cctl:CheckBoxAndTextBlock>
-                                    </Grid>
+                                    <StackPanel Orientation="Vertical">
+                                        <GroupBox Header="Players and Access" Style="{StaticResource GroupBoxStyle}" Margin="0,4,0,0">
+                                            <Grid>
+                                                <Grid.RowDefinitions><RowDefinition/><RowDefinition/><RowDefinition/><RowDefinition/><RowDefinition/></Grid.RowDefinitions>
+                                                <Grid.ColumnDefinitions><ColumnDefinition Width="1*"/><ColumnDefinition Width="1*"/><ColumnDefinition Width="1*"/><ColumnDefinition Width="1*"/></Grid.ColumnDefinitions>
+                                            <cctl:AnnotatedSlider Grid.Row="0" Grid.Column="0" Margin="20,1,5,1" Grid.ColumnSpan="2" Label="{DynamicResource ServerSettings_MaxPlayersLabel}" Value="{Binding MaxPlayers}" ToolTip="{DynamicResource ServerSettings_MaxPlayersTooltip}" VerticalAlignment="Center" Minimum="1" Maximum="250" LargeChange="25" SmallChange="10" TickFrequency="50" LabelRelativeWidth="Auto" SliderRelativeWidth="15*" SuffixRelativeWidth="0"/>
+                                            <cctl:AnnotatedCheckBoxAndIntegerSlider Grid.Row="0" Grid.Column="2" Margin="20,1,5,1" Grid.ColumnSpan="2" Label="{DynamicResource ServerSettings_EnableIdleTimeoutLabel}" Suffix="{DynamicResource ServerSettings_IdleTimeoutUnits}" Value="{Binding KickIdlePlayersPeriod}" ToolTip="{DynamicResource ServerSettings_IdleTimeoutTooltip}" Minimum="60" Maximum="7200" VerticalAlignment="Center" LargeChange="300" SmallChange="60" TickFrequency="300" LabelRelativeWidth="Auto" SliderRelativeWidth="15*" SuffixRelativeWidth="Auto"/>
+                                            <cctl:CheckBoxAndTextBlock Grid.Row="1" Grid.Column="0" Margin="5" VerticalAlignment="Center" IsChecked="{Binding EnableBanListURL, Mode=TwoWay}" Text="{DynamicResource ServerSettings_UseBanListLabel}" ToolTip="{DynamicResource ServerSettings_UseBanListTooltip}"/>
+                                            <DockPanel Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="4" HorizontalAlignment="Stretch">
+                                                <Button  DockPanel.Dock="Right" ToolTip="{DynamicResource ServerSettings_ResetBanlistTooltip}" Style="{StaticResource ButtonStyle1}" Command="{Binding ResetActionCommand, ElementName=SettingsControl}" CommandParameter="{x:Static enum:ServerSettingsResetAction.BanListProperty}">
+                                                    <Image Source="{com:Icon Path=/Ark Server Manager;component/Art/Refresh.ico,Size=32}"/>
+                                                </Button>
+                                                <TextBox DockPanel.Dock="Left" Margin="1" Text="{Binding BanListURL}" ToolTip="{DynamicResource ServerSettings_BanListTooltip}" IsEnabled="{Binding EnableBanListURL}"/>
+                                            </DockPanel>
+                                            <cctl:CheckBoxAndTextBlock Grid.Row="2" Grid.Column="0" Margin="5" VerticalAlignment="Center" IsChecked="{Binding EnableCustomDynamicConfigUrl, Mode=TwoWay}" Text="{DynamicResource ServerSettings_UseCustomDynamicConfigUrlLabel}" ToolTip="{DynamicResource ServerSettings_UseCustomDynamicConfigUrlTooltip}"/>
+                                            <DockPanel Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="4" HorizontalAlignment="Stretch">
+                                                <TextBox DockPanel.Dock="Left" Margin="1" Text="{Binding CustomDynamicConfigUrl}" ToolTip="{DynamicResource ServerSettings_CustomDynamicConfigUrlTooltip}" IsEnabled="{Binding EnableCustomDynamicConfigUrl}"/>
+                                            </DockPanel>
+                                            <cctl:CheckBoxAndTextBlock Grid.Row="3" Grid.Column="0" Margin="5" VerticalAlignment="Center" IsChecked="{Binding EnableCustomLiveTuningUrl, Mode=TwoWay}" Text="{DynamicResource ServerSettings_UseCustomLiveTuningUrlLabel}" ToolTip="{DynamicResource ServerSettings_UseCustomLiveTuningUrlTooltip}"/>
+                                            <DockPanel Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3" HorizontalAlignment="Stretch">
+                                                <TextBox DockPanel.Dock="Left" Margin="1" Text="{Binding CustomLiveTuningUrl}" ToolTip="{DynamicResource ServerSettings_CustomLiveTuningUrlTooltip}" IsEnabled="{Binding EnableCustomLiveTuningUrl}"/>
+                                            </DockPanel>
+                                            <Label Grid.Row="4" Grid.Column="0" Content="{DynamicResource ServerSettings_CultureLabel}" ToolTip="{DynamicResource ServerSettings_CultureTooltip}" VerticalAlignment="Center"/>
+                                            <ComboBox Grid.Row="4" Grid.Column="1" Margin="1" Name="CultureComboBox" ItemsSource="{Binding Culture, ElementName=SettingsControl}" SelectedValue="{Binding Culture, Mode=TwoWay, UpdateSourceTrigger=Explicit}" SelectedValuePath="ValueMember" DisplayMemberPath="DisplayMember" IsEditable="True" ToolTip="{DynamicResource ServerSettings_CultureTooltip}" LostFocus="ComboBoxItemList_LostFocus" PreviewMouseWheel="ComboBox_PreviewMouseWheel"/>
+                                            </Grid>
+                                        </GroupBox>
+                                        <GroupBox Header="Anti-Cheat and Security" Style="{StaticResource GroupBoxStyle}" Margin="0,4,0,0">
+                                            <Grid>
+                                                <Grid.RowDefinitions><RowDefinition/><RowDefinition/><RowDefinition/><RowDefinition/><RowDefinition/></Grid.RowDefinitions>
+                                                <Grid.ColumnDefinitions><ColumnDefinition Width="1*"/><ColumnDefinition Width="1*"/><ColumnDefinition Width="1*"/><ColumnDefinition Width="1*"/></Grid.ColumnDefinitions>
+                                            <cctl:CheckBoxAndTextBlock Grid.Row="0" Grid.Column="0" Margin="5,5,5,0" Grid.ColumnSpan="2" IsChecked="{Binding DisableValveAntiCheatSystem, Mode=TwoWay}" Text="{DynamicResource ServerSettings_DisableVACLabel}" VerticalAlignment="Center" HorizontalAlignment="Left" ToolTip="{DynamicResource ServerSettings_DisableVACTooltip}"/>
+                                            <cctl:CheckBoxAndTextBlock Grid.Row="1" Grid.Column="0" Margin="5,5,5,0" Grid.ColumnSpan="2" IsChecked="{Binding UseBattlEye, Mode=TwoWay}" Text="{DynamicResource ServerSettings_UseBattlEyeLabel}" VerticalAlignment="Center" HorizontalAlignment="Left" ToolTip="{DynamicResource ServerSettings_UseBattlEyeTooltip}"/>
+                                            <cctl:CheckBoxAndTextBlock Grid.Row="2" Grid.Column="0" Margin="5,5,5,0" Grid.ColumnSpan="2" IsChecked="{Binding SecureSendArKPayload, Mode=TwoWay}" Text="{DynamicResource ServerSettings_SecureSendArKPayloadLabel}" VerticalAlignment="Center" HorizontalAlignment="Left" ToolTip="{DynamicResource ServerSettings_SecureSendArKPayloadTooltip}"/>
+                                            <cctl:CheckBoxAndTextBlock Grid.Row="3" Grid.Column="0" Margin="5,5,5,0" Grid.ColumnSpan="2" IsChecked="{Binding UseItemDupeCheck, Mode=TwoWay}" Text="{DynamicResource ServerSettings_UseItemDupeCheckLabel}" VerticalAlignment="Center" HorizontalAlignment="Left" ToolTip="{DynamicResource ServerSettings_UseItemDupeCheckTooltip}"/>
+                                            <cctl:CheckBoxAndTextBlock Grid.Row="4" Grid.Column="0" Margin="5,5,5,0" Grid.ColumnSpan="2" IsChecked="{Binding UseSecureSpawnRules, Mode=TwoWay}" Text="{DynamicResource ServerSettings_UseSecureSpawnRulesLabel}" VerticalAlignment="Center" HorizontalAlignment="Left" ToolTip="{DynamicResource ServerSettings_UseSecureSpawnRulesTooltip}"/>
+                                            <cctl:CheckBoxAndTextBlock Grid.Row="0" Grid.Column="2" Margin="5,5,5,0" Grid.ColumnSpan="2" IsChecked="{Binding DisableAntiSpeedHackDetection, Mode=TwoWay}" Text="{DynamicResource ServerSettings_DisableAntiSpeedHackLabel}" VerticalAlignment="Center" HorizontalAlignment="Left" ToolTip="{DynamicResource ServerSettings_DisableAntiSpeedHackTooltip}"/>
+                                            <cctl:AnnotatedSlider Grid.Row="1" Grid.Column="2" Margin="20,1,5,1" Grid.ColumnSpan="2" Label="{DynamicResource ServerSettings_AntiSpeedHackBiasLabel}" Value="{Binding SpeedHackBias}" Suffix="{DynamicResource ServerSettings_AntiSpeedHackBiasUnits}" Minimum="0.0" Maximum="1.0" SmallChange="0.1" LargeChange="0.25" TickFrequency="60" LabelRelativeWidth="Auto" SliderRelativeWidth="15*" SuffixRelativeWidth="Auto" ToolTip="{DynamicResource ServerSettings_AntiSpeedHackBiasTooltip}" />
+                                            </Grid>
+                                        </GroupBox>
+                                        <GroupBox Header="Performance and Stability" Style="{StaticResource GroupBoxStyle}" Margin="0,4,0,0">
+                                            <Grid>
+                                                <Grid.RowDefinitions><RowDefinition/><RowDefinition/><RowDefinition/></Grid.RowDefinitions>
+                                                <Grid.ColumnDefinitions><ColumnDefinition Width="1*"/><ColumnDefinition Width="1*"/><ColumnDefinition Width="1*"/><ColumnDefinition Width="1*"/></Grid.ColumnDefinitions>
+                                            <cctl:CheckBoxAndTextBlock Grid.Row="0" Grid.Column="0" Margin="5,5,5,0" Grid.ColumnSpan="2" IsChecked="{Binding DisablePlayerMovePhysicsOptimization, Mode=TwoWay}" Text="{DynamicResource ServerSettings_DisablePMVOptimizationLabel}" VerticalAlignment="Center" HorizontalAlignment="Left" ToolTip="{DynamicResource ServerSettings_DisablePMVOptimizationTooltip}"/>
+                                            <cctl:CheckBoxAndTextBlock Grid.Row="1" Grid.Column="0" Margin="5,5,5,0" Grid.ColumnSpan="2" IsChecked="{Binding UseNoHangDetection, Mode=TwoWay}" Text="{DynamicResource ServerSettings_UseNoHangDetectionLabel}" VerticalAlignment="Center" HorizontalAlignment="Left" ToolTip="{DynamicResource ServerSettings_UseNoHangDetectionTooltip}"/>
+                                            <cctl:CheckBoxAndTextBlock Grid.Row="0" Grid.Column="2" Margin="5,5,5,0" Grid.ColumnSpan="2" IsChecked="{Binding ReducedTickRateWhenEmpty, Mode=TwoWay}" Text="{DynamicResource ServerSettings_ReducedTickRateWhenEmptyLabel}" VerticalAlignment="Center" HorizontalAlignment="Left" ToolTip="{DynamicResource ServerSettings_ReducedTickRateWhenEmptyTooltip}"/>
+                                            <cctl:CheckBoxAndTextBlock Grid.Row="1" Grid.Column="2" Margin="5,5,5,0" Grid.ColumnSpan="2" IsChecked="{Binding StasisKeepControllers, Mode=TwoWay}" Text="{DynamicResource ServerSettings_StasisKeepControllersLabel}" VerticalAlignment="Center" HorizontalAlignment="Left" ToolTip="{DynamicResource ServerSettings_StasisKeepControllersTooltip}"/>
+                                            <cctl:CheckBoxAndTextBlock Grid.Row="2" Grid.Column="0" Margin="5,5,5,0" Grid.ColumnSpan="2" IsChecked="{Binding StructureMemoryOptimizations, Mode=TwoWay}" Text="{DynamicResource ServerSettings_StructureMemoryOptimizationsLabel}" VerticalAlignment="Center" HorizontalAlignment="Left" ToolTip="{DynamicResource ServerSettings_StructureMemoryOptimizationsTooltip}"/>
+                                            <cctl:CheckBoxAndTextBlock Grid.Row="2" Grid.Column="2" Margin="5,5,5,0" Grid.ColumnSpan="2" IsChecked="{Binding UseStructureStasisGrid, Mode=TwoWay}" Text="{DynamicResource ServerSettings_UseStructureStasisGridLabel}" VerticalAlignment="Center" HorizontalAlignment="Left" ToolTip="{DynamicResource ServerSettings_UseStructureStasisGridTooltip}"/>
+                                            </Grid>
+                                        </GroupBox>
+                                        <GroupBox Header="Dinosaurs and Spawning" Style="{StaticResource GroupBoxStyle}" Margin="0,4,0,0">
+                                            <Grid>
+                                                <Grid.RowDefinitions><RowDefinition/><RowDefinition/><RowDefinition/><RowDefinition/></Grid.RowDefinitions>
+                                                <Grid.ColumnDefinitions><ColumnDefinition Width="1*"/><ColumnDefinition Width="1*"/><ColumnDefinition Width="1*"/><ColumnDefinition Width="1*"/></Grid.ColumnDefinitions>
+                                            <cctl:CheckBoxAndTextBlock Grid.Row="0" Grid.Column="0" Margin="5,5,5,0" Grid.ColumnSpan="2" IsChecked="{Binding NoDinos, Mode=TwoWay}" Text="{DynamicResource ServerSettings_NoDinosLabel}" VerticalAlignment="Center" HorizontalAlignment="Left" ToolTip="{DynamicResource ServerSettings_NoDinosTooltip}"/>
+                                            <cctl:CheckBoxAndTextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" Margin="5,5,5,0" IsChecked="{Binding ForceRespawnDinos, Mode=TwoWay}" Text="{DynamicResource ServerSettings_ForceRespawnDinosLabel}" VerticalAlignment="Center" HorizontalAlignment="Left" ToolTip="{DynamicResource ServerSettings_ForceRespawnDinosTooltip}"/>
+                                            <cctl:CheckBoxAndTextBlock Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4" Margin="5,5,5,0" IsChecked="{Binding EnableServerAutoForceRespawnWildDinosInterval, Mode=TwoWay}" Text="{DynamicResource ServerSettings_EnableServerAutoForceRespawnWildDinosIntervalLabel}" VerticalAlignment="Center" HorizontalAlignment="Left" ToolTip="{DynamicResource ServerSettings_EnableServerAutoForceRespawnWildDinosIntervalTooltip}"/>
+                                            <cctl:AnnotatedSlider Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4" Margin="20,1,5,1" Label="{DynamicResource ServerSettings_ServerAutoForceRespawnWildDinosIntervalLabel}" Value="{Binding ServerAutoForceRespawnWildDinosInterval, Converter={StaticResource SecondsToHoursConverter}}" Suffix="{DynamicResource SliderUnits_Hours}" Minimum="1" Maximum="720" SmallChange="1" LargeChange="24" TickFrequency="24" LabelRelativeWidth="Auto" SliderRelativeWidth="15*" SuffixRelativeWidth="Auto" ToolTip="{DynamicResource ServerSettings_ServerAutoForceRespawnWildDinosIntervalTooltip}" IsEnabled="{Binding EnableServerAutoForceRespawnWildDinosInterval, FallbackValue=False}"/>
+                                            </Grid>
+                                        </GroupBox>
+                                        <GroupBox Header="Structures and Meshes" Style="{StaticResource GroupBoxStyle}" Margin="0,4,0,0">
+                                            <Grid>
+                                                <Grid.RowDefinitions><RowDefinition/></Grid.RowDefinitions>
+                                                <Grid.ColumnDefinitions><ColumnDefinition Width="1*"/><ColumnDefinition Width="1*"/><ColumnDefinition Width="1*"/><ColumnDefinition Width="1*"/></Grid.ColumnDefinitions>
+                                            <cctl:CheckBoxAndTextBlock Grid.Row="0" Grid.Column="0" Margin="5,5,5,0" Grid.ColumnSpan="2" IsChecked="{Binding NoUnderMeshChecking, Mode=TwoWay}" Text="{DynamicResource ServerSettings_NoUnderMeshCheckingLabel}" VerticalAlignment="Center" HorizontalAlignment="Left" ToolTip="{DynamicResource ServerSettings_NoUnderMeshCheckingTooltip}"/>
+                                            <cctl:CheckBoxAndTextBlock Grid.Row="0" Grid.Column="2" Margin="5,5,5,0" Grid.ColumnSpan="2" IsChecked="{Binding NoUnderMeshKilling, Mode=TwoWay}" Text="{DynamicResource ServerSettings_NoUnderMeshKillingLabel}" VerticalAlignment="Center" HorizontalAlignment="Left" ToolTip="{DynamicResource ServerSettings_NoUnderMeshKillingTooltip}"/>
+                                            </Grid>
+                                        </GroupBox>
+                                        <GroupBox Header="Logging" Style="{StaticResource GroupBoxStyle}" Margin="0,4,0,0">
+                                            <Grid>
+                                                <Grid.RowDefinitions><RowDefinition/></Grid.RowDefinitions>
+                                                <Grid.ColumnDefinitions><ColumnDefinition Width="1*"/><ColumnDefinition Width="1*"/><ColumnDefinition Width="1*"/><ColumnDefinition Width="1*"/></Grid.ColumnDefinitions>
+                                            <cctl:CheckBoxAndTextBlock Grid.Row="0" Grid.Column="0" Margin="5,5,5,0" Grid.ColumnSpan="2" IsChecked="{Binding OutputServerLog, Mode=TwoWay}" Text="{DynamicResource ServerSettings_OutputServerLogLabel}" VerticalAlignment="Center" HorizontalAlignment="Left" ToolTip="{DynamicResource ServerSettings_OutputServerLogTooltip}"/>
+                                            </Grid>
+                                        </GroupBox>
+                                        <GroupBox Header="Network and Connections" Style="{StaticResource GroupBoxStyle}" Margin="0,4,0,0">
+                                            <Grid>
+                                                <Grid.RowDefinitions><RowDefinition/><RowDefinition/><RowDefinition/><RowDefinition/></Grid.RowDefinitions>
+                                                <Grid.ColumnDefinitions><ColumnDefinition Width="1*"/><ColumnDefinition Width="1*"/><ColumnDefinition Width="1*"/><ColumnDefinition Width="1*"/></Grid.ColumnDefinitions>
+                                            <cctl:CheckBoxAndTextBlock Grid.Row="1" Grid.Column="0" Margin="5,5,5,0" Grid.ColumnSpan="2" IsChecked="{Binding UseVivox, Mode=TwoWay}" Text="{DynamicResource ServerSettings_UseVivoxLabel}" VerticalAlignment="Center" HorizontalAlignment="Left" ToolTip="{DynamicResource ServerSettings_UseVivoxTooltip}"/>
+                                            <cctl:CheckBoxAndTextBlock Grid.Row="0" Grid.Column="0" Margin="5,5,5,0" Grid.ColumnSpan="2" IsChecked="{Binding AllowSharedConnections, Mode=TwoWay}" Text="{DynamicResource ServerSettings_AllowSharedConnectionsLabel}" VerticalAlignment="Center" HorizontalAlignment="Left" ToolTip="{DynamicResource ServerSettings_AllowSharedConnectionsTooltip}"/>
+                                            <cctl:CheckBoxAndTextBlock Grid.Row="0" Grid.Column="2" Margin="5,5,5,0" Grid.ColumnSpan="2" IsChecked="{Binding ServerAllowAnsel, Mode=TwoWay}" Text="{DynamicResource ServerSettings_ServerAllowAnselLabel}" VerticalAlignment="Center" HorizontalAlignment="Left" ToolTip="{DynamicResource ServerSettings_ServerAllowAnselTooltip}"/>
+                                            <cctl:CheckBoxAndTextBlock Grid.Row="2" Grid.Column="0" Margin="5,5,5,0" IsChecked="{Binding Crossplay, Mode=TwoWay}" Text="{DynamicResource ServerSettings_CrossplayLabel}" VerticalAlignment="Center" HorizontalAlignment="Left" ToolTip="{DynamicResource ServerSettings_CrossplayTooltip}">
+                                                <cctl:CheckBoxAndTextBlock.Style>
+                                                    <Style TargetType="{x:Type cctl:CheckBoxAndTextBlock}">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Runtime.Status, ElementName=SettingsControl}" Value="{x:Null}">
+                                                                <Setter Property="IsEnabled" Value="False"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Runtime.Status, ElementName=SettingsControl}" Value="{x:Static ce:ServerStatus.Initializing}">
+                                                                <Setter Property="IsEnabled" Value="False"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Runtime.Status, ElementName=SettingsControl}" Value="{x:Static ce:ServerStatus.Running}">
+                                                                <Setter Property="IsEnabled" Value="False"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Runtime.Status, ElementName=SettingsControl}" Value="{x:Static ce:ServerStatus.Stopping}">
+                                                                <Setter Property="IsEnabled" Value="False"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Runtime.Status, ElementName=SettingsControl}" Value="{x:Static ce:ServerStatus.Stopped}">
+                                                                <Setter Property="IsEnabled" Value="True"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Runtime.Status, ElementName=SettingsControl}" Value="{x:Static ce:ServerStatus.Unknown}">
+                                                                <Setter Property="IsEnabled" Value="False"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Runtime.Status, ElementName=SettingsControl}" Value="{x:Static ce:ServerStatus.Updating}">
+                                                                <Setter Property="IsEnabled" Value="False"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Runtime.Status, ElementName=SettingsControl}" Value="{x:Static ce:ServerStatus.Uninstalled}">
+                                                                <Setter Property="IsEnabled" Value="true"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </cctl:CheckBoxAndTextBlock.Style>
+                                            </cctl:CheckBoxAndTextBlock>
+                                            <cctl:CheckBoxAndTextBlock Grid.Row="2" Grid.Column="1" Margin="5,5,5,0" IsChecked="{Binding EnablePublicIPForEpic, Mode=TwoWay}" Text="{DynamicResource ServerSettings_EnablePublicIPForEpicLabel}" VerticalAlignment="Center" HorizontalAlignment="Left" ToolTip="{DynamicResource ServerSettings_EnablePublicIPForEpicTooltip}">
+                                                <cctl:CheckBoxAndTextBlock.Style>
+                                                    <Style TargetType="{x:Type cctl:CheckBoxAndTextBlock}">
+                                                        <Setter Property="IsEnabled" Value="False"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Runtime.Status, ElementName=SettingsControl}" Value="{x:Null}">
+                                                                <Setter Property="IsEnabled" Value="False"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Runtime.Status, ElementName=SettingsControl}" Value="{x:Static ce:ServerStatus.Initializing}">
+                                                                <Setter Property="IsEnabled" Value="False"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Runtime.Status, ElementName=SettingsControl}" Value="{x:Static ce:ServerStatus.Running}">
+                                                                <Setter Property="IsEnabled" Value="False"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Runtime.Status, ElementName=SettingsControl}" Value="{x:Static ce:ServerStatus.Stopping}">
+                                                                <Setter Property="IsEnabled" Value="False"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Runtime.Status, ElementName=SettingsControl}" Value="{x:Static ce:ServerStatus.Unknown}">
+                                                                <Setter Property="IsEnabled" Value="False"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Runtime.Status, ElementName=SettingsControl}" Value="{x:Static ce:ServerStatus.Updating}">
+                                                                <Setter Property="IsEnabled" Value="False"/>
+                                                            </DataTrigger>
+                                                            <MultiDataTrigger>
+                                                                <MultiDataTrigger.Conditions>
+                                                                    <Condition Binding="{Binding Runtime.Status, ElementName=SettingsControl}" Value="{x:Static ce:ServerStatus.Stopped}"/>
+                                                                    <Condition Binding="{Binding Crossplay}" Value="true"/>
+                                                                </MultiDataTrigger.Conditions>
+                                                                <Setter Property="IsEnabled" Value="True"/>
+                                                            </MultiDataTrigger>
+                                                            <MultiDataTrigger>
+                                                                <MultiDataTrigger.Conditions>
+                                                                    <Condition Binding="{Binding Runtime.Status, ElementName=SettingsControl}" Value="{x:Static ce:ServerStatus.Uninstalled}"/>
+                                                                    <Condition Binding="{Binding Crossplay}" Value="true"/>
+                                                                </MultiDataTrigger.Conditions>
+                                                                <Setter Property="IsEnabled" Value="True"/>
+                                                            </MultiDataTrigger>
+                                                            <MultiDataTrigger>
+                                                                <MultiDataTrigger.Conditions>
+                                                                    <Condition Binding="{Binding Runtime.Status, ElementName=SettingsControl}" Value="{x:Static ce:ServerStatus.Stopped}"/>
+                                                                    <Condition Binding="{Binding EpicOnly}" Value="true"/>
+                                                                </MultiDataTrigger.Conditions>
+                                                                <Setter Property="IsEnabled" Value="True"/>
+                                                            </MultiDataTrigger>
+                                                            <MultiDataTrigger>
+                                                                <MultiDataTrigger.Conditions>
+                                                                    <Condition Binding="{Binding Runtime.Status, ElementName=SettingsControl}" Value="{x:Static ce:ServerStatus.Uninstalled}"/>
+                                                                    <Condition Binding="{Binding EpicOnly}" Value="true"/>
+                                                                </MultiDataTrigger.Conditions>
+                                                                <Setter Property="IsEnabled" Value="True"/>
+                                                            </MultiDataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </cctl:CheckBoxAndTextBlock.Style>
+                                            </cctl:CheckBoxAndTextBlock>
+                                            <cctl:CheckBoxAndTextBlock Grid.Row="3" Grid.Column="0" Margin="5,5,5,0" IsChecked="{Binding EpicOnly, Mode=TwoWay}" Text="{DynamicResource ServerSettings_EpicOnlyLabel}" VerticalAlignment="Center" HorizontalAlignment="Left" ToolTip="{DynamicResource ServerSettings_EpicOnlyTooltip}">
+                                                <cctl:CheckBoxAndTextBlock.Style>
+                                                    <Style TargetType="{x:Type cctl:CheckBoxAndTextBlock}">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Runtime.Status, ElementName=SettingsControl}" Value="{x:Null}">
+                                                                <Setter Property="IsEnabled" Value="False"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Runtime.Status, ElementName=SettingsControl}" Value="{x:Static ce:ServerStatus.Initializing}">
+                                                                <Setter Property="IsEnabled" Value="False"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Runtime.Status, ElementName=SettingsControl}" Value="{x:Static ce:ServerStatus.Running}">
+                                                                <Setter Property="IsEnabled" Value="False"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Runtime.Status, ElementName=SettingsControl}" Value="{x:Static ce:ServerStatus.Stopping}">
+                                                                <Setter Property="IsEnabled" Value="False"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Runtime.Status, ElementName=SettingsControl}" Value="{x:Static ce:ServerStatus.Stopped}">
+                                                                <Setter Property="IsEnabled" Value="True"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Runtime.Status, ElementName=SettingsControl}" Value="{x:Static ce:ServerStatus.Unknown}">
+                                                                <Setter Property="IsEnabled" Value="False"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Runtime.Status, ElementName=SettingsControl}" Value="{x:Static ce:ServerStatus.Updating}">
+                                                                <Setter Property="IsEnabled" Value="False"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Runtime.Status, ElementName=SettingsControl}" Value="{x:Static ce:ServerStatus.Uninstalled}">
+                                                                <Setter Property="IsEnabled" Value="true"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </cctl:CheckBoxAndTextBlock.Style>
+                                            </cctl:CheckBoxAndTextBlock>
+                                            </Grid>
+                                        </GroupBox>
+                                        <GroupBox Header="Saves and Clusters" Style="{StaticResource GroupBoxStyle}" Margin="0,4,0,0">
+                                            <Grid>
+                                                <Grid.RowDefinitions><RowDefinition/><RowDefinition/><RowDefinition/></Grid.RowDefinitions>
+                                                <Grid.ColumnDefinitions><ColumnDefinition Width="1*"/><ColumnDefinition Width="1*"/><ColumnDefinition Width="1*"/><ColumnDefinition Width="1*"/></Grid.ColumnDefinitions>
+                                            <Label Grid.Row="0" Grid.Column="0" Margin="20,0,5,0" Grid.ColumnSpan="2" Content="{DynamicResource ServerSettings_AltSaveDirectoryNameLabel}" ToolTip="{DynamicResource ServerSettings_AltSaveDirectoryNameTooltip}" VerticalAlignment="Center" MinWidth="200" Foreground="{DynamicResource UnSyncedSetting}"/>
+                                            <TextBox Grid.Row="0" Grid.Column="2" Margin="1,1,0,1" VerticalContentAlignment="Center" HorizontalAlignment="Stretch" ToolTip="{DynamicResource ServerSettings_AltSaveDirectoryNameTooltip}">
+                                                <Validation.ErrorTemplate>
+                                                    <ControlTemplate>
+                                                        <StackPanel>
+                                                            <AdornedElementPlaceholder x:Name="textBox"/>
+                                                            <TextBlock Text="{Binding [0].ErrorContent}" Background="Red" Foreground="White"/>
+                                                        </StackPanel>
+                                                    </ControlTemplate>
+                                                </Validation.ErrorTemplate>
+                                                <TextBox.Text>
+                                                    <Binding Path="AltSaveDirectoryName">
+                                                        <Binding.ValidationRules>
+                                                            <cvr:StringNoSpacesValidationRule ValidatesOnTargetUpdated="true" />
+                                                        </Binding.ValidationRules>
+                                                    </Binding>
+                                                </TextBox.Text>
+                                            </TextBox>
+                                            <Label Grid.Row="0" Grid.Column="3" Content="{DynamicResource ServerSettings_AltSaveDirectoryNameLabel2}" ToolTip="{DynamicResource ServerSettings_AltSaveDirectoryNameTooltip}" VerticalAlignment="Center"/>
+                                            <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" Margin="30,0,5,0" Text="{DynamicResource ServerSettings_AltSaveDirectoryNameNote}" FontWeight="Bold" TextWrapping="WrapWithOverflow" IsEnabled="False"/>
+                                            <Label Grid.Row="2" Grid.Column="0" Margin="20,0,5,0" Grid.ColumnSpan="2" Content="{DynamicResource ServerSettings_CrossArkClusterIdLabel}" ToolTip="{DynamicResource ServerSettings_CrossArkClusterIdTooltip}" VerticalAlignment="Center" MinWidth="200" Foreground="{DynamicResource UnSyncedSetting}"/>
+                                            <TextBox Grid.Row="2" Grid.Column="2" Margin="1,1,0,1" VerticalContentAlignment="Center" HorizontalAlignment="Stretch" Text="{Binding CrossArkClusterId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True}" ToolTip="{DynamicResource ServerSettings_CrossArkClusterIdTooltip}"/>
+                                            <cctl:CheckBoxAndTextBlock Grid.Row="2" Grid.Column="3" Margin="5,1,0,0" IsEnabled="{Binding CrossArkClusterId, Converter={StaticResource HasStringValueConverter}, FallbackValue=false}" IsChecked="{Binding ClusterDirOverride, Mode=TwoWay}" Text="{DynamicResource ServerSettings_ClusterDirOverrideLabel}" ToolTip="{DynamicResource ServerSettings_ClusterDirOverrideTooltip}" VerticalAlignment="Center" HorizontalAlignment="Left" UseLayoutRounding="False" Foreground="{DynamicResource UnSyncedSetting}"/>
+                                            </Grid>
+                                        </GroupBox>
+                                    </StackPanel>
                                 </GroupBox>
 
                                 <GroupBox Grid.Row="10" Grid.Column="0" Grid.ColumnSpan="6" Style="{StaticResource GroupBoxStyle}">

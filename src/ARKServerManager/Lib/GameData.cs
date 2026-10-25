@@ -295,6 +295,9 @@ namespace ServerManagerTool.Lib
             new ComboBoxItem { ValueMember="", DisplayMember="" },
         };
 
+        // The map's own label in the game data (the "Mod" of the map entry, e.g. "Ragnarok"): the map spawners of a map carry the same label.
+        public static string GetGameMapMod(string className) => string.IsNullOrWhiteSpace(className) ? null : gameData?.GameMaps?.FirstOrDefault(i => i.ClassName.Equals(className, StringComparison.OrdinalIgnoreCase))?.Mod;
+
         public static IEnumerable<ComboBoxItem> GetGameMaps() => gameMaps.Select(d => d.Duplicate());
 
         public static string FriendlyMapNameForClass(string className, bool returnEmptyIfNotFound = false) => string.IsNullOrWhiteSpace(className) ? string.Empty : GlobalizedApplication.Instance.GetResourceString("Map_" + className) ?? gameData?.GameMaps?.FirstOrDefault(i => i.ClassName.Equals(className) && !i.IsSotF)?.Description ?? (returnEmptyIfNotFound ? string.Empty : className);
