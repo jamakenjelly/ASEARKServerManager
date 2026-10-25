@@ -1,26 +1,59 @@
-# Server Managers
+# ASEARKServerManager
 
-Managers for different steam dedicated game servers.
+A Windows server manager for **ARK: Survival Evolved** dedicated servers: profiles, settings, mods, backups, automatic
+updates with a shutdown countdown, RCON, ArkApi support, a web dashboard and more. It is my ASE fork of the open-source
+ARK Server Manager, brought up to date with the features of my ASA manager.
 
-This is a personal fork/standalone build of the original open-source ARK Server Manager project:
-**https://github.com/Bletch1971/ServerManagers** — credit and thanks to the original authors and contributors.
+## Download
 
-## Installer
+Get the newest `ASEARKServerManager-Setup-Release.exe` from the
+[Releases](https://github.com/jamakenjelly/ServerManagers-source-ase/releases/latest) page and run it. It asks for an install folder and
+makes the shortcuts. Start the manager as administrator (the shortcut does this).
 
-`make-installer.ps1` builds the manager (Release) and packs it into `dist\ASEARKServerManager-Setup-Release.exe`: a setup that asks for an install folder, makes the desktop / Start menu shortcuts (set to run as administrator) and an uninstall entry, and updates an older copy in place without touching the data folder or settings. The built setup is attached to the GitHub release.
+The manager checks this page for a newer version by itself and shows a green bar with an Upgrade now button when there is one.
 
-## Changes in this fork
+## What is in it
 
-- **Auto-Backup overhaul**: replaced the old per-server "backup shortly after this server's own save" cadence with a single fleet-wide timer (Global Settings → "Servers Back Up Every"), so every enabled server saves and backs up together on one schedule. Backups now verify the save actually completed (retrying once if not) and skip a redundant forced save when the server's own native Auto Save just ran.
-- **Save-health indicator**: a new ⚠️ tab icon flags any server whose last save didn't actually take effect, alongside the existing 💾 "backing up now" icon.
-- **Status/Initializing watchdogs**: optional per-server timers that stop and restart a server if it stops responding, or if it gets stuck in "Initializing" for too long - now correctly disarmed on every manual stop/shutdown/restart path (not just the direct one), so a deliberately-stopped server is never fought by the watchdog.
-- **Wipe scheduling removed**: the wipe-timer feature was fully removed (it was fundamentally broken - the overdue-detection logic could never fire); the Discord restart/shutdown schedule embed and admin panel are unaffected.
-- **Discord improvements**:
-  - Restart-timer embeds now split into separate PVE and PVP channels, based on each server's own PVP setting.
-  - Added a self-healing watchdog for the Discord auto-post loop, so a stalled post cycle recovers on its own instead of requiring a manual "Post to Discord" click.
-  - Fixed stale "ago" timestamps and per-server backup progress reporting in embeds.
-- **PVE/PVP tab split**: the server tab strip now has a PVE/PVP mode toggle in the header, so you can flip between your PVE and PVP fleets instead of one long interleaved tab list.
-- **Performance**: tab/mode switching is significantly faster - the game-data-derived dropdown lists (dinos, map spawners, items, supply crates) are now built once and cached instead of being rebuilt via reflection on every single switch.
-- **WMI Provider Host fix**: server status polling now does one bulk WMI query per tick across all servers instead of one query per process per server, eliminating the `WBEM_E_CALL_CANCELLED` errors this used to generate on larger fleets.
-- **Closing mid-backup**: closing the manager while a save/backup is in progress now shows a live-updating wait dialog (with a force-close option) instead of just a blocking prompt.
-- **ArkApi Plugin Sync**: fixed the current profile being excluded from its own sync target list; added one-click "Select All PVE" / "Select All PVP" buttons.
+- Server profiles as tabs, PVE / PVP views, Task Status for Auto Backup and Auto Update, Server Monitor
+- Auto Update into one shared cache, then copied to each server (mods included), with a shutdown countdown
+- Backups of the map's save folder, SaveGames and the Game.ini / GameUserSettings.ini / Engine.ini files
+- Player profile backup (a copy when a player connects and when they disconnect)
+- ArkApi: install, update or remove it from the manager, plugins and plugin config sync
+- Exclude Item Indices tick list, map spawner overrides per map, game data made from the servers' own files and mods
+- Web dashboard and Discord control panel
+- Default and Light looks
+
+## Screenshots
+
+These screenshots are from the ASA manager; the ASE manager has the same layout.
+
+**The manager** - all server profiles as tabs, Task Status for Auto Backup / Auto Update (PVE and PVP), Server Monitor, a Check for manager updates button, Default and Light themes.
+
+![The manager](docs/screenshots/manager-main.png)
+
+**ArkApi** - install or update the API, plugins and plugin config sync.
+
+![ArkApi Plugins](docs/screenshots/arkapi-plugins.png)
+
+**Web dashboard** - status, players, CPU and RAM of every server in a browser; Start / Stop / Restart / Update, Save World, Message and Players.
+
+![Web dashboard](docs/screenshots/web-dashboard.png)
+
+Set up in Global Settings: port, a login for each admin and an optional Discord login.
+
+![Web dashboard settings](docs/screenshots/web-dashboard-settings.png)
+
+**Player profile backup** - each player profile is saved when a player connects and again when they disconnect; restore or delete a backup from the list.
+
+![Player profile backup](docs/screenshots/player-profile-backup.png)
+
+## Notes
+
+- Your settings, server profiles and servers stay in your own data folder and are not touched by an install or an upgrade.
+- Not an official Studio Wildcard product. ARK: Survival Evolved must be obtained separately.
+- The source of the version before the ASA features were merged in is public: https://github.com/jamakenjelly/ServerManagers-source-ase-original
+
+## Credits
+
+This manager is built on the open-source ARK Server Manager project by its original authors and contributors:
+https://github.com/Bletch1971/ServerManagers - thank you.
