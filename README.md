@@ -1,4 +1,4 @@
-# ASEARKServerManager
+﻿# ASEARKServerManager
 
 A Windows server manager for **ARK: Survival Evolved** dedicated servers: profiles, settings, mods, backups, automatic
 updates with a shutdown countdown, RCON, ArkApi support, a web dashboard and more. It is my ASE fork of the open-source
@@ -7,7 +7,7 @@ ARK Server Manager, brought up to date with the features of my ASA manager.
 ## Download
 
 Get the newest `ASEARKServerManager-Setup-Release.exe` from the
-[Releases](https://github.com/jamakenjelly/ServerManagers-source-ase/releases/latest) page and run it. It asks for an install folder and
+[Releases](https://github.com/jamakenjelly/ASEARKServerManager/releases/latest) page and run it. It asks for an install folder and
 makes the shortcuts. Start the manager as administrator (the shortcut does this).
 
 The manager checks this page for a newer version by itself and shows a green bar with an Upgrade now button when there is one.
@@ -51,9 +51,10 @@ Set up in Global Settings: port, a login for each admin and an optional Discord 
 
 - Your settings, server profiles and servers stay in your own data folder and are not touched by an install or an upgrade.
 - Not an official Studio Wildcard product. ARK: Survival Evolved must be obtained separately.
-- The source of the version before the ASA features were merged in is public: https://github.com/jamakenjelly/ServerManagers-source-ase-original
+- The source of the version before the ASA features were merged in is public: https://github.com/jamakenjelly/ASEARKServerManager-original
 
 ## Credits
 
 This manager is built on the open-source ARK Server Manager project by its original authors and contributors:
 https://github.com/Bletch1971/ServerManagers - thank you.
+
