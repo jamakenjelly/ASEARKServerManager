@@ -751,8 +751,8 @@
     <sys:String x:Key="GlobalSettings_ValidateServerFilesTooltip">If enabled, when the automatic updater runs, it will validate the server files before updating. This will slow down the update process but will ensure that your server files are not corrupted.</sys:String>
     <sys:String x:Key="GlobalSettings_UseSmartCopyLabel">Use smart cache copy</sys:String>
     <sys:String x:Key="GlobalSettings_UseSmartCopyTooltip">If enabled, when the automatic updater copies files from the cache folder to the server folder, it will check the file time. This will speed up the copy as it will only copy changed files.</sys:String>
-    <sys:String x:Key="GlobalSettings_RetryOnFailLabel">Attempt retry on fail</sys:String>
-    <sys:String x:Key="GlobalSettings_RetryOnFailTooltip">If enabled, when the server or mod fails to download a retry attempt will be made.</sys:String>
+    <sys:String x:Key="GlobalSettings_RetryOnFailLabel">Retry on fail until successful</sys:String>
+    <sys:String x:Key="GlobalSettings_RetryOnFailTooltip">If enabled, a failed server or mod download keeps being retried until it succeeds, instead of giving up after 10 attempts - useful when Steam downloads only fail now and then.</sys:String>
     <sys:String x:Key="GlobalSettings_RetryUntilSuccessfulLabel">Retry until successful</sys:String>
     <sys:String x:Key="GlobalSettings_RetryUntilSuccessfulTooltip">If enabled, a failed server or mod download keeps retrying indefinitely instead of giving up after 10 attempts - useful when Steam/mod downloads are only failing intermittently.</sys:String>
     <sys:String x:Key="GlobalSettings_ShowUpdateReasonLabel">Show Update Reason in Shutdown Messages</sys:String>

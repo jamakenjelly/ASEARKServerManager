@@ -1648,7 +1648,8 @@ namespace ServerManagerTool {
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool AutoUpdate_RetryUntilSuccessful {
             get {
-                return ((bool)(this["AutoUpdate_RetryUntilSuccessful"]));
+                // one tick in Global Settings ("Retry on fail until successful") means both: it follows AutoUpdate_RetryOnFail
+                return ((bool)(this["AutoUpdate_RetryOnFail"]));
             }
             set {
                 this["AutoUpdate_RetryUntilSuccessful"] = value;

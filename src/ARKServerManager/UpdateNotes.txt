@@ -1,4 +1,8 @@
-﻿Version 1.1.0.12
+﻿Version 1.1.0.13
+  - Global Settings has one tick, "Retry on fail until successful", instead of two (as in the ASA manager). Ticked, a failed server or mod download is retried until it works; unticked, it is not retried. Start already saves the profile first (so does a start from the Server Monitor or the main window), and Profile Auto-Save is gone, as in the ASA manager.
+
+
+Version 1.1.0.12
   - Sync Profile now has a "Player Profile Backup" section of its own (the Enable tick and the number of files to keep), next to Player Access Lists. It used to be copied only as a side effect of syncing Administration.
 
 
