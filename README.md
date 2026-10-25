@@ -25,13 +25,13 @@ The manager checks this page for a newer version by itself and shows a green bar
 
 ## Screenshots
 
-These screenshots are from the ASA manager; the ASE manager has the same layout.
+The ArkApi picture is from the ASE manager; the others are from the ASA manager, and the ASE manager has the same layout.
 
 **The manager** - all server profiles as tabs, Task Status for Auto Backup / Auto Update (PVE and PVP), Server Monitor, a Check for manager updates button, Default and Light themes.
 
 ![The manager](docs/screenshots/manager-main.png)
 
-**ArkApi** - install or update the API, plugins and plugin config sync.
+**ArkApi** - Install / Update ArkApi and Remove ArkApi with a status line, then open the plugins folder, add or remove a plugin and sync the plugin config.
 
 ![ArkApi Plugins](docs/screenshots/arkapi-plugins.png)
 
@@ -57,5 +57,6 @@ Set up in Global Settings: port, a login for each admin and an optional Discord 
 
 This manager is built on the open-source ARK Server Manager project by its original authors and contributors:
 https://github.com/Bletch1971/ServerManagers - thank you.
+
 
 
