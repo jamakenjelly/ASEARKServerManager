@@ -628,10 +628,7 @@ namespace ServerManagerTool
 
         private void OriginalProjectInfo_Click(object sender, RoutedEventArgs e)
         {
-            // This build is a personal fork/standalone build of the
-            // original open-source ARK Server Manager project - credit
-            // where it's due, and a click here takes you straight to it.
-            Process.Start(new ProcessStartInfo("https://github.com/Bletch1971/ServerManagers") { UseShellExecute = true });
+            new AboutWindow { Owner = this }.ShowDialog();
         }
 
         private void RCON_Click(object sender, RoutedEventArgs e)

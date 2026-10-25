@@ -1,4 +1,8 @@
-﻿Version 1.1.0.5
+﻿Version 1.1.0.6
+  - The Plugins button is gone from the header, and the info (?) button now sits next to the Game Data button, as in the ASA manager. It opens an About window: who made the manager, the Discord and GitHub links, and the original project it is based on.
+
+
+Version 1.1.0.5
   - Fixes a crash at start-up in 1.1.0.4 (the shared styles pointed at icons by the wrong program name). Install this version with the setup file if 1.1.0.4 would not start.
 
 

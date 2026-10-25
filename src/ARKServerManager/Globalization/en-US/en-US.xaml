@@ -972,7 +972,7 @@
     <sys:String x:Key="MainWindow_Title">ARKServerManager Standalone</sys:String>
     <sys:String x:Key="MainWindow_TitleWithAdmin">ARKServerManager Standalone (Administrator)</sys:String>
     <sys:String x:Key="MainWindow_ArkNameLabel">ARKServerManager</sys:String>
-    <sys:String x:Key="MainWindow_OriginalProjectInfoTooltip">This is an independent standalone build - there are no automatic updates. Forked from the original open-source ARK Server Manager by Bletch1971. Click to view the original project on GitHub.</sys:String>
+    <sys:String x:Key="MainWindow_OriginalProjectInfoTooltip">About this manager: who made it, the Discord and GitHub links, and the project it is based on.</sys:String>
     <sys:String x:Key="MainWindow_ArkNameLabel_StandaloneSuffix"> (Standalone Build)</sys:String>
     <sys:String x:Key="MainWindow_NewProfileTooltip">Create a new server profile.</sys:String>
     <sys:String x:Key="MainWindow_CloseProfileTooltip">Delete the server profile.</sys:String>
