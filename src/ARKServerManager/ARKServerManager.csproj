@@ -36,7 +36,7 @@
     <PublisherName>Bletch1971</PublisherName>
     <SuiteName>Server Managers</SuiteName>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>7</ApplicationRevision>
+    <ApplicationRevision>8</ApplicationRevision>
     <ApplicationVersion>1.1.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -593,6 +593,7 @@
     <Compile Include="Windows\UpdateNotesWindow.cs" />
     <Compile Include="Windows\AboutWindow.cs" />
     <Compile Include="Lib\PlayerProfileBackup.cs" />
+    <Compile Include="Lib\ArkApiInstaller.cs" />
     <Compile Include="Lib\AppTheme.cs" />
     <Content Include="UpdateNotes.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

@@ -359,7 +359,7 @@ namespace ServerManagerTool
             // hook into the language change event
             GlobalizedApplication.Instance.GlobalizationManager.ResourceDictionaryChangedEvent += ResourceDictionaryChangedEvent;
             GameData.GameDataLoaded += GameData_GameDataLoaded;
-            Loaded += (s, e) => { RefreshPlayerBackups(); PlayerProfileBackup.BackupWritten -= PlayerBackupWritten; PlayerProfileBackup.BackupWritten += PlayerBackupWritten; };
+            Loaded += (s, e) => { RefreshArkApiStatus(); RefreshPlayerBackups(); PlayerProfileBackup.BackupWritten -= PlayerBackupWritten; PlayerProfileBackup.BackupWritten += PlayerBackupWritten; };
             Unloaded += (s, e) => PlayerProfileBackup.BackupWritten -= PlayerBackupWritten;
         }
 
@@ -425,6 +425,7 @@ namespace ServerManagerTool
 
                         ssc.Settings = server.Profile;
                         ssc.WatchMapChanges(server.Profile);
+                        ssc.RefreshArkApiStatus();
                         ssc.Runtime = server.Runtime;
                         ssc.ReinitializeNetworkAdapters();
                         ssc.RefreshBaseDinoList();
@@ -501,6 +502,86 @@ namespace ServerManagerTool
         {
             get { return (string)GetValue(StartBusyTextProperty); }
             set { SetValue(StartBusyTextProperty, value); }
+        }
+
+        private async void RefreshArkApiStatus()
+        {
+            try
+            {
+                var directory = this.Server?.Profile?.InstallDirectory;
+                if (string.IsNullOrWhiteSpace(directory))
+                    return;
+
+                var installed = ArkApiInstaller.IsInstalled(directory);
+                var version = ArkApiInstaller.GetInstalledVersion(directory);
+                ArkApiStatusText.Text = installed ? (string.IsNullOrEmpty(version) ? "Installed" : $"Installed ({version})") : "Not installed";
+
+                // say if the manager's package is newer
+                var latest = await ArkApiInstaller.GetLatestVersionAsync();
+                if (installed && !string.IsNullOrEmpty(latest) && !string.IsNullOrEmpty(version) && !string.Equals(latest, version, StringComparison.OrdinalIgnoreCase))
+                    ArkApiStatusText.Text += $" - version {latest} is available";
+            }
+            catch
+            {
+            }
+        }
+
+        private bool EnsureServerStoppedForArkApi()
+        {
+            switch (this.Runtime.Status)
+            {
+                case ServerStatus.Stopped:
+                case ServerStatus.Uninstalled:
+                    return true;
+
+                default:
+                    MessageBox.Show("Stop the server first - the API files are in use while it is running.", "ArkApi", MessageBoxButton.OK, MessageBoxImage.Information);
+                    return false;
+            }
+        }
+
+        private async void InstallArkApi_Click(object sender, RoutedEventArgs e)
+        {
+            if (!EnsureServerStoppedForArkApi())
+                return;
+
+            var button = sender as Button;
+            try
+            {
+                if (button != null) button.IsEnabled = false;
+                var result = await ArkApiInstaller.InstallAsync(this.Server.Profile.InstallDirectory, message => Application.Current.Dispatcher.Invoke(() => ArkApiStatusText.Text = message));
+                RefreshArkApiStatus();
+                MessageBox.Show(result, "ArkApi", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                RefreshArkApiStatus();
+                MessageBox.Show($"ArkApi could not be installed.\r\n\r\n{ex.Message}", "ArkApi", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                if (button != null) button.IsEnabled = true;
+            }
+        }
+
+        private void UninstallArkApi_Click(object sender, RoutedEventArgs e)
+        {
+            if (!EnsureServerStoppedForArkApi())
+                return;
+
+            if (MessageBox.Show("Remove ArkApi from this server? Your plugins and their settings are left in ArkApi\\Plugins.", "ArkApi", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
+                return;
+
+            try
+            {
+                var result = ArkApiInstaller.Uninstall(this.Server.Profile.InstallDirectory);
+                RefreshArkApiStatus();
+                MessageBox.Show(result, "ArkApi", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"ArkApi could not be removed.\r\n\r\n{ex.Message}", "ArkApi", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void RefreshPlayerBackups()

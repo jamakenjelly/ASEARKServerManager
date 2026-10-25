@@ -1,4 +1,8 @@
-﻿Version 1.1.0.7
+﻿Version 1.1.0.8
+  - ArkApi section: new "Install / Update ArkApi" and "Remove ArkApi" buttons with a status line (installed version, and when a newer one is available). The package (ArkApi 3.56: version.dll, msdia140.dll and a default config.json) comes from this manager's GitHub page. Your plugins in ArkApi\Plugins and the server's config.json are never overwritten, and the server must be stopped first. Remove only takes out version.dll.
+
+
+Version 1.1.0.7
   - Map Spawner Overrides now only offer the map spawners of the map the profile is set to, plus the base game ones every map shares (and PGM's when PGM is on). Change the map and the list follows. A map that is not in the game data still shows them all, and spawners a profile already uses stay in the list.
 
   - The Server Options box in Administration is split into labelled boxes: Players and Access, Anti-Cheat and Security, Performance and Stability, Dinosaurs and Spawning, Structures and Meshes, Logging, Network and Connections, and Saves and Clusters. No setting was added or removed; they are only grouped.

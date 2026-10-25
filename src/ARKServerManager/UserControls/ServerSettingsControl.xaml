@@ -2051,7 +2051,14 @@
                                 </Style>
                             </Expander.Style>
 
-                            <Grid Margin="-8,0,2,0">
+                            <StackPanel Margin="-8,0,2,0" Orientation="Vertical">
+                                <TextBlock Margin="5,5,5,0" FontWeight="Bold" Text="ArkApi (the server plugin loader)"/>
+                                <StackPanel Orientation="Horizontal">
+                                    <Button Margin="5" Padding="8,4" Content="Install / Update ArkApi" Click="InstallArkApi_Click" ToolTip="Downloads the ArkApi package (version.dll, msdia140.dll and a default config.json) from this manager's GitHub page and puts it in the server's Win64 folder. Your plugins and config.json are kept. The server must be stopped."/>
+                                    <Button Margin="5" Padding="8,4" Content="Remove ArkApi" Click="UninstallArkApi_Click" ToolTip="Removes the ArkApi loader (version.dll) from this server. Your plugins and their settings are left in ArkApi\Plugins."/>
+                                    <TextBlock Name="ArkApiStatusText" Margin="5" VerticalAlignment="Center"/>
+                                </StackPanel>
+                                <Grid Margin="0,0,2,0">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
@@ -2066,6 +2073,7 @@
                                 <Button Grid.Row="0" Grid.Column="0" Margin="5" Padding="8,4" Content="{DynamicResource ServerSettings_OpenArkApiPluginsFolderLabel}" Click="OpenArkApiPluginsFolder_Click" ToolTip="{DynamicResource ServerSettings_OpenArkApiPluginsFolderTooltip}" HorizontalAlignment="Left"/>
                                 <Button Grid.Row="0" Grid.Column="1" Margin="5" Padding="8,4" Content="{DynamicResource ServerSettings_SyncArkApiPluginConfigLabel}" Click="SyncArkApiPluginConfig_Click" ToolTip="{DynamicResource ServerSettings_SyncArkApiPluginConfigTooltip}" HorizontalAlignment="Left"/>
                             </Grid>
+                            </StackPanel>
                         </Expander>
 
                         <Expander Name="SectionServerDetails" IsExpanded="{Binding Config.SectionServerDetailsIsExpanded, ElementName=SettingsControl, FallbackValue=True, Mode=TwoWay}">
