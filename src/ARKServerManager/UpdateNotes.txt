@@ -1,4 +1,8 @@
-﻿Version 1.1.0.4
+﻿Version 1.1.0.5
+  - Fixes a crash at start-up in 1.1.0.4 (the shared styles pointed at icons by the wrong program name). Install this version with the setup file if 1.1.0.4 would not start.
+
+
+Version 1.1.0.4
   - Two looks, as in the ASA manager: Default (the original beige look) and Light (blue), chosen with the Default / Light buttons in the header. The choice is kept for this PC and shows in every open window at once. Buttons are now light blue and rounded in both looks.
 
 

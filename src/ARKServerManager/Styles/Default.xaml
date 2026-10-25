@@ -645,85 +645,85 @@
 
     <ContentControl x:Key="ServerMonitorButtonContent">
         <StackPanel Orientation="Horizontal" Height="20" Margin="0,0,5,0">
-            <Image Margin="5,1,5,0" Source="{com:Icon Path=/ASAARKServerManager Standalone;component/Art/Servers.ico,Size=64}" Width="20" VerticalAlignment="Center"/>
+            <Image Margin="5,1,5,0" Source="{com:Icon Path=/Ark Server Manager;component/Art/Servers.ico,Size=64}" Width="20" VerticalAlignment="Center"/>
             <Label Content="{DynamicResource ServerMonitor_Title}" VerticalAlignment="Center" Padding="0" FontWeight="Bold"/>
         </StackPanel>
     </ContentControl>
     <ContentControl x:Key="SettingFindButtonContent">
         <StackPanel Orientation="Horizontal" Height="27">
-            <Image Margin="5,0,5,0" Source="{com:Icon Path=/ASAARKServerManager Standalone;component/Art/Find.ico,Size=32}" Width="16" VerticalAlignment="Center"/>
+            <Image Margin="5,0,5,0" Source="{com:Icon Path=/Ark Server Manager;component/Art/Find.ico,Size=32}" Width="16" VerticalAlignment="Center"/>
             <Label Content="{DynamicResource ServerSettings_SettingFindButtonLabel}" VerticalAlignment="Center"/>
         </StackPanel>
     </ContentControl>
     <ContentControl x:Key="SupportZipButtonContent">
         <StackPanel Orientation="Horizontal" Height="27">
-            <Image Margin="5,0,5,0" Source="{com:Icon Path=/ASAARKServerManager Standalone;component/Art/Zip.ico,Size=32}" Width="16" VerticalAlignment="Center"/>
+            <Image Margin="5,0,5,0" Source="{com:Icon Path=/Ark Server Manager;component/Art/Zip.ico,Size=32}" Width="16" VerticalAlignment="Center"/>
             <Label Content="{DynamicResource ServerSettings_SupportZipButtonLabel}" VerticalAlignment="Center"/>
         </StackPanel>
     </ContentControl>
     <ContentControl x:Key="SyncProfileButtonContent">
         <StackPanel Orientation="Horizontal" Height="27">
-            <Image Margin="5,0,5,0" Source="{com:Icon Path=/ASAARKServerManager Standalone;component/Art/Copy.ico,Size=32}" Width="16" VerticalAlignment="Center"/>
+            <Image Margin="5,0,5,0" Source="{com:Icon Path=/Ark Server Manager;component/Art/Copy.ico,Size=32}" Width="16" VerticalAlignment="Center"/>
             <Label Content="{DynamicResource ServerSettings_SyncProfileButtonLabel}" VerticalAlignment="Center"/>
         </StackPanel>
     </ContentControl>
     <ContentControl x:Key="ImportButtonContent">
         <StackPanel Orientation="Horizontal" Height="27">
-            <Image Margin="5,0,5,0" Source="{com:Icon Path=/ASAARKServerManager Standalone;component/Art/FolderImport.ico,Size=32}" Width="16" VerticalAlignment="Center"/>
+            <Image Margin="5,0,5,0" Source="{com:Icon Path=/Ark Server Manager;component/Art/FolderImport.ico,Size=32}" Width="16" VerticalAlignment="Center"/>
             <Label Content="{DynamicResource ServerSettings_ImportButtonLabel}" VerticalAlignment="Center"/>
         </StackPanel>
     </ContentControl>
     <ContentControl x:Key="SaveButtonContent">
         <StackPanel Orientation="Horizontal" Height="27">
-            <Image Margin="5,0,5,0" Source="{com:Icon Path=/ASAARKServerManager Standalone;component/Art/Save.ico,Size=32}" Width="16" VerticalAlignment="Center"/>
+            <Image Margin="5,0,5,0" Source="{com:Icon Path=/Ark Server Manager;component/Art/Save.ico,Size=32}" Width="16" VerticalAlignment="Center"/>
             <Label Content="{DynamicResource ServerSettings_SaveButtonLabel}" VerticalAlignment="Center"/>
         </StackPanel>
     </ContentControl>
     <ContentControl x:Key="StopButtonContent">
         <StackPanel Orientation="Horizontal" Height="27">
-            <Image Margin="5,0,5,0" Source="{com:Icon Path=/ASAARKServerManager Standalone;component/Art/Stop.ico,Size=32}" Width="16" VerticalAlignment="Center"/>
+            <Image Margin="5,0,5,0" Source="{com:Icon Path=/Ark Server Manager;component/Art/Stop.ico,Size=32}" Width="16" VerticalAlignment="Center"/>
             <Label Content="{DynamicResource ServerSettings_StopButtonLabel}" VerticalAlignment="Center"/>
         </StackPanel>
     </ContentControl>
     <ContentControl x:Key="StartButtonContent">
         <StackPanel Orientation="Horizontal" Height="27">
-            <Image Margin="5,0,5,0" Source="{com:Icon Path=/ASAARKServerManager Standalone;component/Art/Start.ico,Size=32}" Width="16" VerticalAlignment="Center"/>
+            <Image Margin="5,0,5,0" Source="{com:Icon Path=/Ark Server Manager;component/Art/Start.ico,Size=32}" Width="16" VerticalAlignment="Center"/>
             <Label Content="{DynamicResource ServerSettings_StartButtonLabel}" VerticalAlignment="Center"/>
         </StackPanel>
     </ContentControl>
     <ContentControl x:Key="OpenRCONButtonContent">
         <StackPanel Orientation="Horizontal"  Height="27">
-            <Image Margin="5,0,5,0" Source="{com:Icon Path=/ASAARKServerManager Standalone;component/Art/Command.ico,Size=32}" Width="16" VerticalAlignment="Center"/>
+            <Image Margin="5,0,5,0" Source="{com:Icon Path=/Ark Server Manager;component/Art/Command.ico,Size=32}" Width="16" VerticalAlignment="Center"/>
             <Label Content="{DynamicResource ServerSettings_RCONButtonLabel}" VerticalAlignment="Center"/>
         </StackPanel>
     </ContentControl>
     <ContentControl x:Key="PlayerListButtonContent">
         <StackPanel Orientation="Horizontal"  Height="27">
-            <Image Margin="5,0,5,0" Source="{com:Icon Path=/ASAARKServerManager Standalone;component/Art/Players.ico,Size=32}" Width="16" VerticalAlignment="Center"/>
+            <Image Margin="5,0,5,0" Source="{com:Icon Path=/Ark Server Manager;component/Art/Players.ico,Size=32}" Width="16" VerticalAlignment="Center"/>
             <Label Content="{DynamicResource ServerSettings_PlayerListButtonLabel}" VerticalAlignment="Center"/>
         </StackPanel>
     </ContentControl>
     <ContentControl x:Key="ResetRCONButtonContent">
         <StackPanel Orientation="Horizontal" Height="20">
-            <Image Margin="5,0,5,0" Source="{com:Icon Path=/ASAARKServerManager Standalone;component/Art/Refresh.ico,Size=32}" Width="16" VerticalAlignment="Center"/>
+            <Image Margin="5,0,5,0" Source="{com:Icon Path=/Ark Server Manager;component/Art/Refresh.ico,Size=32}" Width="16" VerticalAlignment="Center"/>
             <Label Content="{DynamicResource ServerSettings_RCONButtonLabel}" VerticalAlignment="Center" Margin="0,-5,0,-5"/>
         </StackPanel>
     </ContentControl>
     <ContentControl x:Key="UpgradeButtonContent">
         <StackPanel Orientation="Horizontal" Height="27">
-            <Image Margin="5,0,5,0" Source="{com:Icon Path=/ASAARKServerManager Standalone;component/Art/Download.ico,Size=32}" Width="16" VerticalAlignment="Center"/>
+            <Image Margin="5,0,5,0" Source="{com:Icon Path=/Ark Server Manager;component/Art/Download.ico,Size=32}" Width="16" VerticalAlignment="Center"/>
             <Label Content="{DynamicResource ServerSettings_UpgradeButtonLabel}" VerticalAlignment="Center"/>
         </StackPanel>
     </ContentControl>
     <ContentControl x:Key="InstallButtonContent">
         <StackPanel Orientation="Horizontal" Height="27">
-            <Image Margin="5,0,5,0" Source="{com:Icon Path=/ASAARKServerManager Standalone;component/Art/Download.ico,Size=32}" Width="16" VerticalAlignment="Center"/>
+            <Image Margin="5,0,5,0" Source="{com:Icon Path=/Ark Server Manager;component/Art/Download.ico,Size=32}" Width="16" VerticalAlignment="Center"/>
             <Label Content="{DynamicResource ServerSettings_InstallButtonLabel}" VerticalAlignment="Center"/>
         </StackPanel>
     </ContentControl>
     <ContentControl x:Key="CancelInstallButtonContent">
         <StackPanel Orientation="Horizontal" Height="27">
-            <Image Margin="5,0,5,0" Source="{com:Icon Path=/ASAARKServerManager Standalone;component/Art/Stop.ico,Size=32}" Width="16" VerticalAlignment="Center"/>
+            <Image Margin="5,0,5,0" Source="{com:Icon Path=/Ark Server Manager;component/Art/Stop.ico,Size=32}" Width="16" VerticalAlignment="Center"/>
             <Label Content="{DynamicResource ServerSettings_CancelUpgradeButtonLabel}" VerticalAlignment="Center"/>
         </StackPanel>
     </ContentControl>
@@ -734,38 +734,38 @@
     </ContentControl>
     <ContentControl x:Key="ShowCmdButtonContent">
         <StackPanel Orientation="Horizontal" Height="20">
-            <Image Margin="5,0,5,0" Source="{com:Icon Path=/ASAARKServerManager Standalone;component/Art/Command.ico,Size=32}" Width="16" VerticalAlignment="Center"/>
+            <Image Margin="5,0,5,0" Source="{com:Icon Path=/Ark Server Manager;component/Art/Command.ico,Size=32}" Width="16" VerticalAlignment="Center"/>
             <Label Content="{DynamicResource ServerSettings_ShowCommandButtonLabel}" VerticalAlignment="Center" Margin="0,-5,0,-5"/>
         </StackPanel>
     </ContentControl>
     <ContentControl x:Key="CreateSymLinkButtonContent">
         <StackPanel Orientation="Horizontal" Height="20">
-            <Image Margin="5,0,5,0" Source="{com:Icon Path=/ASAARKServerManager Standalone;component/Art/Command.ico,Size=32}" Width="16" VerticalAlignment="Center"/>
+            <Image Margin="5,0,5,0" Source="{com:Icon Path=/Ark Server Manager;component/Art/Command.ico,Size=32}" Width="16" VerticalAlignment="Center"/>
             <Label Content="{DynamicResource ServerSettings_CreateSymbolicLinkButtonLabel}" VerticalAlignment="Center" Margin="0,-5,0,-5"/>
         </StackPanel>
     </ContentControl>
 
     <ContentControl x:Key="ShutdownButtonContent">
         <StackPanel Orientation="Horizontal">
-            <Image Width="16" Height="16" Margin="5,0,5,0" Source="{com:Icon Path=/ASAARKServerManager Standalone;component/Art/Stop.ico,Size=32}" VerticalAlignment="Center"/>
+            <Image Width="16" Height="16" Margin="5,0,5,0" Source="{com:Icon Path=/Ark Server Manager;component/Art/Stop.ico,Size=32}" VerticalAlignment="Center"/>
             <Label Content="{DynamicResource ShutdownWindow_ShutdownButtonLabel}" VerticalAlignment="Center" Padding="5,0"/>
         </StackPanel>
     </ContentControl>
     <ContentControl x:Key="RestartButtonContent">
         <StackPanel Orientation="Horizontal">
-            <Image Width="16" Height="16" Margin="5,0,5,0" Source="{com:Icon Path=/ASAARKServerManager Standalone;component/Art/Start.ico,Size=32}" VerticalAlignment="Center"/>
+            <Image Width="16" Height="16" Margin="5,0,5,0" Source="{com:Icon Path=/Ark Server Manager;component/Art/Start.ico,Size=32}" VerticalAlignment="Center"/>
             <Label Content="{DynamicResource ShutdownWindow_RestartButtonLabel}" VerticalAlignment="Center" Padding="5,0"/>
         </StackPanel>
     </ContentControl>
     <ContentControl x:Key="CancelShutdownButtonContent">
         <StackPanel Orientation="Horizontal">
-            <Image Width="16" Height="16" Margin="5,0,5,0" Source="{com:Icon Path=/ASAARKServerManager Standalone;component/Art/Cancel.ico,Size=32}" VerticalAlignment="Center"/>
+            <Image Width="16" Height="16" Margin="5,0,5,0" Source="{com:Icon Path=/Ark Server Manager;component/Art/Cancel.ico,Size=32}" VerticalAlignment="Center"/>
             <Label Content="{DynamicResource ShutdownWindow_CancelShutdownButtonLabel}" VerticalAlignment="Center" Padding="5,0"/>
         </StackPanel>
     </ContentControl>
     <ContentControl x:Key="StopButtonContent2">
         <StackPanel Orientation="Horizontal">
-            <Image Width="16" Height="16" Margin="5,0,5,0" Source="{com:Icon Path=/ASAARKServerManager Standalone;component/Art/Stop.ico,Size=32}" VerticalAlignment="Center"/>
+            <Image Width="16" Height="16" Margin="5,0,5,0" Source="{com:Icon Path=/Ark Server Manager;component/Art/Stop.ico,Size=32}" VerticalAlignment="Center"/>
             <Label Content="{DynamicResource ShutdownWindow_StopButtonLabel}" VerticalAlignment="Center" Padding="5,0"/>
         </StackPanel>
     </ContentControl>
