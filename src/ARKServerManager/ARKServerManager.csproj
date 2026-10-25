@@ -36,7 +36,7 @@
     <PublisherName>Bletch1971</PublisherName>
     <SuiteName>Server Managers</SuiteName>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>2</ApplicationRevision>
+    <ApplicationRevision>3</ApplicationRevision>
     <ApplicationVersion>1.1.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -354,6 +354,7 @@
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>
     <Resource Include="Art\StatusBad.ico" />
+    <Resource Include="Art\HeaderBanner.png" />
     <Resource Include="Art\StatusGood.ico" />
     <Resource Include="Art\StatusWarning.ico" />
     <Resource Include="Art\Collapse.ico" />
